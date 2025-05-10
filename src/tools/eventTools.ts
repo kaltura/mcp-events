@@ -1,0 +1,102 @@
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { CreateEventDto, ListEventDto, UpdateEventDto, DeleteEventDto } from "../schemas/eventSchemas";
+import { eventsApi } from "../api/events";
+
+/**
+ * Register event-related tools with the MCP server
+ */
+export function registerEventTools(server: McpServer) {
+  // Tool for creating events
+  server.tool(
+    "create-event",
+    CreateEventDto.shape,
+    async ({ name, templateId, startDate, endDate, timezone, description }) => {
+      try {
+        const result = await eventsApi.createEvent({
+          name,
+          templateId,
+          startDate,
+          endDate,
+          timezone,
+          description
+        });
+        
+        return {
+          content: [{ type: "text", text: result }]
+        };
+      } catch (error) {
+        return {
+          content: [{ type: "text", text: `Error creating event: ${error instanceof Error ? error.message : String(error)}` }]
+        };
+      }
+    }
+  );
+
+  // Tool for listing events
+  server.tool(
+    "list-events",
+    ListEventDto.shape,
+    async ({ filter, pager }) => {
+      try {
+        const result = await eventsApi.listEvents({ filter, pager });
+        
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }]
+        };
+      } catch (error) {
+        return {
+          content: [{ type: "text", text: `Error listing events: ${error instanceof Error ? error.message : String(error)}` }]
+        };
+      }
+    }
+  );
+
+  // Tool for updating events
+  server.tool(
+    "update-event",
+    UpdateEventDto.shape,
+    async ({ id, name, description, startDate, endDate, doorsOpenDate, timezone, labels, logoEntryId, bannerEntryId }) => {
+      try {
+        const result = await eventsApi.updateEvent({
+          id,
+          name,
+          description,
+          startDate,
+          endDate,
+          doorsOpenDate,
+          timezone,
+          labels,
+          logoEntryId,
+          bannerEntryId
+        });
+        
+        return {
+          content: [{ type: "text", text: result }]
+        };
+      } catch (error) {
+        return {
+          content: [{ type: "text", text: `Error updating event: ${error instanceof Error ? error.message : String(error)}` }]
+        };
+      }
+    }
+  );
+
+  // Tool for deleting events
+  server.tool(
+    "delete-event",
+    DeleteEventDto.shape,
+    async ({ id }) => {
+      try {
+        const result = await eventsApi.deleteEvent(id);
+        
+        return {
+          content: [{ type: "text", text: result }]
+        };
+      } catch (error) {
+        return {
+          content: [{ type: "text", text: `Error deleting event: ${error instanceof Error ? error.message : String(error)}` }]
+        };
+      }
+    }
+  );
+}
