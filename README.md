@@ -2,6 +2,10 @@
 
 A Model Context Protocol (MCP) server for managing Kaltura events.
 
+### Big TODOS for MVP:
+- [ ] Add duplicate APIs
+- [ ] Make it Streamable HTTP (optional, auth?)
+
 ## Project Structure
 
 The project has been organized into a clean, modular structure:
