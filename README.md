@@ -44,6 +44,22 @@ To start the MCP server:
 npm start
 ```
 
+### Local MCP config example:
+
+```
+{
+  "mcpServers": {
+    "kaltura-events-mcp": {
+      "command": "node",
+      "args": [
+        "<path>/index.js"
+      ],
+      "env": {"KS": "<KS>"}
+    }
+  }
+}
+```
+
 ### Running the Example Client
 
 To run the example client that connects to the server:
