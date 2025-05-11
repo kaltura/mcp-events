@@ -1,13 +1,19 @@
 import { z } from 'zod';
 
+
+const templateIdEnum = z.enum(["tm0000","tm1000","tm2000"]).describe("default ids: no session: tm0000, with interactive room: tm1000, with Live Webcast: tm2000, simulated live session: tm3000, room broadcasting to live webcast: tm4000", );
+const ObjectId = z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId');
+
 export const CreateEventDto = z.object({
-  templateId: z.string().describe("Kaltura Event Template ID. Example: '507f1f77bcf86cd799439011'"),
+  templateId: z.union([templateIdEnum, ObjectId]).describe("Kaltura Event Template ID. Example: '507f1f77bcf86cd799439011'"),
   name: z.string().describe("Event Name. Example: 'Virtual Townhall 2025'"),
   description: z.string().optional().describe("Event Description. Example: 'Annual company-wide update'"),
   startDate: z.string().datetime().describe("Event Start Date (ISO 8601). Example: '2025-05-01T14:00:00Z'"),
   endDate: z.string().datetime().describe("Event End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'"),
   timezone: z.string().describe("Event Timezone. Example: 'America/New_York'"),
 });
+
+
 
 export const DeleteEventDto = z.object({
   id: z.number().describe("Event ID. Example: 98765"),
