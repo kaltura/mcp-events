@@ -27,9 +27,20 @@ export const PagerDto = z.object({
   limit: z.number().default(30).describe("Page size. Default: 30. Example: 10"),
 });
 
+export const EventOrderBy = z.enum([
+  '+name',
+  '-name',
+  '+createdAt',
+  '-createdAt',
+  '+startDate',
+  '-startDate',
+]);
+
+
 export const ListEventDto = z.object({
   filter: ListEventFilterDto.optional().describe("Filter information."),
   pager: PagerDto.optional().describe("Pagination information."),
+  orderBy: EventOrderBy.optional().describe("Order by field and direction. Example: '+name' for ascending, '-name' for descending"),
 });
 
 export const UpdateEventDto = z.object({
