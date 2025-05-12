@@ -1,16 +1,16 @@
-import { startServer } from "./server";
+import { startServer } from './server'
 
 /**
  * Main entry point for the MCP server
  */
-async function main() {
+async function main(): Promise<void> {
   try {
-    await startServer();
+    await startServer()
   } catch (error) {
     // Silent error handling to avoid interfering with MCP protocol
-    process.exit(1);
+    process.exit(1)
   }
 }
 
 // Start the application
-main();
+main()

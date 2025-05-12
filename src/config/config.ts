@@ -1,18 +1,18 @@
-import * as dotenv from "dotenv";
-dotenv.config();
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 export const config = {
   ks: process.env.KS,
   urls: {
-    eventsApi: "https://events-api.nvq2.ovp.kaltura.com/api/v1/event",
-    kalturaApi: "https://api.nvq2.ovp.kaltura.com/api_v3"
+    eventsApi: 'https://events-api.nvq2.ovp.kaltura.com/api/v1/event',
+    kalturaApi: 'https://api.nvq2.ovp.kaltura.com/api_v3',
   },
   server: {
-    name: "Demo",
-    version: "1.0.0"
+    name: 'Demo',
+    version: '1.0.0',
   },
   client: {
-    name: "example-client",
-    version: "1.0.0"
-  }
-};
+    name: 'example-client',
+    version: '1.0.0',
+  },
+}
