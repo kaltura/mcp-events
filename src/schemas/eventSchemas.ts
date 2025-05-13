@@ -55,6 +55,7 @@ export const ListEventFilterDto = z.object({
       "Filter for events with labels matching any of the provided array items. Example: ['all-hands', 'q2']",
     ),
 })
+export type TListEventFilterDto = z.infer<typeof ListEventFilterDto>
 
 export const PagerDto = z.object({
   offset: z.number().default(0).describe('Page index. Default: 0. Example: 0'),
@@ -96,4 +97,12 @@ export const UpdateEventDto = z.object({
   bannerEntryId: z.string().optional().describe("Event banner id. Example: '1_p3im68oa'"),
 })
 
-export type TListEventFilterDto = z.infer<typeof ListEventFilterDto>
+export const ListSessionDto = z.object({
+  id: z.number().describe('Event ID. Example: 98765'),
+  filter: z.object({
+    tagsFilter: z
+      .array(z.string())
+      .optional()
+      .describe('Filter for sessions for the requested event optionally filter by session tags'),
+  }),
+})

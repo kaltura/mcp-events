@@ -16,6 +16,7 @@ export class EpClient {
   private readonly paths = Object.freeze({
     authLoginKs: 'auth/loginKS',
     eventsList: 'events/list',
+    sessionList: 'sessions/list',
   })
   private ks: string
   private jwt = {
@@ -28,6 +29,19 @@ export class EpClient {
     assert(config.ks, 'Error: KS (Kaltura Session) is not set. API calls may fail.')
     this.baseUrl = config.urls.epApi
     this.ks = config.ks
+  }
+
+  public async sessionList(kalturaEventId: number, tagsFilter?: string[]): Promise<unknown> {
+    const epEventId = await this.getEpEventId(kalturaEventId)
+    const response = await fetch(`${this.baseUrl}/${this.paths.sessionList}`, {
+      method: 'POST',
+      headers: await this.getHeaders(epEventId),
+      body: JSON.stringify({ filter: { tagsFilter } }),
+    })
+    if (!response.ok) {
+      throw new Error(`Failed to get sessions: ${response.status} ${response.statusText}`)
+    }
+    return await response.json()
   }
 
   /**
