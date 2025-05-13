@@ -51,14 +51,12 @@ export class EpClient {
   private async getEpEventId(kalturaEventId: number): Promise<string> {
     let epEventId = await this.cacheGetEventId(kalturaEventId)
     if (epEventId) {
-      console.debug(`Event id found in cache, kalturaEventId: ${kalturaEventId} epEventId: ${epEventId}`)
       return epEventId
     }
     epEventId = await this.fetchEpEventId(kalturaEventId)
     if (!epEventId) {
       throw new Error(`Event id not found in EP, kalturaEventId: ${kalturaEventId}`)
     }
-    console.debug(`Event id found in EP kalturaEventId: ${kalturaEventId} epEventId: ${epEventId}`)
     await this.cacheSetEventId(kalturaEventId, epEventId)
     return epEventId
   }
