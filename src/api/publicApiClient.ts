@@ -1,14 +1,15 @@
 import { config } from '../config/config'
+import { TListEventFilterDto } from '../schemas/eventSchemas'
 
 /**
  * API client for Kaltura Events
  */
-export class EventsApi {
+export class PublicAPIClient {
   private baseUrl: string
   private ks: string | undefined
 
   constructor() {
-    this.baseUrl = config.urls.eventsApi
+    this.baseUrl = config.urls.publicApiClient
     this.ks = config.ks
 
     if (!this.ks) {
@@ -44,7 +45,7 @@ export class EventsApi {
    * List events with filtering and pagination
    */
   async listEvents(params: {
-    filter?: unknown
+    filter?: TListEventFilterDto
     pager?: { offset?: number; limit?: number }
   }): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/list`, {
@@ -117,4 +118,4 @@ export class EventsApi {
 }
 
 // Export a singleton instance
-export const eventsApi = new EventsApi()
+export const publicApiClient = new PublicAPIClient()

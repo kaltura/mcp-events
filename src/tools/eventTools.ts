@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { CreateEventDto, ListEventDto, UpdateEventDto, DeleteEventDto } from '../schemas/eventSchemas'
-import { eventsApi } from '../api/events'
+import { publicApiClient } from '../api/publicApiClient'
 
 /**
  * Register event-related tools with the MCP server
@@ -13,7 +13,7 @@ export function registerEventTools(server: McpServer): void {
     CreateEventDto.shape,
     async ({ name, templateId, startDate, endDate, timezone, description }) => {
       try {
-        const result = await eventsApi.createEvent({
+        const result = await publicApiClient.createEvent({
           name,
           templateId,
           startDate,
@@ -45,7 +45,7 @@ export function registerEventTools(server: McpServer): void {
     ListEventDto.shape,
     async ({ filter, pager }) => {
       try {
-        const result = await eventsApi.listEvents({ filter, pager })
+        const result = await publicApiClient.listEvents({ filter, pager })
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
@@ -81,7 +81,7 @@ export function registerEventTools(server: McpServer): void {
       bannerEntryId,
     }) => {
       try {
-        const result = await eventsApi.updateEvent({
+        const result = await publicApiClient.updateEvent({
           id,
           name,
           description,
@@ -117,7 +117,7 @@ export function registerEventTools(server: McpServer): void {
     DeleteEventDto.shape,
     async ({ id }) => {
       try {
-        const result = await eventsApi.deleteEvent(id)
+        const result = await publicApiClient.deleteEvent(id)
 
         return {
           content: [{ type: 'text', text: result }],
