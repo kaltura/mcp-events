@@ -1,6 +1,13 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { CreateEventDto, ListEventDto, UpdateEventDto, DeleteEventDto } from '../schemas/eventSchemas'
+import {
+  CreateEventDto,
+  ListEventDto,
+  UpdateEventDto,
+  DeleteEventDto,
+  ListSessionDto,
+} from '../schemas/eventSchemas'
 import { publicApiClient } from '../api/publicApiClient'
+import { epClient } from '../api/epClient'
 
 /**
  * Register event-related tools with the MCP server
@@ -128,6 +135,31 @@ export function registerEventTools(server: McpServer): void {
             {
               type: 'text',
               text: `Error deleting event: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+        }
+      }
+    },
+  )
+
+  // Tool for listing an event sessions
+  server.tool(
+    'list-event-sessions',
+    'Retrieves a list of sessions for a specific event',
+    ListSessionDto.shape,
+    async ({ filter, id }) => {
+      try {
+        const result = await epClient.sessionList(id, filter?.tagsFilter)
+
+        return {
+          content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+        }
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error listing event sessions: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
         }

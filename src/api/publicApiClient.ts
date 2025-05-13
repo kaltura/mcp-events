@@ -1,20 +1,24 @@
+import assert from 'assert'
 import { config } from '../config/config'
 import { TListEventFilterDto } from '../schemas/eventSchemas'
 
 /**
- * API client for Kaltura Events
+ * API client for Public API
  */
 export class PublicAPIClient {
   private baseUrl: string
   private ks: string | undefined
+  private readonly paths = Object.freeze({
+    create: 'event/create',
+    list: 'event/list',
+    update: 'event/update',
+    delete: 'event/delete',
+  })
 
   constructor() {
     this.baseUrl = config.urls.publicApi
     this.ks = config.ks
-
-    if (!this.ks) {
-      console.error('Error: KS (Kaltura Session) is not set. API calls may fail.')
-    }
+    assert(this.ks, 'Error: KS (Kaltura Session) is not set. API calls may fail.')
   }
 
   /**
@@ -28,7 +32,7 @@ export class PublicAPIClient {
     timezone: string
     description?: string
   }): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/create`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.create}`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(params),
@@ -48,7 +52,7 @@ export class PublicAPIClient {
     filter?: TListEventFilterDto
     pager?: { offset?: number; limit?: number }
   }): Promise<unknown> {
-    const response = await fetch(`${this.baseUrl}/list`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.list}`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(params),
@@ -76,7 +80,7 @@ export class PublicAPIClient {
     logoEntryId?: string
     bannerEntryId?: string
   }): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/update`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.update}`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(params),
@@ -93,7 +97,7 @@ export class PublicAPIClient {
    * Delete an event
    */
   async deleteEvent(id: number): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/delete`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.delete}`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify({ id }),
