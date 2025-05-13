@@ -48,6 +48,12 @@ export const ListEventFilterDto = z.object({
     .datetime()
     .optional()
     .describe("Filter for events with end date <= the provided value. Example: '2025-12-31T23:59:59Z'"),
+  labels: z
+    .array(z.string())
+    .optional()
+    .describe(
+      "Filter for events with labels matching any of the provided array items. Example: ['all-hands', 'q2']",
+    ),
 })
 
 export const PagerDto = z.object({
@@ -89,3 +95,5 @@ export const UpdateEventDto = z.object({
   logoEntryId: z.string().optional().describe("Event logo entry id. Example: '1_xextzqk8'"),
   bannerEntryId: z.string().optional().describe("Event banner id. Example: '1_p3im68oa'"),
 })
+
+export type TListEventFilterDto = z.infer<typeof ListEventFilterDto>
