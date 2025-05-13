@@ -9,7 +9,7 @@ export class PublicAPIClient {
   private ks: string | undefined
 
   constructor() {
-    this.baseUrl = config.urls.publicApiClient
+    this.baseUrl = config.urls.publicApi
     this.ks = config.ks
 
     if (!this.ks) {

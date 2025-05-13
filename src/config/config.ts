@@ -4,7 +4,7 @@ dotenv.config()
 export const config = {
   ks: process.env.KS,
   urls: {
-    publicApiClient: 'https://events-api.nvq2.ovp.kaltura.com/api/v1/event',
+    publicApi: 'https://events-api.nvq2.ovp.kaltura.com/api/v1/event',
     kalturaApi: 'https://api.nvq2.ovp.kaltura.com/api_v3',
   },
   server: {
