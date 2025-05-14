@@ -43,7 +43,7 @@ export class EpClient {
       body: JSON.stringify({ filter: { tagsFilter } }),
     })
     if (!response.ok) {
-      throw new Error(`Failed to get sessions: ${response.status} ${response.statusText}`)
+      return this.handleResponseError(response, 'sessionList')
     }
     return await response.json()
   }
@@ -72,7 +72,7 @@ export class EpClient {
       body: JSON.stringify(body),
     })
     if (!response.ok) {
-      throw new Error(`Failed to create session: ${response.status} ${response.statusText}`)
+      return this.handleResponseError(response, 'sessionCreate')
     }
     return await response.json()
   }
@@ -102,7 +102,7 @@ export class EpClient {
       body: JSON.stringify({ filter }),
     })
     if (!response.ok) {
-      throw new Error(`Failed to get JWT: ${response.status} ${response.statusText}`)
+      return this.handleResponseError(response, 'fetchEpEventId')
     }
     const { events } = await response.json()
     if (!events.length) return undefined
@@ -130,7 +130,7 @@ export class EpClient {
     })
 
     if (!response.ok) {
-      throw new Error(`Failed to get JWT: ${response.status} ${response.statusText}`)
+      return this.handleResponseError(response, 'fetchJwt')
     }
     return await response.json()
   }
@@ -146,6 +146,19 @@ export class EpClient {
 
   private cacheSetEventId(kalturaEventId: number, epEventId: string): void {
     EpEventIdCache.set(kalturaEventId, epEventId)
+  }
+
+  /**
+   * Handle API response errors consistently
+   * @param response The fetch response object
+   * @param callerName Name of the calling function for better error context
+   * @throws Error with detailed information about the failure
+   */
+  private handleResponseError(response: Response, callerName: string): never {
+    console.log(response.headers)
+    throw new Error(
+      `Failed to ${callerName}: ${response.status} ${response.statusText}\nx-traceid: ${response.headers.get('x-traceid')}\nx-ep-session: ${response.headers.get('x-ep-session')}}`,
+    )
   }
 
   /**

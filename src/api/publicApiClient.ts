@@ -39,7 +39,7 @@ export class PublicAPIClient {
     })
 
     if (!response.ok) {
-      throw new Error(`Failed to create event: ${response.status} ${response.statusText}`)
+      this.handleResponseError(response, 'createEvent')
     }
 
     return await response.text()
@@ -55,11 +55,11 @@ export class PublicAPIClient {
     const response = await fetch(`${this.baseUrl}/${this.paths.list}`, {
       method: 'POST',
       headers: this.getHeaders(),
-      body: JSON.stringify(params),
+      body: JSON.stringify({ params }),
     })
 
     if (!response.ok) {
-      throw new Error(`Failed to list events: ${response.status} ${response.statusText}`)
+      this.handleResponseError(response, 'listEvents')
     }
 
     return await response.json()
@@ -87,7 +87,7 @@ export class PublicAPIClient {
     })
 
     if (!response.ok) {
-      throw new Error(`Failed to update event: ${response.status} ${response.statusText}`)
+      this.handleResponseError(response, 'updateEvent')
     }
 
     return await response.text()
@@ -104,10 +104,23 @@ export class PublicAPIClient {
     })
 
     if (!response.ok) {
-      throw new Error(`Failed to delete event: ${response.status} ${response.statusText}`)
+      this.handleResponseError(response, 'deleteEvent')
     }
 
     return await response.text()
+  }
+
+  /**
+   * Handle API response errors consistently
+   * @param response The fetch response object
+   * @param callerName Name of the calling function for better error context
+   * @throws Error with detailed information about the failure
+   */
+  private handleResponseError(response: Response, callerName: string): never {
+    console.log(response.headers)
+    throw new Error(
+      `Failed to ${callerName}: ${response.status} ${response.statusText}\nx-kaltura-session: ${response.headers.get('x-kaltura-session')}`,
+    )
   }
 
   /**
