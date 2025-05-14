@@ -106,3 +106,31 @@ export const ListSessionDto = z.object({
       .describe('Filter for sessions for the requested event optionally filter by session tags'),
   }),
 })
+
+export const CreateSessionDto = z.object({
+  id: z.number().describe('Event ID. Example: 98765'),
+  session: z.object({
+    name: z.string().describe("Session Name. Example: 'Virtual Townhall 2025 - Session 1'"),
+    type: z.enum(['MeetingEntry', 'SimuLive', 'LiveWebcast', 'LiveKME', 'VirtualLearningRoom']),
+    description: z.string().optional().describe("Session Description. Example: 'Session 1 description'"),
+    startDate: z
+      .string()
+      .datetime()
+      .optional()
+      .describe("Session Start Date (ISO 8601). Example: '2025-05-01T14:00:00Z'"),
+    endDate: z
+      .string()
+      .datetime()
+      .optional()
+      .describe("Session End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'"),
+    tags: z.array(z.string()).optional().describe('Session tags. Example: ["tag1", "tag2"]'),
+    visibility: z
+      .enum(['published', 'unlisted', 'private'])
+      .optional()
+      .describe('Entry visibility. Example: "published"'),
+    isManualLive: z.boolean().optional(),
+  }),
+  imageUrlEntryId: z.string().optional().describe('Image URL entry id. Example: "1_xextzqk8"'),
+  sourceEntryId: z.string().optional().describe('Source entry id. Example: "1_xextzqk8"'),
+})
+export type TCreateSessionDto = z.infer<typeof CreateSessionDto>

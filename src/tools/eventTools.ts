@@ -5,6 +5,7 @@ import {
   UpdateEventDto,
   DeleteEventDto,
   ListSessionDto,
+  CreateSessionDto,
 } from '../schemas/eventSchemas'
 import { publicApiClient } from '../api/publicApiClient'
 import { epClient } from '../api/epClient'
@@ -160,6 +161,31 @@ export function registerEventTools(server: McpServer): void {
             {
               type: 'text',
               text: `Error listing event sessions: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+        }
+      }
+    },
+  )
+
+  // Tool for creating an event session
+  server.tool(
+    'create-event-session',
+    'Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings',
+    CreateSessionDto.shape,
+    async ({ id, imageUrlEntryId, sourceEntryId, session }) => {
+      try {
+        const result = await epClient.sessionCreate(id, session, imageUrlEntryId, sourceEntryId)
+
+        return {
+          content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+        }
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error creating event session: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
         }
