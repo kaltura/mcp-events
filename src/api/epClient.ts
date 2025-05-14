@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { config } from '../config/config'
 import { LRUCache } from 'lru-cache'
 import { removeEmptyProps } from '../utils'
+import { TCreateSessionDto } from '../schemas/eventSchemas'
 
 const EpEventIdCache = new LRUCache<number, string>({
   max: 500,
@@ -17,11 +18,14 @@ export class EpClient {
     authLoginKs: 'auth/loginKS',
     eventsList: 'events/list',
     sessionList: 'sessions/list',
+    sessionCreate: 'sessions/create',
   })
   private ks: string
   private jwt = {
     token: '',
-    /* epoch milliseconds */
+    /**
+     * Epoch milliseconds
+     **/
     exp: 0,
   }
 
@@ -40,6 +44,35 @@ export class EpClient {
     })
     if (!response.ok) {
       throw new Error(`Failed to get sessions: ${response.status} ${response.statusText}`)
+    }
+    return await response.json()
+  }
+
+  public async sessionCreate(
+    kalturaEventId: number,
+    session: TCreateSessionDto['session'],
+    imageUrlEntryId?: string,
+    sourceEntryId?: string,
+  ): Promise<unknown> {
+    const epEventId = await this.getEpEventId(kalturaEventId)
+    const body = removeEmptyProps(
+      {
+        session: {
+          ...session,
+          description: session.description || '',
+        },
+        imageUrlEntryId,
+        sourceEntryId,
+      },
+      { removeEmptyString: false },
+    )
+    const response = await fetch(`${this.baseUrl}/${this.paths.sessionCreate}`, {
+      method: 'POST',
+      headers: await this.getHeaders(epEventId),
+      body: JSON.stringify(body),
+    })
+    if (!response.ok) {
+      throw new Error(`Failed to create session: ${response.status} ${response.statusText}`)
     }
     return await response.json()
   }
