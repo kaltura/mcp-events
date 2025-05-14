@@ -55,7 +55,17 @@ export class EpClient {
     sourceEntryId?: string,
   ): Promise<unknown> {
     const epEventId = await this.getEpEventId(kalturaEventId)
-    const body = removeEmptyProps({ session, imageUrlEntryId, sourceEntryId })
+    const body = removeEmptyProps(
+      {
+        session: {
+          ...session,
+          description: session.description || '',
+        },
+        imageUrlEntryId,
+        sourceEntryId,
+      },
+      { removeEmptyString: false },
+    )
     const response = await fetch(`${this.baseUrl}/${this.paths.sessionCreate}`, {
       method: 'POST',
       headers: await this.getHeaders(epEventId),
