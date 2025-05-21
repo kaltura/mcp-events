@@ -155,9 +155,10 @@ export class EpClient {
    * @throws Error with detailed information about the failure
    */
   private handleResponseError(response: Response, callerName: string): never {
-    console.log(response.headers)
+    const traceid = response.headers.get('x-traceid')
+    const epSession = response.headers.get('x-ep-session')
     throw new Error(
-      `Failed to ${callerName}: ${response.status} ${response.statusText}\nx-traceid: ${response.headers.get('x-traceid')}\nx-ep-session: ${response.headers.get('x-ep-session')}}`,
+      `Failed to ${callerName}: ${response.status} ${response.statusText}\nx-traceid: ${traceid}\nx-ep-session: ${epSession}`,
     )
   }
 

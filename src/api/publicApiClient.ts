@@ -117,9 +117,10 @@ export class PublicAPIClient {
    * @throws Error with detailed information about the failure
    */
   private handleResponseError(response: Response, callerName: string): never {
-    console.log(response.headers)
+    const kalturaSession = response.headers.get('x-kaltura-session')
+    const traceId = response.headers.get('x-traceid')
     throw new Error(
-      `Failed to ${callerName}: ${response.status} ${response.statusText}\nx-kaltura-session: ${response.headers.get('x-kaltura-session')}`,
+      `Failed to ${callerName}: ${response.status} ${response.statusText}\nx-traceId: ${traceId}\nx-kaltura-session: ${kalturaSession}`,
     )
   }
 
