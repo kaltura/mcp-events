@@ -33,7 +33,7 @@ export const ListEventFilterDto = z.object({
     .datetime()
     .optional()
     .describe("Filter for events with start date >= the provided value. Example: '2025-01-01T00:00:00Z'"),
-  startDateLessThanOrEqual: z
+  startDateLessOrEqualThan: z
     .string()
     .datetime()
     .optional()
@@ -43,7 +43,7 @@ export const ListEventFilterDto = z.object({
     .datetime()
     .optional()
     .describe('Filter for events with end date >= the provided value.'),
-  endDateLessThanOrEqual: z
+  endDateLessOrEqualThan: z
     .string()
     .datetime()
     .optional()
