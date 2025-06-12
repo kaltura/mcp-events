@@ -2,9 +2,10 @@
 
 A Model Context Protocol (MCP) server for managing Kaltura events.
 
-### Big TODOs for MVP:
+### TODO:
+- [ ] Policies and/or prompts (mainly create-event for create-event tool)
 - [ ] Add duplicate APIs
-- [ ] Make it Streamable HTTP (optional, auth?)
+- [ ] Make it Stream-able HTTP (optional, auth?)
 
 ## Project Structure
 
@@ -80,6 +81,8 @@ The MCP server provides the following tools:
 2. `list-events` - List events with filtering and pagination
 3. `update-event` - Update an existing event
 4. `delete-event` - Delete an event
+5. `create-event-session` - Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings
+5. `list-event-sessions` - Retrieves a list of sessions for a specific event
 
 ## Development
 
