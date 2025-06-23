@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const templateIdEnum = z
-  .enum(['tm0000', 'tm1000', 'tm2000'])
+  .enum(['tm0000', 'tm1000', 'tm2000', 'ts1000'])
   .describe(
     'default ids: no session: tm0000, with interactive room: tm1000, with Live Webcast: tm2000, simulated live session: tm3000, room broadcasting to live webcast: tm4000',
   )
