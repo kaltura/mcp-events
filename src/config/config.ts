@@ -1,6 +1,3 @@
-import * as dotenv from 'dotenv'
-dotenv.config()
-
 export const config = {
   ks: process.env.KS,
   urls: {

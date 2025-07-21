@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node --env-file=.env dist/index.js",
+    "inspect": "DANGEROUSLY_OMIT_AUTH=true ./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/index.js",
     "client": "node dist/client.js",
     "lint": "eslint . --ext .ts"
   },
@@ -14,23 +15,23 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@types/node": "^22.15.17",
+    "@modelcontextprotocol/inspector": "^0.16.1",
+    "@types/node": "^22.16.5",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
-    "eslint": "^9.26.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-prettier": "^5.4.0",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.3",
     "eslint-plugin-unused-imports": "^4.1.4",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.2",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.32.0"
+    "typescript-eslint": "^8.37.0"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.11.2",
-    "dotenv": "^16.5.0",
+    "@modelcontextprotocol/sdk": "^1.16.0",
     "import": "^0.0.6",
     "lru-cache": "^11.1.0",
-    "zod": "^3.24.4"
+    "zod": "^3.25.76"
   }
 }

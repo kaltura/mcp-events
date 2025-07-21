@@ -1,4 +1,4 @@
-import assert from 'assert'
+import assert from 'node:assert'
 import { config } from '../config/config'
 import { TListEventFilterDto } from '../schemas/eventSchemas'
 
@@ -55,7 +55,7 @@ export class PublicAPIClient {
     const response = await fetch(`${this.baseUrl}/${this.paths.list}`, {
       method: 'POST',
       headers: this.getHeaders(),
-      body: JSON.stringify({ params }),
+      body: JSON.stringify(params),
     })
 
     if (!response.ok) {

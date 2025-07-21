@@ -19,6 +19,13 @@ export function registerEventTools(server: McpServer): void {
     'create-event',
     'Creates a new virtual event with provided configuration including name, start/end dates, templates, and timezone settings',
     CreateEventDto.shape,
+    {
+      title: 'Create a Kaltura Event',
+      destructiveHint: false,
+      idempotentHint: false,
+      openWorldHint: true,
+      readOnlyHint: false,
+    },
     async ({ name, templateId, startDate, endDate, timezone, description }) => {
       try {
         const result = await publicApiClient.createEvent({
@@ -49,8 +56,15 @@ export function registerEventTools(server: McpServer): void {
   // Tool for listing events
   server.tool(
     'list-events',
-    'Retrieves a paginated list of events with filtering and sorting options to manage large event catalogs',
+    'get a list of available events',
     ListEventDto.shape,
+    {
+      title: 'List Events',
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: true,
+      readOnlyHint: true,
+    },
     async ({ filter, pager }) => {
       try {
         const result = await publicApiClient.listEvents({ filter, pager })
@@ -76,6 +90,13 @@ export function registerEventTools(server: McpServer): void {
     'update-event',
     "Modifies an existing event's properties such as name, dates, banner, logo, and other configuration settings",
     UpdateEventDto.shape,
+    {
+      title: 'Update an Event',
+      destructiveHint: false,
+      idempotentHint: false,
+      openWorldHint: true,
+      readOnlyHint: false,
+    },
     async ({
       id,
       name,
@@ -123,6 +144,13 @@ export function registerEventTools(server: McpServer): void {
     'delete-event',
     'Permanently removes an event by its ID, including all associated resources and configurations',
     DeleteEventDto.shape,
+    {
+      title: 'Delete an Event',
+      destructiveHint: true,
+      idempotentHint: false,
+      openWorldHint: true,
+      readOnlyHint: false,
+    },
     async ({ id }) => {
       try {
         const result = await publicApiClient.deleteEvent(id)
@@ -148,6 +176,13 @@ export function registerEventTools(server: McpServer): void {
     'list-event-sessions',
     'Retrieves a list of sessions for a specific event',
     ListSessionDto.shape,
+    {
+      title: 'List Event Sessions',
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: true,
+      readOnlyHint: true,
+    },
     async ({ filter, id }) => {
       try {
         const result = await epClient.sessionList(id, filter?.tagsFilter)
@@ -173,6 +208,13 @@ export function registerEventTools(server: McpServer): void {
     'create-event-session',
     'Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings',
     CreateSessionDto.shape,
+    {
+      title: 'Create an Event Session',
+      destructiveHint: false,
+      idempotentHint: false,
+      openWorldHint: true,
+      readOnlyHint: false,
+    },
     async ({ id, imageUrlEntryId, sourceEntryId, session }) => {
       try {
         const result = await epClient.sessionCreate(id, session, imageUrlEntryId, sourceEntryId)
