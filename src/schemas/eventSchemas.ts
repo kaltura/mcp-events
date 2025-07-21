@@ -1,7 +1,10 @@
 import { z } from 'zod'
+import { PresetTemplates } from '../resources/eventResources'
 
 const templateIdEnum = z
-  .enum(['tm0000', 'tm1000', 'tm2000', 'ts1000'])
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  .enum(PresetTemplates.map((template) => template.templateId))
   .describe(
     'default ids: no session: tm0000, with interactive room: tm1000, with Live Webcast: tm2000, simulated live session: tm3000, room broadcasting to live webcast: tm4000',
   )
@@ -11,7 +14,7 @@ export const CreateEventDto = z.object({
   templateId: z
     .union([templateIdEnum, ObjectId])
     .describe("Kaltura Event Template ID. Example: '507f1f77bcf86cd799439011'"),
-  name: z.string().describe("Event Name. Example: 'Virtual Townhall 2025'"),
+  name: z.string().describe("Event Name. Example: 'Virtual Town hall 2025'"),
   description: z.string().optional().describe("Event Description. Example: 'Annual company-wide update'"),
   startDate: z.string().datetime().describe("Event Start Date (ISO 8601). Example: '2025-05-01T14:00:00Z'"),
   endDate: z.string().datetime().describe("Event End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'"),
@@ -23,11 +26,11 @@ export const DeleteEventDto = z.object({
 })
 
 export const ListEventFilterDto = z.object({
-  idIn: z.array(z.string()).optional().describe('Filter for events with ids in the provided array.'),
+  idIn: z.array(z.number()).optional().describe('Filter for events with ids in the provided array.'),
   searchTerm: z
     .string()
     .optional()
-    .describe("Filter for events including the search term provided (by Name). Example: 'townhall'"),
+    .describe("Filter for events including the search term provided (by Name). Example: 'Town hall'"),
   startDateGreaterThanOrEqual: z
     .string()
     .datetime()
@@ -74,7 +77,7 @@ export const ListEventDto = z.object({
 
 export const UpdateEventDto = z.object({
   id: z.number().describe('Event ID. Example: 98765'),
-  name: z.string().optional().describe("Event name. Example: 'Updated Virtual Townhall'"),
+  name: z.string().optional().describe("Event name. Example: 'Updated Virtual Town hall'"),
   description: z.string().optional().describe("Event description. Example: 'Updated description'"),
   startDate: z
     .string()
@@ -110,7 +113,7 @@ export const ListSessionDto = z.object({
 export const CreateSessionDto = z.object({
   id: z.number().describe('Event ID. Example: 98765'),
   session: z.object({
-    name: z.string().describe("Session Name. Example: 'Virtual Townhall 2025 - Session 1'"),
+    name: z.string().describe("Session Name. Example: 'Virtual Town hall 2025 - Session 1'"),
     type: z.enum(['MeetingEntry', 'SimuLive', 'LiveWebcast', 'LiveKME', 'VirtualLearningRoom']),
     description: z.string().optional().describe("Session Description. Example: 'Session 1 description'"),
     startDate: z

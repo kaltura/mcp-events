@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { config } from './config/config'
 import { registerEventTools } from './tools/eventTools'
+import { registerEventResources } from './resources/eventResources'
 
 /**
  * Initialize and start the MCP server
@@ -16,10 +17,11 @@ export async function startServer(): Promise<McpServer> {
 
     // Register all tools
     registerEventTools(server)
+    // Register all resources
+    registerEventResources(server)
 
     // Create a transport for communication
     const transport = new StdioServerTransport()
-
     // Connect the server to the transport
     await server.connect(transport)
 
