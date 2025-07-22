@@ -32,6 +32,7 @@
     "@modelcontextprotocol/sdk": "^1.16.0",
     "import": "^0.0.6",
     "lru-cache": "^11.1.0",
+    "timezone-support": "^3.1.0",
     "zod": "^3.25.76"
   }
 }

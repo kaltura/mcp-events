@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { PresetTemplates } from '../resources/eventResources'
+import { PresetTemplates } from '../resources/presetTemplates'
+import { SupportedTimeZones } from '../resources/timeZones'
 
 const templateIdEnum = z
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -18,7 +19,13 @@ export const CreateEventDto = z.object({
   description: z.string().optional().describe("Event Description. Example: 'Annual company-wide update'"),
   startDate: z.string().datetime().describe("Event Start Date (ISO 8601). Example: '2025-05-01T14:00:00Z'"),
   endDate: z.string().datetime().describe("Event End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'"),
-  timezone: z.string().describe("Event Timezone. Example: 'America/New_York'"),
+  timezone: z
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    .enum(SupportedTimeZones)
+    .describe(
+      "Event Timezone. Example: 'America/New_York'. Accepting the Official time zone database version 2022f",
+    ),
 })
 
 export const DeleteEventDto = z.object({
