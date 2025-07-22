@@ -34,7 +34,7 @@ export class PublicAPIClient {
   }): Promise<string> {
     const response = await fetch(`${this.baseUrl}/${this.paths.create}`, {
       method: 'POST',
-      headers: this.getHeaders(),
+      headers: this.getHeaders,
       body: JSON.stringify(params),
     })
 
@@ -54,7 +54,7 @@ export class PublicAPIClient {
   }): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/${this.paths.list}`, {
       method: 'POST',
-      headers: this.getHeaders(),
+      headers: this.getHeaders,
       body: JSON.stringify(params),
     })
 
@@ -82,7 +82,7 @@ export class PublicAPIClient {
   }): Promise<string> {
     const response = await fetch(`${this.baseUrl}/${this.paths.update}`, {
       method: 'POST',
-      headers: this.getHeaders(),
+      headers: this.getHeaders,
       body: JSON.stringify(params),
     })
 
@@ -99,7 +99,7 @@ export class PublicAPIClient {
   async deleteEvent(id: number): Promise<string> {
     const response = await fetch(`${this.baseUrl}/${this.paths.delete}`, {
       method: 'POST',
-      headers: this.getHeaders(),
+      headers: this.getHeaders,
       body: JSON.stringify({ id }),
     })
 
@@ -127,10 +127,11 @@ export class PublicAPIClient {
   /**
    * Get common headers for API requests
    */
-  private getHeaders(): Record<string, string> {
+  private get getHeaders(): Record<string, string> {
     return {
       Authorization: `Bearer ${this.ks}`,
       'Content-Type': 'application/json',
+      'X-Kaltura-Client-Tag': 'mcp-events-pa-client',
     }
   }
 }
