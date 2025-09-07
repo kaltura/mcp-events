@@ -17,7 +17,7 @@ Thumbs.db
 .env.*
 
 # Compiled output
-dist/
+# dist/
 build/
 out/
 *.tsbuildinfo

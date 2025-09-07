@@ -1,105 +1,81 @@
-# MCP Events
+# Kaltura Events MCP
 
-A Model Context Protocol (MCP) server for managing Kaltura events.
+A Model Context Protocol (MCP) server for working with the Kaltura Event Platform API. This server provides tools and resources for creating, managing, and interacting with Kaltura virtual events.
 
-### TODO:
-- [ ] Policies and/or prompts (mainly create-event for create-event tool)
-- [ ] Add duplicate APIs
-- [ ] Make it Stream-able HTTP (optional, auth?)
+## Overview
 
-## Project Structure
+This MCP server provides an interface for AI assistants to interact with Kaltura Events Platform. It enables:
 
-The project has been organized into a clean, modular structure:
+- Creating, updating, and deleting virtual events
+- Managing event sessions and resources
+- Accessing event templates and timezone information
 
-```
-src/
-├── api/            # API client implementations
-├── config/         # Configuration management
-├── schemas/        # Zod schema definitions
-├── tools/          # MCP tool implementations
-├── client.ts       # Example client for testing
-├── index.ts        # Main entry point
-└── server.ts       # Server setup and initialization
-```
+## Features
 
-## Setup
+### Tools
 
-1. Install dependencies:
-```bash
-npm install
-```
+- **create-event**: Create a new virtual event with specified configuration
+- **list-events**: Retrieve a list of available events with filtering and pagination
+- **update-event**: Modify existing event properties
+- **delete-event**: Remove an event and its resources
+- **list-event-sessions**: Get all sessions for a specific event
+- **create-event-session**: Add a new session to an existing event
 
-2. Create a `.env` file in the root directory with your Kaltura Session:
-```
-KS=your_kaltura_session_here
-```
+### Resources
 
-3. Build the project:
-```bash
-npm run build
-```
+- **events**: Access information about specific Kaltura events
+- **preset-templates**: Browse available preset templates for event creation
 
-## Usage
+## Prerequisites
 
-### Running the Server
+- Node.js 22+
+- Access to Kaltura Event Platform APIs
+- Valid Kaltura Session (KS) for authentication
 
-To start the MCP server:
+## Installation
 
-```bash
-npm start
-```
+Clone the repository:
+   ```bash
+   git clone https://github.com/kaltura/mcp-events.git
+   cd mcp-events
+   ```
 
-### Local MCP config example:
+## Configuration / Running
 
-```
-{
-  "mcpServers": {
-    "kaltura-events-mcp": {
-      "command": "node",
-      "args": [
-        "<path>/index.js"
-      ],
-      "env": {"KS": "<KS>"}
+The MCP server can be configured through the use of a configuration file or environment variables.
+
+### Configuration with JSON
+
+You can configure the MCP server by providing a JSON configuration file. Here's an example of how to set it up:
+
+1. Create a configuration file (e.g., `mcp-config.json`):
+
+```json
+  "Kaltura Events API": {
+    "type": "stdio",
+    "command": "node",
+    "args": [
+      "/home/john-doe/dev/mcp-events/dist/index.js"
+    ],
+    "env": {
+      "KALTURA_ENV":"NVP",
+      "KALTURA_KS": "YOUR-KALTURA-SECRET_HERE" // Should be a user KS
     }
-  }
-}
+  },
 ```
 
-### Running the Example Client
+### Environment Configuration
 
-To run the example client that connects to the server:
+You can also configure the MCP server using environment variables:
 
-```bash
-node dist/client.js
-```
+- `ENV`: The environment to use (NVP, NVQ, EU, DE), default is NVP.
+- `KS`: Your Kaltura Session key __containing a user.__
 
-## Available Tools
+## API Environments
 
-The MCP server provides the following tools:
+The MCP server supports multiple Kaltura API environments:
 
-1. `create-event` - Create a new Kaltura event
-2. `list-events` - List events with filtering and pagination
-3. `update-event` - Update an existing event
-4. `delete-event` - Delete an event
-5. `create-event-session` - Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings
-5. `list-event-sessions` - Retrieves a list of sessions for a specific event
-
-## Development
-
-To make changes to the project:
-
-1. Modify the source files in the `src` directory
-2. Rebuild the project:
-```bash
-npm run build
-```
-3. Run the server or client as needed
-
-## Adding New Features
-
-To add new features:
-
-1. Add new schemas in `src/schemas/`
-2. Implement API methods in `src/api/`
-3. Create MCP tools in `src/tools/`
-4. Register the tools in `src/server.ts`
+- **NVP** (Production): Default environment (_Default_)
+- **NVQ** (QA): Testing environment (Testing Env)
+- **EU**: European region deployment (IRP)
+- **DE**: German region deployment (FRP)
