@@ -5,7 +5,7 @@ A Model Context Protocol (MCP) server for working with the Kaltura Event Platfor
 
 ---
 
-## 🚀 Overview
+## Overview
 
 This MCP server provides an interface for AI assistants to interact with the Kaltura Events Platform. It enables:
 
@@ -15,7 +15,7 @@ This MCP server provides an interface for AI assistants to interact with the Kal
 
 ---
 
-## 🛠️ Features
+## Features
 
 ###  Tools
 
@@ -26,7 +26,7 @@ This MCP server provides an interface for AI assistants to interact with the Kal
 - **list-event-sessions**: Get all sessions for a specific event
 - **create-event-session**: Add a new session to an existing event
 
-### 📚 Resources
+### Resources
 
 - **events**: Access information about specific Kaltura events
 - **preset-templates**: Browse available preset templates for event creation
