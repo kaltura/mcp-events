@@ -68,7 +68,13 @@ You can configure the MCP server by providing a JSON configuration file. Here's 
 
 You can also configure the MCP server using environment variables:
 
-- `ENV`: The environment to use (NVP, NVQ, EU, DE), default is NVP.
+- `KALTURA_ENV`: The environment to use 
+  - `NVP`
+  - `EU` 
+  - `DE`
+  
+  Default is NVP
+
 - `KS`: Your Kaltura Session key __containing a user.__
 
 ## API Environments
@@ -76,6 +82,10 @@ You can also configure the MCP server using environment variables:
 The MCP server supports multiple Kaltura API environments:
 
 - **NVP** (Production): Default environment (_Default_)
-- **NVQ** (QA): Testing environment (Testing Env)
 - **EU**: European region deployment (IRP)
 - **DE**: German region deployment (FRP)
+
+For custom environment URLs use these environment variables:
+- `KALTURA_PUBLIC_API`
+- `KALTURA_EP_API`
+- `KALTURA_BE_API`
