@@ -78,7 +78,7 @@ You can configure the MCP server by providing a JSON configuration file. Example
 
 ### 🌱 Environment Configuration
 
-You can also configure the MCP server using environment variables:
+You can configure the MCP server using these environment variables:
 
 - `KALTURA_ENV`: The environment to use  
   - `NVP` (default)
@@ -91,9 +91,9 @@ You can also configure the MCP server using environment variables:
 
 ## 🌍 API Environments
 
-The MCP server supports multiple Kaltura API environments:
+The MCP server supports multiple Kaltura API environments (regions):
 
-- **NVP** (Production): Default environment (_Default_)
+- **NVP** (Production): Default environment
 - **EU**: European region deployment (IRP)
 - **DE**: German region deployment (FRP)
 
