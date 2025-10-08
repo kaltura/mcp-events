@@ -1,5 +1,5 @@
 
-#  Kaltura Events MCP
+# 🎉 Kaltura Events MCP
 
 A Model Context Protocol (MCP) server for working with the Kaltura Event Platform API. This server provides tools and resources for creating, managing, and interacting with Kaltura virtual events.
 
