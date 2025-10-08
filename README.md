@@ -56,7 +56,7 @@ cd mcp-events
 
 The MCP server can be configured through a configuration file or environment variables.
 
-### 📝 Configuration with JSON
+### Configuration with JSON
 
 You can configure the MCP server by providing a JSON configuration file. Example:
 
