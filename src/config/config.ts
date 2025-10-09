@@ -32,7 +32,7 @@ export const config = {
   ks: process.env.KALTURA_KS,
   urls: Envs[env as keyof typeof Envs],
   server: {
-    name: 'Events Server',
+    name: 'Kaltura Events Server',
     version: '1.0.0',
   },
   client: {
