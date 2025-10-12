@@ -16,7 +16,7 @@ export class PublicAPIClient {
   })
 
   constructor() {
-    this.baseUrl = config.urls.publicApi
+    this.baseUrl = config.urls.publicApi as string
     this.ks = config.ks
     assert(this.ks, 'Error: KS (Kaltura Session) is not set. API calls may fail.')
   }

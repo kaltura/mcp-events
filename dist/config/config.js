@@ -10,30 +10,39 @@ const Envs = Object.freeze({
         publicApi: 'https://events-api.nvp1.ovp.kaltura.com',
         epApi: 'https://epm.nvp1.ovp.kaltura.com/epm',
         kalturaApi: 'https://www.kaltura.com/api_v3',
-    },
-    NVQ: {
-        publicApi: 'https://events-api.nvq2.ovp.kaltura.com/api/v1',
-        epApi: 'https://epm.nvq2.ovp.kaltura.com/epm',
-        kalturaApi: 'https://api.nvq2.ovp.kaltura.com/api_v3',
+        cncApi: 'https://chat.nvp1.ovp.kaltura.com',
     },
     EU: {
         publicApi: 'https://events-api.irp2.ovp.kaltura.com/api/v1',
         epApi: 'https://epm.irp2.ovp.kaltura.com/epm',
         kalturaApi: 'https://api.irp2.ovp.kaltura.com/api_v3',
+        cncApi: 'https://chat.irp2.ovp.kaltura.com',
     },
     DE: {
         publicApi: 'https://events-api.frp2.ovp.kaltura.com/api/v1',
         epApi: 'https://epm.frp2.ovp.kaltura.com/epm',
         kalturaApi: 'https://api.frp2.ovp.kaltura.com/api_v3',
+        cncApi: 'https://chat.frp2.ovp.kaltura.com',
+    },
+    _CUSTOM: {
+        publicApi: process.env.KALTURA_PUBLIC_API,
+        epApi: process.env.KALTURA_EP_API,
+        kalturaApi: process.env.KALTURA_BE_API,
+        cncApi: process.env.KALTURA_CNC_API,
     },
 });
-const env = process.env.KALTURA_ENV || 'NVP';
+// IF one of the custom env vars is not set, we fallback to defaults
+const isCustom = process.env.KALTURA_PUBLIC_API &&
+    process.env.KALTURA_EP_API &&
+    process.env.KALTURA_BE_API &&
+    process.env.KALTURA_CNC_API;
+const env = isCustom ? '_CUSTOM' : process.env.KALTURA_ENV || 'NVP';
 (0, node_assert_1.default)(env in Envs, `Invalid ENV value: ${env}`);
 exports.config = {
     ks: process.env.KALTURA_KS,
     urls: Envs[env],
     server: {
-        name: 'Events Server',
+        name: 'Kaltura Events Server',
         version: '1.0.0',
     },
     client: {

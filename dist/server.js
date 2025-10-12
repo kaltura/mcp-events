@@ -15,6 +15,7 @@ const stdio_js_1 = require("@modelcontextprotocol/sdk/server/stdio.js");
 const config_1 = require("./config/config");
 const eventTools_1 = require("./tools/eventTools");
 const eventResources_1 = require("./resources/eventResources");
+const pollTools_1 = require("./tools/pollTools");
 /**
  * Initialize and start the MCP server
  */
@@ -30,6 +31,8 @@ function startServer() {
             (0, eventTools_1.registerEventTools)(server);
             // Register all resources
             (0, eventResources_1.registerEventResources)(server);
+            // Register poll tools
+            (0, pollTools_1.registerPollTools)(server);
             // Create a transport for communication
             const transport = new stdio_js_1.StdioServerTransport();
             // Connect the server to the transport
