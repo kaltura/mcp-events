@@ -5,26 +5,34 @@ const Envs = Object.freeze({
     publicApi: 'https://events-api.nvp1.ovp.kaltura.com',
     epApi: 'https://epm.nvp1.ovp.kaltura.com/epm',
     kalturaApi: 'https://www.kaltura.com/api_v3',
+    cncApi: 'https://chat.nvp1.ovp.kaltura.com',
   },
   EU: {
     publicApi: 'https://events-api.irp2.ovp.kaltura.com/api/v1',
     epApi: 'https://epm.irp2.ovp.kaltura.com/epm',
     kalturaApi: 'https://api.irp2.ovp.kaltura.com/api_v3',
+    cncApi: 'https://chat.irp2.ovp.kaltura.com',
   },
   DE: {
     publicApi: 'https://events-api.frp2.ovp.kaltura.com/api/v1',
     epApi: 'https://epm.frp2.ovp.kaltura.com/epm',
     kalturaApi: 'https://api.frp2.ovp.kaltura.com/api_v3',
+    cncApi: 'https://chat.frp2.ovp.kaltura.com',
   },
   _CUSTOM: {
     publicApi: process.env.KALTURA_PUBLIC_API,
     epApi: process.env.KALTURA_EP_API,
     kalturaApi: process.env.KALTURA_BE_API,
+    cncApi: process.env.KALTURA_CNC_API,
   },
 })
 
 // IF one of the custom env vars is not set, we fallback to defaults
-const isCustom = process.env.KALTURA_PUBLIC_API && process.env.KALTURA_EP_API && process.env.KALTURA_BE_API
+const isCustom =
+  process.env.KALTURA_PUBLIC_API &&
+  process.env.KALTURA_EP_API &&
+  process.env.KALTURA_BE_API &&
+  process.env.KALTURA_CNC_API
 const env = isCustom ? '_CUSTOM' : process.env.KALTURA_ENV || 'NVP'
 assert(env in Envs, `Invalid ENV value: ${env}`)
 
