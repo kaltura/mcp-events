@@ -50,6 +50,57 @@ class CncAPIClient {
             return text;
         });
     }
+    updatePoll(poll) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.update}`, {
+                method: 'POST',
+                headers: this.getHeaders,
+                body: JSON.stringify({ poll }),
+            });
+            if (!response.ok) {
+                this.handleResponseError(response, 'updatePoll');
+            }
+            const text = yield response.text();
+            if (text.includes('KalturaAPIException')) {
+                this.handleResponseError(response, 'updatePoll', text);
+            }
+            return text;
+        });
+    }
+    deletePoll(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ pollId }) {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.delete}`, {
+                method: 'POST',
+                headers: this.getHeaders,
+                body: JSON.stringify({ pollId }),
+            });
+            if (!response.ok) {
+                this.handleResponseError(response, 'deletePoll');
+            }
+            const text = yield response.text();
+            if (text.includes('KalturaAPIException')) {
+                this.handleResponseError(response, 'deletePoll', text);
+            }
+            return text;
+        });
+    }
+    listPolls(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ contextId }) {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.list}`, {
+                method: 'POST',
+                headers: this.getHeaders,
+                body: JSON.stringify({ contextId }),
+            });
+            if (!response.ok) {
+                this.handleResponseError(response, 'listPolls');
+            }
+            const text = yield response.text();
+            if (text.includes('KalturaAPIException')) {
+                this.handleResponseError(response, 'listPolls', text);
+            }
+            return text;
+        });
+    }
     /**
      * Handle API response errors consistently
      * @param response The fetch response object

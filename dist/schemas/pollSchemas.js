@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreatePollDto = exports.EVisualizationType = exports.EPollCrowdIconType = exports.EPollRatingIconType = exports.ScheduleAttribute = exports.SchedulingType = exports.EPollType = exports.EPollState = void 0;
+exports.ListPollsDto = exports.DeletePollDto = exports.UpdatePollDto = exports.CreatePollDto = exports.EVisualizationType = exports.EPollCrowdIconType = exports.EPollRatingIconType = exports.ScheduleAttribute = exports.SchedulingType = exports.EPollType = exports.EPollState = void 0;
 const zod_1 = require("zod");
 var EPollState;
 (function (EPollState) {
@@ -129,4 +129,17 @@ exports.CreatePollDto = zod_1.z.object({
         .optional()
         .describe('Scheduling options, absolute or relative'),
     autoCloseMilliseconds: zod_1.z.number().int().optional().describe('Auto close poll after X milliseconds'),
+});
+exports.UpdatePollDto = exports.CreatePollDto.extend({
+    pollId: zod_1.z.string().describe('The id of the poll to update'),
+    isEnded: zod_1.z
+        .boolean()
+        .optional()
+        .describe('Whether the poll is ended, cannot be changed back to not ended. Set to true on UnPublish.'),
+});
+exports.DeletePollDto = zod_1.z.object({
+    pollId: zod_1.z.string().describe('The id of the poll to delete'),
+});
+exports.ListPollsDto = zod_1.z.object({
+    contextId: zod_1.z.string().describe('Kaltura Session Id - entry id or channel id'),
 });

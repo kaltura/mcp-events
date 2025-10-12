@@ -53,4 +53,90 @@ function registerPollTools(server) {
             };
         }
     }));
+    server.tool('update-poll', 'Updates an existing poll', pollSchemas_1.UpdatePollDto.shape, {
+        title: 'Update an existing Kaltura Poll',
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+    }, (_a) => __awaiter(this, [_a], void 0, function* ({ pollId, contextId, state, showResults, content, type, autoCloseMilliseconds, scheduling, isAcceptingMultipleVotes, visualization, trackWordFrequency, groupPoll, isEnded, }) {
+        try {
+            const result = yield cncApiClient_1.cncApiClient.updatePoll({
+                pollId,
+                contextId,
+                state,
+                showResults,
+                content,
+                type,
+                autoCloseMilliseconds,
+                scheduling,
+                isAcceptingMultipleVotes,
+                visualization,
+                trackWordFrequency,
+                groupPoll,
+                isEnded,
+            });
+            return {
+                content: [{ type: 'text', text: result }],
+            };
+        }
+        catch (error) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error updating poll: ${error instanceof Error ? error.message : String(error)}`,
+                    },
+                ],
+            };
+        }
+    }));
+    server.tool('list-polls', 'Lists all polls for a given contextId/session id (entry id or channel id)', pollSchemas_1.ListPollsDto.shape, {
+        title: 'List all polls for a given contextId/session id (entry id or channel id)',
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+        readOnlyHint: true,
+    }, (_a) => __awaiter(this, [_a], void 0, function* ({ contextId }) {
+        try {
+            const result = yield cncApiClient_1.cncApiClient.listPolls({ contextId });
+            return {
+                content: [{ type: 'text', text: result }],
+            };
+        }
+        catch (error) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error listing polls: ${error instanceof Error ? error.message : String(error)}`,
+                    },
+                ],
+            };
+        }
+    }));
+    server.tool('delete-poll', 'Deletes an existing poll', pollSchemas_1.DeletePollDto.shape, {
+        title: 'Delete an existing Kaltura Poll',
+        destructiveHint: true,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+    }, (_a) => __awaiter(this, [_a], void 0, function* ({ pollId }) {
+        try {
+            const result = yield cncApiClient_1.cncApiClient.deletePoll({ pollId });
+            return {
+                content: [{ type: 'text', text: result }],
+            };
+        }
+        catch (error) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error deleting poll: ${error instanceof Error ? error.message : String(error)}`,
+                    },
+                ],
+            };
+        }
+    }));
 }
