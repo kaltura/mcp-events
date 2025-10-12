@@ -19,12 +19,15 @@ This MCP server provides an interface for AI assistants to interact with the Kal
 
 ###  Tools
 
-- **create-event**: Create a new virtual event with specified configuration
-- **list-events**: Retrieve a list of available events with filtering and pagination
-- **update-event**: Modify existing event properties
-- **delete-event**: Remove an event and its resources
-- **list-event-sessions**: Get all sessions for a specific event
-- **create-event-session**: Add a new session to an existing event
+#### Events
+  - **create-event**: Create a new virtual event with specified configuration
+  - **list-events**: Retrieve a list of available events with filtering and pagination
+  - **update-event**: Modify existing event properties
+  - **delete-event**: Remove an event and its resources
+  - **list-event-sessions**: Get all sessions for a specific event
+  - **create-event-session**: Add a new session to an existing event
+#### Polls
+  - **create-poll**: Create a poll for a given session id (entry / channel)
 
 ### Resources
 
@@ -102,3 +105,4 @@ For custom environment URLs, use these environment variables:
 - `KALTURA_PUBLIC_API`
 - `KALTURA_EP_API`
 - `KALTURA_BE_API`
+- `KALTURA_CNC_API`
