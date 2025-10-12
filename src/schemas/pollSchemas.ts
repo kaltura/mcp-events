@@ -70,21 +70,29 @@ const MaxPollAnswers = 8 as const
 
 export const CreatePollDto = z.object({
   contextId: z.string().describe('Kaltura Session Id, entry id or channel id'),
-  state: z.nativeEnum(EPollState).describe('Poll state, published, unpublished, draft, scheduled'),
+  state: z.nativeEnum(EPollState).describe('Poll state: Published, UnPublished, Draft, Scheduled'),
   showResults: z.boolean().describe('Whether to show poll results to participants'),
-  content: z.object({
-    question: z.string().describe('Poll question. Example: "What is your favorite color?"'),
-    options: z
-      .array(z.string())
-      .max(MaxPollAnswers)
-      .optional()
-      .describe('Poll options. Example: ["Red", "Blue", "Green"]. max 8 options'),
-    correctAnswers: z
-      .array(z.number().int().max(MaxPollAnswers).positive())
-      .optional()
-      .describe('Indexes of correct answers in the options array. Example: [0, 2]'),
-  }),
-  type: z.nativeEnum(EPollType).describe('Poll type, options poll or open answers'),
+  content: z
+    .object({
+      question: z.string().describe('Poll question. Example: "What is your favorite color?"'),
+      options: z
+        .array(z.string())
+        .max(MaxPollAnswers)
+        .optional()
+        .describe(
+          'Poll options for poll of type "OptionsPoll". Example: ["Red", "Blue", "Green"]. max 8 options',
+        ),
+      correctAnswers: z
+        .array(z.number().int().max(MaxPollAnswers).positive())
+        .optional()
+        .describe('Indexes of correct answers in the options array. Example: [0, 2]'),
+    })
+    .describe(
+      'Poll content including question and options/correctAnswers if the poll is of type OptionsPoll',
+    ),
+  type: z
+    .nativeEnum(EPollType)
+    .describe('Poll type, options poll (OptionsPoll) or open answers (OpenAnswers)'),
   // isEnded: z.boolean().optional().describe('Whether the poll is ended, false on creation'),
   visualization: z
     .discriminatedUnion('type', [
@@ -125,7 +133,7 @@ export const CreatePollDto = z.object({
       sortPosition: z.number(),
     })
     .optional()
-    .describe('Whether this poll is part of a group poll (survey)'),
+    .describe('Whether this poll is part of a group poll (survey). If set, groupPollId must be set'),
   scheduling: z
     .discriminatedUnion('schedulingType', [
       z.object({

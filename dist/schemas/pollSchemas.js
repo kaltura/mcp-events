@@ -50,21 +50,25 @@ var EVisualizationType;
 const MaxPollAnswers = 8;
 exports.CreatePollDto = zod_1.z.object({
     contextId: zod_1.z.string().describe('Kaltura Session Id, entry id or channel id'),
-    state: zod_1.z.nativeEnum(EPollState).describe('Poll state, published, unpublished, draft, scheduled'),
+    state: zod_1.z.nativeEnum(EPollState).describe('Poll state: Published, UnPublished, Draft, Scheduled'),
     showResults: zod_1.z.boolean().describe('Whether to show poll results to participants'),
-    content: zod_1.z.object({
+    content: zod_1.z
+        .object({
         question: zod_1.z.string().describe('Poll question. Example: "What is your favorite color?"'),
         options: zod_1.z
             .array(zod_1.z.string())
             .max(MaxPollAnswers)
             .optional()
-            .describe('Poll options. Example: ["Red", "Blue", "Green"]. max 8 options'),
+            .describe('Poll options for poll of type "OptionsPoll". Example: ["Red", "Blue", "Green"]. max 8 options'),
         correctAnswers: zod_1.z
             .array(zod_1.z.number().int().max(MaxPollAnswers).positive())
             .optional()
             .describe('Indexes of correct answers in the options array. Example: [0, 2]'),
-    }),
-    type: zod_1.z.nativeEnum(EPollType).describe('Poll type, options poll or open answers'),
+    })
+        .describe('Poll content including question and options/correctAnswers if the poll is of type OptionsPoll'),
+    type: zod_1.z
+        .nativeEnum(EPollType)
+        .describe('Poll type, options poll (OptionsPoll) or open answers (OpenAnswers)'),
     // isEnded: z.boolean().optional().describe('Whether the poll is ended, false on creation'),
     visualization: zod_1.z
         .discriminatedUnion('type', [
@@ -99,7 +103,7 @@ exports.CreatePollDto = zod_1.z.object({
         sortPosition: zod_1.z.number(),
     })
         .optional()
-        .describe('Whether this poll is part of a group poll (survey)'),
+        .describe('Whether this poll is part of a group poll (survey). If set, groupPollId must be set'),
     scheduling: zod_1.z
         .discriminatedUnion('schedulingType', [
         zod_1.z.object({

@@ -34,8 +34,11 @@ export class CncAPIClient {
     if (!response.ok) {
       this.handleResponseError(response, 'createPoll')
     }
-
-    return await response.text()
+    const text = await response.text()
+    if (text.includes('KalturaAPIException')) {
+      this.handleResponseError(response, 'createPoll', text)
+    }
+    return text
   }
 
   /**
@@ -44,11 +47,11 @@ export class CncAPIClient {
    * @param callerName Name of the calling function for better error context
    * @throws Error with detailed information about the failure
    */
-  private handleResponseError(response: Response, callerName: string): never {
+  private handleResponseError(response: Response, callerName: string, error: string = ''): Promise<never> {
     const kalturaSession = response.headers.get('x-kaltura-session')
     const traceId = response.headers.get('x-traceid')
     throw new Error(
-      `Failed to ${callerName}: ${response.status} ${response.statusText}\nx-traceId: ${traceId}\nx-kaltura-session: ${kalturaSession}`,
+      `Failed to ${callerName}: ${error} ${response.status} ${response.statusText}\nx-traceId: ${traceId}\nx-kaltura-session: ${kalturaSession}`,
     )
   }
 
