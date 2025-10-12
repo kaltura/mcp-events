@@ -36,7 +36,7 @@ function registerPollTools(server) {
                 isAcceptingMultipleVotes,
                 visualization,
                 trackWordFrequency,
-                // groupPoll,
+                groupPoll,
             });
             return {
                 content: [{ type: 'text', text: result }],
