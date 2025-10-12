@@ -161,3 +161,22 @@ export const CreatePollDto = z.object({
   autoCloseMilliseconds: z.number().int().optional().describe('Auto close poll after X milliseconds'),
 })
 export type TCreatePollDto = z.infer<typeof CreatePollDto>
+
+export const UpdatePollDto = CreatePollDto.extend({
+  pollId: z.string().describe('The id of the poll to update'),
+  isEnded: z
+    .boolean()
+    .optional()
+    .describe('Whether the poll is ended, cannot be changed back to not ended. Set to true on UnPublish.'),
+})
+export type TUpdatePollDto = z.infer<typeof UpdatePollDto>
+
+export const DeletePollDto = z.object({
+  pollId: z.string().describe('The id of the poll to delete'),
+})
+export type TDeletePollDto = z.infer<typeof DeletePollDto>
+
+export const ListPollsDto = z.object({
+  contextId: z.string().describe('Kaltura Session Id - entry id or channel id'),
+})
+export type TListPollsDto = z.infer<typeof ListPollsDto>

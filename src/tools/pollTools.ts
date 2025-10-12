@@ -1,5 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { CreatePollDto } from '../schemas/pollSchemas'
+import { CreatePollDto, DeletePollDto, ListPollsDto, UpdatePollDto } from '../schemas/pollSchemas'
 import { cncApiClient } from '../api/cncApiClient'
 
 /**
@@ -56,6 +56,127 @@ export function registerPollTools(server: McpServer): void {
             {
               type: 'text',
               text: `Error creating poll: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+        }
+      }
+    },
+  )
+
+  server.tool(
+    'update-poll',
+    'Updates an existing poll',
+    UpdatePollDto.shape,
+    {
+      title: 'Update an existing Kaltura Poll',
+      destructiveHint: false,
+      idempotentHint: false,
+      openWorldHint: true,
+      readOnlyHint: false,
+    },
+    async ({
+      pollId,
+      contextId,
+      state,
+      showResults,
+      content,
+      type,
+      autoCloseMilliseconds,
+      scheduling,
+      isAcceptingMultipleVotes,
+      visualization,
+      trackWordFrequency,
+      groupPoll,
+      isEnded,
+    }) => {
+      try {
+        const result = await cncApiClient.updatePoll({
+          pollId,
+          contextId,
+          state,
+          showResults,
+          content,
+          type,
+          autoCloseMilliseconds,
+          scheduling,
+          isAcceptingMultipleVotes,
+          visualization,
+          trackWordFrequency,
+          groupPoll,
+          isEnded,
+        })
+
+        return {
+          content: [{ type: 'text', text: result }],
+        }
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error updating poll: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+        }
+      }
+    },
+  )
+
+  server.tool(
+    'list-polls',
+    'Lists all polls for a given contextId/session id (entry id or channel id)',
+    ListPollsDto.shape,
+    {
+      title: 'List all polls for a given contextId/session id (entry id or channel id)',
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: true,
+      readOnlyHint: true,
+    },
+    async ({ contextId }) => {
+      try {
+        const result = await cncApiClient.listPolls({ contextId })
+
+        return {
+          content: [{ type: 'text', text: result }],
+        }
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error listing polls: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+        }
+      }
+    },
+  )
+
+  server.tool(
+    'delete-poll',
+    'Deletes an existing poll',
+    DeletePollDto.shape,
+    {
+      title: 'Delete an existing Kaltura Poll',
+      destructiveHint: true,
+      idempotentHint: false,
+      openWorldHint: true,
+      readOnlyHint: false,
+    },
+    async ({ pollId }) => {
+      try {
+        const result = await cncApiClient.deletePoll({ pollId })
+
+        return {
+          content: [{ type: 'text', text: result }],
+        }
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error deleting poll: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
         }

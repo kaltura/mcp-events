@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { config } from '../config/config'
-import { TCreatePollDto } from '../schemas/pollSchemas'
+import { TCreatePollDto, TDeletePollDto, TListPollsDto, TUpdatePollDto } from '../schemas/pollSchemas'
 
 /**
  * API client for Cnc API
@@ -37,6 +37,57 @@ export class CncAPIClient {
     const text = await response.text()
     if (text.includes('KalturaAPIException')) {
       this.handleResponseError(response, 'createPoll', text)
+    }
+    return text
+  }
+
+  async updatePoll(poll: TUpdatePollDto): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.update}`, {
+      method: 'POST',
+      headers: this.getHeaders,
+      body: JSON.stringify({ poll }),
+    })
+
+    if (!response.ok) {
+      this.handleResponseError(response, 'updatePoll')
+    }
+    const text = await response.text()
+    if (text.includes('KalturaAPIException')) {
+      this.handleResponseError(response, 'updatePoll', text)
+    }
+    return text
+  }
+
+  async deletePoll({ pollId }: TDeletePollDto): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.delete}`, {
+      method: 'POST',
+      headers: this.getHeaders,
+      body: JSON.stringify({ pollId }),
+    })
+
+    if (!response.ok) {
+      this.handleResponseError(response, 'deletePoll')
+    }
+    const text = await response.text()
+    if (text.includes('KalturaAPIException')) {
+      this.handleResponseError(response, 'deletePoll', text)
+    }
+    return text
+  }
+
+  async listPolls({ contextId }: TListPollsDto): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.list}`, {
+      method: 'POST',
+      headers: this.getHeaders,
+      body: JSON.stringify({ contextId }),
+    })
+
+    if (!response.ok) {
+      this.handleResponseError(response, 'listPolls')
+    }
+    const text = await response.text()
+    if (text.includes('KalturaAPIException')) {
+      this.handleResponseError(response, 'listPolls', text)
     }
     return text
   }
