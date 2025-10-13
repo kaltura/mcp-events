@@ -26,8 +26,13 @@ This MCP server provides an interface for AI assistants to interact with the Kal
   - **delete-event**: Remove an event and its resources
   - **list-event-sessions**: Get all sessions for a specific event
   - **create-event-session**: Add a new session to an existing event
+
 #### Polls
+> **Note**: For Poll tools, the KS requires additional _event_ privileges as mentioned in the [Environment Configuration](#-environment-configuration) section.
   - **create-poll**: Create a poll for a given session id (entry / channel)
+  - **update-poll**: Modify an existing poll
+  - **list-polls**: Get all polls for a specific session (entry or channel id)
+  - **delete-poll**: Delete a poll
 
 ### Resources
 
@@ -88,7 +93,11 @@ You can configure the MCP server using these environment variables:
   - `EU` 
   - `DE`
 
-- `KS`: Your Kaltura Session key **containing a user**
+- `KS`: Your Kaltura Session key. 
+
+  Requirements:
+    - The user needs to have a Kaltura "Publisher Administrator" role.
+    - If using [Poll Tools](#polls) the KS should include the required event by adding `virtualeventid:YOUR-VIRTUAL-EVENT-ID` to the KS "privileges".  
 
 ---
 
