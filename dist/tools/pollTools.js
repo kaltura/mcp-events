@@ -59,10 +59,10 @@ function registerPollTools(server) {
         idempotentHint: false,
         openWorldHint: true,
         readOnlyHint: false,
-    }, (_a) => __awaiter(this, [_a], void 0, function* ({ pollId, contextId, state, showResults, content, type, autoCloseMilliseconds, scheduling, isAcceptingMultipleVotes, visualization, trackWordFrequency, groupPoll, isEnded, }) {
+    }, (_a) => __awaiter(this, [_a], void 0, function* ({ _id, contextId, state, showResults, content, type, autoCloseMilliseconds, scheduling, isAcceptingMultipleVotes, visualization, trackWordFrequency, groupPoll, isEnded, }) {
         try {
             const result = yield cncApiClient_1.cncApiClient.updatePoll({
-                pollId,
+                _id,
                 contextId,
                 state,
                 showResults,
@@ -91,8 +91,8 @@ function registerPollTools(server) {
             };
         }
     }));
-    server.tool('list-polls', 'Lists all polls for a given contextId/session id (entry id or channel id)', pollSchemas_1.ListPollsDto.shape, {
-        title: 'List all polls for a given contextId/session id (entry id or channel id)',
+    server.tool('list-polls', 'Lists all polls for a given contextId/session (entry id or channel id)', pollSchemas_1.ListPollsDto.shape, {
+        title: 'List all polls for a given contextId/session (entry id or channel id)',
         destructiveHint: false,
         idempotentHint: true,
         openWorldHint: true,

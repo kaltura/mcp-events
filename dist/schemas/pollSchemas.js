@@ -131,7 +131,7 @@ exports.CreatePollDto = zod_1.z.object({
     autoCloseMilliseconds: zod_1.z.number().int().optional().describe('Auto close poll after X milliseconds'),
 });
 exports.UpdatePollDto = exports.CreatePollDto.extend({
-    pollId: zod_1.z.string().describe('The id of the poll to update'),
+    _id: zod_1.z.string().describe('The id of the poll to update'),
     isEnded: zod_1.z
         .boolean()
         .optional()

@@ -163,7 +163,7 @@ export const CreatePollDto = z.object({
 export type TCreatePollDto = z.infer<typeof CreatePollDto>
 
 export const UpdatePollDto = CreatePollDto.extend({
-  pollId: z.string().describe('The id of the poll to update'),
+  _id: z.string().describe('The id of the poll to update'),
   isEnded: z
     .boolean()
     .optional()

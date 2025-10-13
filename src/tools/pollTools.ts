@@ -75,7 +75,7 @@ export function registerPollTools(server: McpServer): void {
       readOnlyHint: false,
     },
     async ({
-      pollId,
+      _id,
       contextId,
       state,
       showResults,
@@ -91,7 +91,7 @@ export function registerPollTools(server: McpServer): void {
     }) => {
       try {
         const result = await cncApiClient.updatePoll({
-          pollId,
+          _id,
           contextId,
           state,
           showResults,
@@ -124,10 +124,10 @@ export function registerPollTools(server: McpServer): void {
 
   server.tool(
     'list-polls',
-    'Lists all polls for a given contextId/session id (entry id or channel id)',
+    'Lists all polls for a given contextId/session (entry id or channel id)',
     ListPollsDto.shape,
     {
-      title: 'List all polls for a given contextId/session id (entry id or channel id)',
+      title: 'List all polls for a given contextId/session (entry id or channel id)',
       destructiveHint: false,
       idempotentHint: true,
       openWorldHint: true,
