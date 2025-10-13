@@ -166,7 +166,6 @@ export const UpdatePollDto = CreatePollDto.extend({
   _id: z.string().describe('The id of the poll to update'),
   isEnded: z
     .boolean()
-    .optional()
     .describe('Whether the poll is ended, cannot be changed back to not ended. Set to true on UnPublish.'),
 })
 export type TUpdatePollDto = z.infer<typeof UpdatePollDto>

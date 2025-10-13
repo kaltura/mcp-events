@@ -134,7 +134,6 @@ exports.UpdatePollDto = exports.CreatePollDto.extend({
     _id: zod_1.z.string().describe('The id of the poll to update'),
     isEnded: zod_1.z
         .boolean()
-        .optional()
         .describe('Whether the poll is ended, cannot be changed back to not ended. Set to true on UnPublish.'),
 });
 exports.DeletePollDto = zod_1.z.object({
