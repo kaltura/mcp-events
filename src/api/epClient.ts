@@ -31,7 +31,7 @@ export class EpClient {
 
   constructor() {
     assert(config.ks, 'Error: KS (Kaltura Session) is not set. API calls may fail.')
-    this.baseUrl = config.urls.epApi
+    this.baseUrl = config.urls.epApi as string
     this.ks = config.ks
   }
 
