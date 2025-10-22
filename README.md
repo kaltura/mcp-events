@@ -48,6 +48,7 @@ Clone the repository:
 ```bash
 git clone https://github.com/kaltura/mcp-events.git
 cd mcp-events
+npm install
 ```
 
 ---
@@ -67,7 +68,7 @@ You can configure the MCP server by providing a JSON configuration file. Example
   "type": "stdio",
   "command": "node",
   "args": [
-    "/home/john-doe/dev/mcp-events/dist/index.js"
+    "/home/john-doe/mcp-events/dist/index.js"
   ],
   "env": {
     "KALTURA_ENV": "NVP",
