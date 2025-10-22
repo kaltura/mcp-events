@@ -7,7 +7,7 @@ exports.config = void 0;
 const node_assert_1 = __importDefault(require("node:assert"));
 const Envs = Object.freeze({
     NVP: {
-        publicApi: 'https://events-api.nvp1.ovp.kaltura.com',
+        publicApi: 'https://events-api.nvp1.ovp.kaltura.com/api/v1',
         epApi: 'https://epm.nvp1.ovp.kaltura.com/epm',
         kalturaApi: 'https://www.kaltura.com/api_v3',
     },

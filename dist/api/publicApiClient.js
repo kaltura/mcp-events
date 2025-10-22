@@ -41,7 +41,7 @@ class PublicAPIClient {
                 body: JSON.stringify(params),
             });
             if (!response.ok) {
-                this.handleResponseError(response, 'createEvent');
+                yield this.handleResponseError(response, 'createEvent');
             }
             return yield response.text();
         });
@@ -57,7 +57,7 @@ class PublicAPIClient {
                 body: JSON.stringify(params),
             });
             if (!response.ok) {
-                this.handleResponseError(response, 'listEvents');
+                yield this.handleResponseError(response, 'listEvents');
             }
             return yield response.json();
         });
@@ -73,7 +73,7 @@ class PublicAPIClient {
                 body: JSON.stringify(params),
             });
             if (!response.ok) {
-                this.handleResponseError(response, 'updateEvent');
+                yield this.handleResponseError(response, 'updateEvent');
             }
             return yield response.text();
         });
@@ -89,7 +89,7 @@ class PublicAPIClient {
                 body: JSON.stringify({ id }),
             });
             if (!response.ok) {
-                this.handleResponseError(response, 'deleteEvent');
+                yield this.handleResponseError(response, 'deleteEvent');
             }
             return yield response.text();
         });
@@ -101,9 +101,16 @@ class PublicAPIClient {
      * @throws Error with detailed information about the failure
      */
     handleResponseError(response, callerName) {
-        const kalturaSession = response.headers.get('x-kaltura-session');
-        const traceId = response.headers.get('x-traceid');
-        throw new Error(`Failed to ${callerName}: ${response.status} ${response.statusText}\nx-traceId: ${traceId}\nx-kaltura-session: ${kalturaSession}`);
+        return __awaiter(this, void 0, void 0, function* () {
+            const kalturaSession = response.headers.get('x-kaltura-session');
+            const traceId = response.headers.get('x-traceid');
+            let body = '';
+            try {
+                body = yield response.text();
+            }
+            catch (e) { }
+            throw new Error(`Failed to ${callerName}: ${response.status} ${response.statusText}\nx-traceId: ${traceId}\nx-kaltura-session: ${kalturaSession}\n${body}`);
+        });
     }
     /**
      * Get common headers for API requests

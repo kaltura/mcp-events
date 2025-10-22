@@ -69,7 +69,7 @@ export type TListEventFilterDto = z.infer<typeof ListEventFilterDto>
 
 export const PagerDto = z.object({
   offset: z.number().default(0).describe('Page index. Default: 0. Example: 0'),
-  limit: z.number().default(30).describe('Page size. Default: 30. Example: 10'),
+  limit: z.number().min(1).max(15).default(15).describe('Page size. Default: 30. Example: 10'),
 })
 
 export const EventOrderBy = z.enum(['+name', '-name', '+createdAt', '-createdAt', '+startDate', '-startDate'])

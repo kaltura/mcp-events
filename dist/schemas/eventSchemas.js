@@ -60,7 +60,7 @@ exports.ListEventFilterDto = zod_1.z.object({
 });
 exports.PagerDto = zod_1.z.object({
     offset: zod_1.z.number().default(0).describe('Page index. Default: 0. Example: 0'),
-    limit: zod_1.z.number().default(30).describe('Page size. Default: 30. Example: 10'),
+    limit: zod_1.z.number().min(1).max(15).default(15).describe('Page size. Default: 30. Example: 10'),
 });
 exports.EventOrderBy = zod_1.z.enum(['+name', '-name', '+createdAt', '-createdAt', '+startDate', '-startDate']);
 exports.ListEventDto = zod_1.z.object({

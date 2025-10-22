@@ -39,7 +39,7 @@ export class PublicAPIClient {
     })
 
     if (!response.ok) {
-      this.handleResponseError(response, 'createEvent')
+      await this.handleResponseError(response, 'createEvent')
     }
 
     return await response.text()
@@ -59,7 +59,7 @@ export class PublicAPIClient {
     })
 
     if (!response.ok) {
-      this.handleResponseError(response, 'listEvents')
+      await this.handleResponseError(response, 'listEvents')
     }
 
     return await response.json()
@@ -87,7 +87,7 @@ export class PublicAPIClient {
     })
 
     if (!response.ok) {
-      this.handleResponseError(response, 'updateEvent')
+      await this.handleResponseError(response, 'updateEvent')
     }
 
     return await response.text()
@@ -104,7 +104,7 @@ export class PublicAPIClient {
     })
 
     if (!response.ok) {
-      this.handleResponseError(response, 'deleteEvent')
+      await this.handleResponseError(response, 'deleteEvent')
     }
 
     return await response.text()
@@ -116,11 +116,15 @@ export class PublicAPIClient {
    * @param callerName Name of the calling function for better error context
    * @throws Error with detailed information about the failure
    */
-  private handleResponseError(response: Response, callerName: string): never {
+  private async handleResponseError(response: Response, callerName: string): Promise<void> {
     const kalturaSession = response.headers.get('x-kaltura-session')
     const traceId = response.headers.get('x-traceid')
+    let body = ''
+    try {
+      body = await response.text()
+    } catch (e) {}
     throw new Error(
-      `Failed to ${callerName}: ${response.status} ${response.statusText}\nx-traceId: ${traceId}\nx-kaltura-session: ${kalturaSession}`,
+      `Failed to ${callerName}: ${response.status} ${response.statusText}\nx-traceId: ${traceId}\nx-kaltura-session: ${kalturaSession}\n${body}`,
     )
   }
 
