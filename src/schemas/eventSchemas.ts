@@ -108,13 +108,7 @@ export const UpdateEventDto = z.object({
 })
 
 export const ListSessionDto = z.object({
-  id: z.number().describe('Event ID. Example: 98765'),
-  filter: z.object({
-    tagsFilter: z
-      .array(z.string())
-      .optional()
-      .describe('Filter for sessions for the requested event optionally filter by session tags'),
-  }),
+  eventId: z.number().describe('Event ID. Example: 98765'),
 })
 
 export const CreateSessionDto = z.object({

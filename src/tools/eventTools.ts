@@ -183,9 +183,9 @@ export function registerEventTools(server: McpServer): void {
       openWorldHint: true,
       readOnlyHint: true,
     },
-    async ({ filter, id }) => {
+    async ({ eventId }) => {
       try {
-        const result = await epClient.sessionList(id, filter?.tagsFilter)
+        const result = await publicApiClient.listSessions(eventId)
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],

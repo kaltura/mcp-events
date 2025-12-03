@@ -9,10 +9,15 @@ export class PublicAPIClient {
   private baseUrl: string
   private ks: string | undefined
   private readonly paths = Object.freeze({
-    create: 'event/create',
-    list: 'event/list',
-    update: 'event/update',
-    delete: 'event/delete',
+    event: {
+      create: 'event/create',
+      list: 'event/list',
+      update: 'event/update',
+      delete: 'event/delete',
+    },
+    session: {
+      list: 'session/list',
+    },
   })
 
   constructor() {
@@ -32,7 +37,7 @@ export class PublicAPIClient {
     timezone: string
     description?: string
   }): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.create}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.create}`, {
       method: 'POST',
       headers: this.getHeaders,
       body: JSON.stringify(params),
@@ -52,7 +57,7 @@ export class PublicAPIClient {
     filter?: TListEventFilterDto
     pager?: { offset?: number; limit?: number }
   }): Promise<unknown> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.list}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.list}`, {
       method: 'POST',
       headers: this.getHeaders,
       body: JSON.stringify(params),
@@ -80,7 +85,7 @@ export class PublicAPIClient {
     logoEntryId?: string
     bannerEntryId?: string
   }): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.update}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.update}`, {
       method: 'POST',
       headers: this.getHeaders,
       body: JSON.stringify(params),
@@ -97,7 +102,7 @@ export class PublicAPIClient {
    * Delete an event
    */
   async deleteEvent(id: number): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.delete}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.delete}`, {
       method: 'POST',
       headers: this.getHeaders,
       body: JSON.stringify({ id }),
@@ -105,6 +110,23 @@ export class PublicAPIClient {
 
     if (!response.ok) {
       await this.handleResponseError(response, 'deleteEvent')
+    }
+
+    return await response.text()
+  }
+
+  /**
+   * List sessions for a given event
+   */
+  async listSessions(eventId: number): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.session.list}`, {
+      method: 'POST',
+      headers: this.getHeaders,
+      body: JSON.stringify({ eventId }),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listSessions')
     }
 
     return await response.text()

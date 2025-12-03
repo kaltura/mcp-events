@@ -93,13 +93,7 @@ exports.UpdateEventDto = zod_1.z.object({
     bannerEntryId: zod_1.z.string().optional().describe("Event banner id. Example: '1_p3im68oa'"),
 });
 exports.ListSessionDto = zod_1.z.object({
-    id: zod_1.z.number().describe('Event ID. Example: 98765'),
-    filter: zod_1.z.object({
-        tagsFilter: zod_1.z
-            .array(zod_1.z.string())
-            .optional()
-            .describe('Filter for sessions for the requested event optionally filter by session tags'),
-    }),
+    eventId: zod_1.z.number().describe('Event ID. Example: 98765'),
 });
 exports.CreateSessionDto = zod_1.z.object({
     id: zod_1.z.number().describe('Event ID. Example: 98765'),

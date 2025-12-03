@@ -35,19 +35,6 @@ export class EpClient {
     this.ks = config.ks
   }
 
-  public async sessionList(kalturaEventId: number, tagsFilter?: string[]): Promise<unknown> {
-    const epEventId = await this.getEpEventId(kalturaEventId)
-    const response = await fetch(`${this.baseUrl}/${this.paths.sessionList}`, {
-      method: 'POST',
-      headers: await this.getHeaders(epEventId),
-      body: JSON.stringify({ filter: { tagsFilter } }),
-    })
-    if (!response.ok) {
-      return this.handleResponseError(response, 'sessionList')
-    }
-    return await response.json()
-  }
-
   public async sessionCreate(
     kalturaEventId: number,
     session: TCreateSessionDto['session'],

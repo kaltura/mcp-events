@@ -43,20 +43,6 @@ class EpClient {
         this.baseUrl = config_1.config.urls.epApi;
         this.ks = config_1.config.ks;
     }
-    sessionList(kalturaEventId, tagsFilter) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const epEventId = yield this.getEpEventId(kalturaEventId);
-            const response = yield fetch(`${this.baseUrl}/${this.paths.sessionList}`, {
-                method: 'POST',
-                headers: yield this.getHeaders(epEventId),
-                body: JSON.stringify({ filter: { tagsFilter } }),
-            });
-            if (!response.ok) {
-                return this.handleResponseError(response, 'sessionList');
-            }
-            return yield response.json();
-        });
-    }
     sessionCreate(kalturaEventId, session, imageUrlEntryId, sourceEntryId) {
         return __awaiter(this, void 0, void 0, function* () {
             const epEventId = yield this.getEpEventId(kalturaEventId);

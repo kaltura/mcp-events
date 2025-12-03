@@ -142,9 +142,9 @@ function registerEventTools(server) {
         idempotentHint: true,
         openWorldHint: true,
         readOnlyHint: true,
-    }, (_a) => __awaiter(this, [_a], void 0, function* ({ filter, id }) {
+    }, (_a) => __awaiter(this, [_a], void 0, function* ({ eventId }) {
         try {
-            const result = yield epClient_1.epClient.sessionList(id, filter === null || filter === void 0 ? void 0 : filter.tagsFilter);
+            const result = yield publicApiClient_1.publicApiClient.listSessions(eventId);
             return {
                 content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
             };
