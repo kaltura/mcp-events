@@ -111,7 +111,7 @@ You can configure MCP at either the **user** or **workspace** level:
 
 ### 🌱 Environment Configuration
 
-These are the environment variables:
+These are the environment variables (can be set via your terminal or directly in the agent config):
 
 - `KALTURA_ENV`: The environment to use  
   - `NVP` (default)
