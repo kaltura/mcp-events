@@ -58,6 +58,7 @@ npm install
 ### Configuration your agent
 
 You can configure you agent to use the Kaltura Events MCP server by adding a new tool configuration.
+
 This differs depending on the agent you use, so Claude Code, VS Code Copilot, etc. would have different ways to add the MCP server.
 
 - JSON config example (standart should work for most agents):
@@ -80,28 +81,33 @@ This differs depending on the agent you use, so Claude Code, VS Code Copilot, et
   }
 
   ```
+## 🛠️ Helpful Examples for Different Agents
 
-### VS Code - Copilot | Adding the MCP config
-#### Create or Locate `mcp.json`
+### 💻 VS Code Copilot | Adding the MCP Config
 
-You can configure MCP at either the user or workspace level:
+#### 1️⃣ Create or Locate `mcp.json`
+
+You can configure MCP at either the **user** or **workspace** level:
 
 - **User-level configuration**  
-  Create or locate a `mcp.json` file (with the above json config) in your user settings directory:  
-  - Linux/macOS: `~/.vscode/mcp.json`  
-  - Windows: `%APPDATA%\Code\User\mcp.json`
+  Create or locate a `mcp.json` file (with the JSON config above) in your user settings directory:  
+  - 🐧 Linux/macOS: `~/.vscode/mcp.json`  
+  - 🪟 Windows: `%APPDATA%\Code\User\mcp.json`
 
 - **Workspace-level configuration**  
-  For project-specific settings, create a `.vscode` folder in your project's root directory, then add a `mcp.json` file (with the above config) inside it:
-  - Example: `your_project/.vscode/mcp.json`
+  For project-specific settings, create a `.vscode` folder in your project's root directory, then add a `mcp.json` file (with the JSON config above) inside it:  
+  - 📁 Example: `your_project/.vscode/mcp.json`
 
-### Claude Code | Adding the MCP config
-- **carete a file `~/.claude/mcp.json`** with the above configuration
-- **add the mcp config:**
+---
+
+### 🤖 Claude Code | Adding the MCP Config
+
+- **Add an MCP config:**
 
   ```bash
-  claude --mcp-config ~/.claude/mcp.json
+  claude mcp add-json kaltura-events '{"transport":"stdio","command":"node","args":["~/dev/mcp-events/dist/index.js"],"env":{"KALTURA_ENV":"NVP","KALTURA_KS":"YOUR-KALTURA-SECRET"}}'
   ```
+
 
 ### 🌱 Environment Configuration
 
