@@ -57,11 +57,9 @@ npm install
 
 The MCP server can be configured through a configuration file or environment variables.
 
-### Configuration with JSON
+### Configuration your agent (Claude Code or Desktop, GIthub Copiltor etc.)
 
-You can configure the MCP server by providing a JSON configuration file. Example:
-
-1. Create a configuration file (e.g., `mcp-config.json`):
+You can configure you agent to use the Kaltura Events MCP server by adding a new tool configuration. For example:
 
 ```json
 "Kaltura Events API": {
@@ -76,6 +74,7 @@ You can configure the MCP server by providing a JSON configuration file. Example
   }
 },
 ```
+This way you can integrate the MCP server with your preferred AI assistant.
 
 ### 🌱 Environment Configuration
 
