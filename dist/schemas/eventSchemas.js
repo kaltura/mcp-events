@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateSessionDto = exports.ListSessionDto = exports.UpdateEventDto = exports.ListEventDto = exports.EventOrderBy = exports.PagerDto = exports.ListEventFilterDto = exports.DeleteEventDto = exports.CreateEventDto = void 0;
+exports.CreateSessionDto = exports.ListSessionSpeakersDto = exports.ListSessionDto = exports.UpdateEventDto = exports.ListEventDto = exports.EventOrderBy = exports.PagerDto = exports.ListEventFilterDto = exports.DeleteEventDto = exports.CreateEventDto = void 0;
 const zod_1 = require("zod");
 const presetTemplates_1 = require("../resources/presetTemplates");
 const timeZones_1 = require("../resources/timeZones");
@@ -94,6 +94,12 @@ exports.UpdateEventDto = zod_1.z.object({
 });
 exports.ListSessionDto = zod_1.z.object({
     eventId: zod_1.z.number().describe('Event ID. Example: 98765'),
+});
+exports.ListSessionSpeakersDto = zod_1.z.object({
+    eventId: zod_1.z.number().describe('Event ID. Example: 98765'),
+    sessionId: zod_1.z
+        .string()
+        .describe("Session Entry ID (belonging to the sepecified event). Example: '1_abcd1234'"),
 });
 exports.CreateSessionDto = zod_1.z.object({
     id: zod_1.z.number().describe('Event ID. Example: 98765'),

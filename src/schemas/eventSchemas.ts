@@ -111,6 +111,13 @@ export const ListSessionDto = z.object({
   eventId: z.number().describe('Event ID. Example: 98765'),
 })
 
+export const ListSessionSpeakersDto = z.object({
+  eventId: z.number().describe('Event ID. Example: 98765'),
+  sessionId: z
+    .string()
+    .describe("Session Entry ID (Belonging to the sepecified event). Example: '1_abcd1234'"),
+})
+
 export const CreateSessionDto = z.object({
   id: z.number().describe('Event ID. Example: 98765'),
   session: z.object({

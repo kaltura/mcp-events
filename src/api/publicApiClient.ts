@@ -10,13 +10,14 @@ export class PublicAPIClient {
   private ks: string | undefined
   private readonly paths = Object.freeze({
     event: {
-      create: 'event/create',
-      list: 'event/list',
-      update: 'event/update',
-      delete: 'event/delete',
+      create: 'events/create',
+      list: 'events/list',
+      update: 'events/update',
+      delete: 'events/delete',
     },
     session: {
-      list: 'session/list',
+      list: 'sessions/list',
+      speakerList: 'sessions/speakerList',
     },
   })
 
@@ -110,6 +111,23 @@ export class PublicAPIClient {
 
     if (!response.ok) {
       await this.handleResponseError(response, 'deleteEvent')
+    }
+
+    return await response.text()
+  }
+
+  /**
+   * List event session speakers
+   */
+  async listSessionSpeakers(eventId: number, sessionId: string): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.session.speakerList}`, {
+      method: 'POST',
+      headers: this.getHeaders,
+      body: JSON.stringify({ eventId, sessionId }),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listSessions')
     }
 
     return await response.text()

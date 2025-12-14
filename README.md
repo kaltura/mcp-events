@@ -24,6 +24,7 @@ This MCP server provides an interface for AI assistants to interact with the Kal
 - **update-event**: Modify existing event properties
 - **delete-event**: Remove an event and its resources
 - **list-event-sessions**: Get all sessions for a specific event
+- **list-session-sepakers**: Get all speakers for a specific event session
 - **create-event-session**: Add a new session to an existing event
 
 ### Resources

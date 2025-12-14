@@ -22,13 +22,14 @@ class PublicAPIClient {
     constructor() {
         this.paths = Object.freeze({
             event: {
-                create: 'event/create',
-                list: 'event/list',
-                update: 'event/update',
-                delete: 'event/delete',
+                create: 'events/create',
+                list: 'events/list',
+                update: 'events/update',
+                delete: 'events/delete',
             },
             session: {
-                list: 'session/list',
+                list: 'sessions/list',
+                speakerList: 'sessions/speakerList',
             },
         });
         this.baseUrl = config_1.config.urls.publicApi;
@@ -95,6 +96,22 @@ class PublicAPIClient {
             });
             if (!response.ok) {
                 yield this.handleResponseError(response, 'deleteEvent');
+            }
+            return yield response.text();
+        });
+    }
+    /**
+     * List event session speakers
+     */
+    listSessionSpeakers(eventId, sessionId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.session.speakerList}`, {
+                method: 'POST',
+                headers: this.getHeaders,
+                body: JSON.stringify({ eventId, sessionId }),
+            });
+            if (!response.ok) {
+                yield this.handleResponseError(response, 'listSessions');
             }
             return yield response.text();
         });
