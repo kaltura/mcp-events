@@ -34,6 +34,10 @@ export const DeleteEventDto = z.object({
 
 export const ListEventFilterDto = z.object({
   idIn: z.array(z.number()).optional().describe('Filter for events with ids in the provided array.'),
+  templateIdIn: z
+    .array(z.union([templateIdEnum, ObjectId]))
+    .optional()
+    .describe('Filter for events with template ids in the provided array.'),
   searchTerm: z
     .string()
     .optional()
