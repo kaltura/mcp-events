@@ -56,31 +56,63 @@ npm install
 
 ## ⚙️ Configuration & Running
 
-The MCP server can be configured through a configuration file or environment variables.
+### Configuration your agent
 
-### Configuration with JSON
+You can configure you agent to use the Kaltura Events MCP server by adding a new tool configuration.
 
-You can configure the MCP server by providing a JSON configuration file. Example:
+This differs depending on the agent you use, so Claude Code, VS Code Copilot, etc. would have different ways to add the MCP server.
 
-1. Create a configuration file (e.g., `mcp-config.json`):
+- JSON config example (standart should work for most agents):
 
-```json
-"Kaltura Events API": {
-  "type": "stdio",
-  "command": "node",
-  "args": [
-    "/home/john-doe/mcp-events/dist/index.js"
-  ],
-  "env": {
-    "KALTURA_ENV": "NVP",
-    "KALTURA_KS": "YOUR-KALTURA-SECRET_HERE" // Should be a user KS
+  ```json
+  {
+    "mcpServers": {
+      "Kaltura Events API": {
+        "transport": "stdio",
+        "command": "node",
+        "args": [
+          "/home/john-doe/mcp-events/dist/index.js"
+        ],
+        "env": {
+          "KALTURA_ENV": "NVP",
+          "KALTURA_KS": "YOUR-KALTURA-SECRET_HERE" // Should be a user KS
+        }
+      }
+    }
   }
-},
-```
+
+  ```
+## 🛠️ Helpful Examples for Different Agents
+
+### 💻 VS Code Copilot | Adding the MCP Config
+
+#### 1️⃣ Create or Locate `mcp.json`
+
+You can configure MCP at either the **user** or **workspace** level:
+
+- **User-level configuration**  
+  Create or locate a `mcp.json` file (with the JSON config above) in your user settings directory:  
+  - 🐧 Linux/macOS: `~/.vscode/mcp.json`  
+  - 🪟 Windows: `%APPDATA%\Code\User\mcp.json`
+
+- **Workspace-level configuration**  
+  For project-specific settings, create a `.vscode` folder in your project's root directory, then add a `mcp.json` file (with the JSON config above) inside it:  
+  - 📁 Example: `your_project/.vscode/mcp.json`
+
+---
+
+### 🤖 Claude Code | Adding the MCP Config
+
+- **Add an MCP config:**
+
+  ```bash
+  claude mcp add-json kaltura-events '{"transport":"stdio","command":"node","args":["~/dev/mcp-events/dist/index.js"],"env":{"KALTURA_ENV":"NVP","KALTURA_KS":"YOUR-KALTURA-SECRET"}}'
+  ```
+
 
 ### 🌱 Environment Configuration
 
-You can configure the MCP server using these environment variables:
+These are the environment variables (can be set via your terminal or directly in the agent config):
 
 - `KALTURA_ENV`: The environment to use  
   - `NVP` (default)
