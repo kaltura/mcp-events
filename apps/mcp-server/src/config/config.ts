@@ -30,7 +30,6 @@ const env = isCustom ? '_CUSTOM' : McpConfig.kaltura.env;
 assert(env in Envs, `Invalid ENV value: ${env}`);
 
 export const config = {
-  ks: McpConfig.kaltura.ks,
   urls: Envs[env as keyof typeof Envs],
   server: {
     name: 'Kaltura Events Server',

@@ -1,4 +1,4 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import {
   CreateEventDto,
   ListEventDto,
@@ -6,14 +6,23 @@ import {
   DeleteEventDto,
   ListSessionDto,
   CreateSessionDto,
-} from '../schemas/eventSchemas'
-import { publicApiClient } from '../api/publicApiClient'
-import { epClient } from '../api/epClient'
+} from '../schemas/eventSchemas';
+import { PublicAPIClient } from '../api/publicApiClient';
+import { EpClient } from '../api/epClient';
 
 /**
  * Register event-related tools with the MCP server
+ * @param server MCP Server instance
+ * @param ks Kaltura Session for this connection (captured in closure)
+ * @param publicApiClient Public API client instance
+ * @param epClient EP client instance
  */
-export function registerEventTools(server: McpServer): void {
+export function registerEventTools(
+  server: McpServer,
+  ks: string,
+  publicApiClient: PublicAPIClient,
+  epClient: EpClient,
+): void {
   // Tool for creating events
   server.tool(
     'create-event',
@@ -28,18 +37,18 @@ export function registerEventTools(server: McpServer): void {
     },
     async ({ name, templateId, startDate, endDate, timezone, description }) => {
       try {
-        const result = await publicApiClient.createEvent({
+        const result = await publicApiClient.createEvent(ks, {
           name,
           templateId,
           startDate,
           endDate,
           timezone,
           description,
-        })
+        });
 
         return {
           content: [{ type: 'text', text: result }],
-        }
+        };
       } catch (error) {
         return {
           content: [
@@ -48,7 +57,7 @@ export function registerEventTools(server: McpServer): void {
               text: `Error creating event: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
-        }
+        };
       }
     },
   )
@@ -67,11 +76,11 @@ export function registerEventTools(server: McpServer): void {
     },
     async ({ filter, pager }) => {
       try {
-        const result = await publicApiClient.listEvents({ filter, pager })
+        const result = await publicApiClient.listEvents(ks, { filter, pager });
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
-        }
+        };
       } catch (error) {
         return {
           content: [
@@ -80,7 +89,7 @@ export function registerEventTools(server: McpServer): void {
               text: `Error listing events: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
-        }
+        };
       }
     },
   )
@@ -110,7 +119,7 @@ export function registerEventTools(server: McpServer): void {
       bannerEntryId,
     }) => {
       try {
-        const result = await publicApiClient.updateEvent({
+        const result = await publicApiClient.updateEvent(ks, {
           id,
           name,
           description,
@@ -121,11 +130,11 @@ export function registerEventTools(server: McpServer): void {
           labels,
           logoEntryId,
           bannerEntryId,
-        })
+        });
 
         return {
           content: [{ type: 'text', text: result }],
-        }
+        };
       } catch (error) {
         return {
           content: [
@@ -134,7 +143,7 @@ export function registerEventTools(server: McpServer): void {
               text: `Error updating event: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
-        }
+        };
       }
     },
   )
@@ -153,11 +162,11 @@ export function registerEventTools(server: McpServer): void {
     },
     async ({ id }) => {
       try {
-        const result = await publicApiClient.deleteEvent(id)
+        const result = await publicApiClient.deleteEvent(ks, id);
 
         return {
           content: [{ type: 'text', text: result }],
-        }
+        };
       } catch (error) {
         return {
           content: [
@@ -166,7 +175,7 @@ export function registerEventTools(server: McpServer): void {
               text: `Error deleting event: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
-        }
+        };
       }
     },
   )
@@ -185,7 +194,7 @@ export function registerEventTools(server: McpServer): void {
     },
     async ({ filter, id }) => {
       try {
-        const result = await epClient.sessionList(id, filter?.tagsFilter)
+        const result = await epClient.sessionList(ks, id, filter?.tagsFilter)
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
@@ -217,7 +226,7 @@ export function registerEventTools(server: McpServer): void {
     },
     async ({ id, imageUrlEntryId, sourceEntryId, session }) => {
       try {
-        const result = await epClient.sessionCreate(id, session, imageUrlEntryId, sourceEntryId)
+        const result = await epClient.sessionCreate(ks, id, session, imageUrlEntryId, sourceEntryId)
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],

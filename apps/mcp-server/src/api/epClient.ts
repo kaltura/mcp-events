@@ -1,4 +1,4 @@
-import assert from 'node:assert'
+import { Injectable } from '@nestjs/common'
 import { config } from '../config/config'
 import { LRUCache } from 'lru-cache'
 import { removeEmptyProps } from '../utils'
@@ -9,9 +9,14 @@ const EpEventIdCache = new LRUCache<number, string>({
   ttl: 60 * 60 * 24 * 1,
 })
 
+// JWT cache per KS - Maps KS to JWT token and expiration
+const JwtCache = new Map<string, { token: string; exp: number }>()
+
 /**
  * API client for EP
+ * Injectable service that accepts KS per request
  */
+@Injectable()
 export class EpClient {
   private baseUrl: string
   private readonly paths = Object.freeze({
@@ -20,26 +25,20 @@ export class EpClient {
     sessionList: 'sessions/list',
     sessionCreate: 'sessions/create',
   })
-  private ks: string
-  private jwt = {
-    token: '',
-    /**
-     * Epoch milliseconds
-     **/
-    exp: 0,
-  }
 
   constructor() {
-    assert(config.ks, 'Error: KS (Kaltura Session) is not set. API calls may fail.')
     this.baseUrl = config.urls.epApi as string
-    this.ks = config.ks
   }
 
-  public async sessionList(kalturaEventId: number, tagsFilter?: string[]): Promise<unknown> {
-    const epEventId = await this.getEpEventId(kalturaEventId)
+  /**
+   * List sessions for an event
+   * @param ks Kaltura Session for this request
+   */
+  public async sessionList(ks: string, kalturaEventId: number, tagsFilter?: string[]): Promise<unknown> {
+    const epEventId = await this.getEpEventId(ks, kalturaEventId)
     const response = await fetch(`${this.baseUrl}/${this.paths.sessionList}`, {
       method: 'POST',
-      headers: await this.getHeaders(epEventId),
+      headers: await this.getHeaders(ks, epEventId),
       body: JSON.stringify({ filter: { tagsFilter } }),
     })
     if (!response.ok) {
@@ -48,13 +47,18 @@ export class EpClient {
     return await response.json()
   }
 
+  /**
+   * Create a new session for an event
+   * @param ks Kaltura Session for this request
+   */
   public async sessionCreate(
+    ks: string,
     kalturaEventId: number,
     session: TCreateSessionDto['session'],
     imageUrlEntryId?: string,
     sourceEntryId?: string,
   ): Promise<unknown> {
-    const epEventId = await this.getEpEventId(kalturaEventId)
+    const epEventId = await this.getEpEventId(ks, kalturaEventId)
     const body = removeEmptyProps(
       {
         session: {
@@ -68,7 +72,7 @@ export class EpClient {
     )
     const response = await fetch(`${this.baseUrl}/${this.paths.sessionCreate}`, {
       method: 'POST',
-      headers: await this.getHeaders(epEventId),
+      headers: await this.getHeaders(ks, epEventId),
       body: JSON.stringify(body),
     })
     if (!response.ok) {
@@ -81,12 +85,12 @@ export class EpClient {
    * Get EP event id from kaltura public id
    * Fetch from EP or get from cache.
    */
-  private async getEpEventId(kalturaEventId: number): Promise<string> {
+  private async getEpEventId(ks: string, kalturaEventId: number): Promise<string> {
     let epEventId = await this.cacheGetEventId(kalturaEventId)
     if (epEventId) {
       return epEventId
     }
-    epEventId = await this.fetchEpEventId(kalturaEventId)
+    epEventId = await this.fetchEpEventId(ks, kalturaEventId)
     if (!epEventId) {
       throw new Error(`Event id not found in EP, kalturaEventId: ${kalturaEventId}`)
     }
@@ -94,11 +98,11 @@ export class EpClient {
     return epEventId
   }
 
-  private async fetchEpEventId(kalturaEventId: number): Promise<string | undefined> {
+  private async fetchEpEventId(ks: string, kalturaEventId: number): Promise<string | undefined> {
     const filter = { kalturaEventIdIn: [kalturaEventId] }
     const response = await fetch(`${this.baseUrl}/${this.paths.eventsList}`, {
       method: 'POST',
-      headers: await this.getHeaders(),
+      headers: await this.getHeaders(ks),
       body: JSON.stringify({ filter }),
     })
     if (!response.ok) {
@@ -112,14 +116,19 @@ export class EpClient {
     return events[0]._id
   }
 
-  private async getJwt(): Promise<string> {
-    if (this.isValidJwt) {
-      return this.jwt.token
+  /**
+   * Get JWT for a specific KS
+   * Uses cached JWT if valid, otherwise fetches new one
+   */
+  private async getJwt(ks: string): Promise<string> {
+    const cachedJwt = JwtCache.get(ks)
+    if (cachedJwt && this.isValidJwt(cachedJwt)) {
+      return cachedJwt.token
     }
-    const jwt = await this.fetchJwt(this.ks)
-    this.jwt.token = jwt.token
-    this.jwt.exp = jwt.exp * 1000
-    return this.jwt.token
+    const jwt = await this.fetchJwt(ks)
+    const jwtData = { token: jwt.token, exp: jwt.exp * 1000 }
+    JwtCache.set(ks, jwtData)
+    return jwtData.token
   }
 
   private async fetchJwt(ks: string): Promise<{ token: string; /* seconds */ exp: number }> {
@@ -135,9 +144,12 @@ export class EpClient {
     return await response.json()
   }
 
-  private get isValidJwt(): boolean {
+  /**
+   * Check if JWT is still valid (not expired)
+   */
+  private isValidJwt(jwt: { token: string; exp: number }): boolean {
     const bufferExpiration = 5 * 60 * 1000
-    return !!this.jwt.token && this.jwt.exp > Date.now() + bufferExpiration
+    return !!jwt.token && jwt.exp > Date.now() + bufferExpiration
   }
 
   private cacheGetEventId(kalturaEventId: number): string | undefined {
@@ -164,9 +176,10 @@ export class EpClient {
 
   /**
    * Get common headers for API requests
+   * @param ks Kaltura Session for this request
    */
-  private async getHeaders(epEventId?: string): Promise<Record<string, string>> {
-    const jwt = await this.getJwt()
+  private async getHeaders(ks: string, epEventId?: string): Promise<Record<string, string>> {
+    const jwt = await this.getJwt(ks)
     return removeEmptyProps({
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json',
@@ -174,6 +187,3 @@ export class EpClient {
     })
   }
 }
-
-// Export a singleton instance
-export const epClient = new EpClient()

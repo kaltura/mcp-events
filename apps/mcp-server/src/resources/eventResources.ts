@@ -1,12 +1,19 @@
 import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { publicApiClient } from '../api/publicApiClient'
+import { PublicAPIClient } from '../api/publicApiClient'
 import assert from 'node:assert'
 import { PresetTemplates } from './presetTemplates'
 
 /**
- * Register event-related tools with the MCP server
+ * Register event-related resources with the MCP server
+ * @param server MCP Server instance
+ * @param ks Kaltura Session for this connection (captured in closure)
+ * @param publicApiClient Public API client instance
  */
-export function registerEventResources(server: McpServer): void {
+export function registerEventResources(
+  server: McpServer,
+  ks: string,
+  publicApiClient: PublicAPIClient,
+): void {
   // Dynamic resource with parameters
   server.registerResource(
     'events',
@@ -18,7 +25,7 @@ export function registerEventResources(server: McpServer): void {
     async (uri, { eventId }) => {
       try {
         assert(typeof Number(eventId) === 'number', `eventId must be a number, received: ${typeof eventId}`)
-        const result = await publicApiClient.listEvents({
+        const result = await publicApiClient.listEvents(ks, {
           filter: { idIn: [Number(eventId)] },
           pager: { limit: 1, offset: 0 },
         })

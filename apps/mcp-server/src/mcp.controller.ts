@@ -1,8 +1,9 @@
-import { Controller, Sse, Res, MessageEvent } from '@nestjs/common';
-import { Response } from 'express';
+import { Controller, Sse, Res, Req, MessageEvent, UnauthorizedException } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { AppLogger } from '@kaltura/services-common';
 import { McpService } from './mcp.service';
+import { getKsFromRequest } from './utils/ks-helper';
 
 @Controller('mcp')
 export class McpController {
@@ -13,16 +14,33 @@ export class McpController {
   /**
    * SSE endpoint for MCP connections
    * Clients connect to this endpoint to communicate with the MCP server
+   * KS can be provided via:
+   * 1. Authorization header (Bearer token) - production
+   * 2. x-kaltura-session header - alternative
+   * 3. ks query parameter - alternative
+   * 4. KALTURA_KS environment variable - local development fallback
    */
   @Sse('events')
   async handleSseConnection(
+    @Req() request: Request,
     @Res() response: Response,
   ): Promise<Observable<MessageEvent>> {
-    this.logger.log('New SSE connection established');
+    // Extract KS from request (with fallback to environment)
+    const ks = getKsFromRequest(request);
+
+    if (!ks) {
+      this.logger.error('SSE connection rejected: No KS provided');
+      throw new UnauthorizedException(
+        'Kaltura Session (KS) required. Provide via Authorization header, x-kaltura-session header, ks query param, or KALTURA_KS env var'
+      );
+    }
+
+    const ksPreview = ks.substring(0, 10);
+    this.logger.log(`New SSE connection established (KS: ${ksPreview}...)`);
 
     try {
-      // Connect MCP server with SSE transport
-      await this.mcpService.connectWithSSE('/mcp/events', response);
+      // Connect MCP server with SSE transport, passing the KS
+      await this.mcpService.connectWithSSE(ks, '/mcp/events', response);
 
       // Return an observable that keeps the connection alive
       return new Observable<MessageEvent>((subscriber) => {
