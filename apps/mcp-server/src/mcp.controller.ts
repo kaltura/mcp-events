@@ -14,24 +14,25 @@ export class McpController {
   /**
    * SSE endpoint for MCP connections
    * Clients connect to this endpoint to communicate with the MCP server
-   * KS can be provided via:
-   * 1. Authorization header (Bearer token) - production
+   * KS must be provided via:
+   * 1. Authorization header (Bearer token) - recommended
    * 2. x-kaltura-session header - alternative
    * 3. ks query parameter - alternative
-   * 4. KALTURA_KS environment variable - local development fallback
+   *
+   * Note: Environment variable is NOT used in remote mode for security
    */
   @Sse('events')
   async handleSseConnection(
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<Observable<MessageEvent>> {
-    // Extract KS from request (with fallback to environment)
+    // Extract KS from request - NO fallback to environment for security
     const ks = getKsFromRequest(request);
 
     if (!ks) {
-      this.logger.error('SSE connection rejected: No KS provided');
+      this.logger.error('SSE connection rejected: No KS provided in request');
       throw new UnauthorizedException(
-        'Kaltura Session (KS) required. Provide via Authorization header, x-kaltura-session header, ks query param, or KALTURA_KS env var'
+        'Kaltura Session (KS) required. Provide via Authorization header, x-kaltura-session header, or ks query parameter'
       );
     }
 

@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { McpConfig } from '../mcp-config';
 
 /**
  * Extract Kaltura Session (KS) from request
@@ -7,7 +6,8 @@ import { McpConfig } from '../mcp-config';
  * 1. Authorization header (Bearer token)
  * 2. x-kaltura-session header
  * 3. ks query parameter
- * 4. Environment variable (fallback for local development)
+ *
+ * Returns undefined if KS is not found in request - will cause authentication failure
  */
 export function getKsFromRequest(request: Request): string | undefined {
   // Priority 1: Authorization header (Bearer token)
@@ -28,8 +28,8 @@ export function getKsFromRequest(request: Request): string | undefined {
     return ksQuery;
   }
 
-  // Priority 4: Fallback to environment variable (local development only)
-  return McpConfig.kaltura.defaultKs || undefined;
+  // No KS found in request - return undefined to trigger authentication failure
+  return undefined;
 }
 
 /**
@@ -43,9 +43,8 @@ export function getRequiredKs(request: Request): string {
     throw new Error(
       'Kaltura Session (KS) is required. Please provide KS via: ' +
       '1) Authorization header (Bearer token), ' +
-      '2) x-kaltura-session header, ' +
-      '3) ks query parameter, or ' +
-      '4) KALTURA_KS environment variable (local development only)'
+      '2) x-kaltura-session header, or ' +
+      '3) ks query parameter'
     );
   }
 
