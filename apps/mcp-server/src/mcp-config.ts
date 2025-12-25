@@ -11,7 +11,7 @@ export const McpConfig = {
     beApi: Env.optStr('KALTURA_BE_API', ''),
   },
   server: {
-    port: Env.int('MCP_SERVER_PORT'),
+    port: Env.optInt('MCP_SERVER_PORT', 3000),
   },
 };
 
