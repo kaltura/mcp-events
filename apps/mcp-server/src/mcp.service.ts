@@ -53,7 +53,7 @@ export class McpService {
       // Connect this server instance to this transport
       await mcpServer.connect(transport);
 
-      this.logger.log(`MCP Server connected via SSE (KS: ${ks.substring(0, 10)}...)`);
+      this.logger.log('MCP Server connected via SSE (KS provided)');
     } catch (error) {
       this.logger.error('Failed to connect MCP server with SSE:', error);
       throw error;

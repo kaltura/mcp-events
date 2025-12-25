@@ -37,8 +37,7 @@ export class McpController {
       );
     }
 
-    const ksPreview = ks.substring(0, 10);
-    this.logger.log(`New SSE connection established (KS: ${ksPreview}...)`);
+    this.logger.log('New SSE connection established (KS provided)');
 
     try {
       // Connect MCP server with SSE transport, passing the KS

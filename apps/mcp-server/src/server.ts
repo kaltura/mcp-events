@@ -42,7 +42,7 @@ export async function startServer(): Promise<McpServer> {
     // Connect the server to the transport
     await server.connect(transport)
 
-    console.error(`MCP Server started in stdio mode (KS: ${ks.substring(0, 10)}...)`)
+    console.error('MCP Server started in stdio mode (KS provided)')
     return server
   } catch (error) {
     console.error('Failed to start MCP server:', error)
