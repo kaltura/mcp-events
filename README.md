@@ -102,5 +102,4 @@ The MCP server supports multiple Kaltura API environments (regions):
 For custom environment URLs, use these environment variables:
 
 - `KALTURA_PUBLIC_API`
-- `KALTURA_EP_API`
 - `KALTURA_BE_API`

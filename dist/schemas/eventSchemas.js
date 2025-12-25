@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateSessionDto = exports.ListSessionSpeakersDto = exports.ListSessionDto = exports.UpdateEventDto = exports.ListEventDto = exports.EventOrderBy = exports.PagerDto = exports.ListEventFilterDto = exports.DeleteEventDto = exports.CreateEventDto = void 0;
+exports.CreateSessionDto = exports.ListSessionSpeakersDto = exports.ListSessionDto = exports.UpdateEventDto = exports.ListEventDto = exports.EventOrderBy = exports.PagerDto = exports.ListEventFilterDto = exports.DeleteEventDto = exports.CreateEventDto = exports.SessionVisibility = exports.SessionType = void 0;
 const zod_1 = require("zod");
 const presetTemplates_1 = require("../resources/presetTemplates");
 const timeZones_1 = require("../resources/timeZones");
@@ -10,6 +10,30 @@ const templateIdEnum = zod_1.z
     .enum(presetTemplates_1.PresetTemplates.map((template) => template.templateId))
     .describe('default ids: no session: tm0000, with interactive room: tm1000, with Live Webcast: tm2000, simulated live session: tm3000, room broadcasting to live webcast: tm4000');
 const ObjectId = zod_1.z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId');
+var SessionType;
+(function (SessionType) {
+    SessionType["InteractiveRoom"] = "MeetingEntry";
+    SessionType["SimuLive"] = "SimuLive";
+    SessionType["LiveWebcast"] = "LiveWebcast";
+    SessionType["DiyLiveWebcast"] = "LiveKME";
+    SessionType["VirtualLearningRoom"] = "VirtualLearningRoom";
+    SessionType["Invalid"] = "Invalid";
+})(SessionType || (exports.SessionType = SessionType = {}));
+var SessionVisibility;
+(function (SessionVisibility) {
+    /**
+     * In sites, if in related media.
+     */
+    SessionVisibility["published"] = "published";
+    /**
+     * Only KMS.
+     */
+    SessionVisibility["unlisted"] = "unlisted";
+    /**
+     * In Sites, if not in related media.
+     */
+    SessionVisibility["private"] = "private";
+})(SessionVisibility || (exports.SessionVisibility = SessionVisibility = {}));
 exports.CreateEventDto = zod_1.z.object({
     templateId: zod_1.z
         .union([templateIdEnum, ObjectId])
@@ -29,6 +53,10 @@ exports.DeleteEventDto = zod_1.z.object({
 });
 exports.ListEventFilterDto = zod_1.z.object({
     idIn: zod_1.z.array(zod_1.z.number()).optional().describe('Filter for events with ids in the provided array.'),
+    templateIdIn: zod_1.z
+        .array(zod_1.z.union([templateIdEnum, ObjectId]))
+        .optional()
+        .describe('Filter for events with template ids in the provided array.'),
     searchTerm: zod_1.z
         .string()
         .optional()
@@ -99,31 +127,36 @@ exports.ListSessionSpeakersDto = zod_1.z.object({
     eventId: zod_1.z.number().describe('Event ID. Example: 98765'),
     sessionId: zod_1.z
         .string()
-        .describe("Session Entry ID (belonging to the sepecified event). Example: '1_abcd1234'"),
+        .describe("Session Entry ID (Belonging to the sepecified event). Example: '1_abcd1234'"),
 });
 exports.CreateSessionDto = zod_1.z.object({
     id: zod_1.z.number().describe('Event ID. Example: 98765'),
     session: zod_1.z.object({
         name: zod_1.z.string().describe("Session Name. Example: 'Virtual Town hall 2025 - Session 1'"),
-        type: zod_1.z.enum(['MeetingEntry', 'SimuLive', 'LiveWebcast', 'LiveKME', 'VirtualLearningRoom']),
+        type: zod_1.z
+            .nativeEnum(SessionType)
+            .describe("Session Type. Example: 'MeetingEntry' for Interactive Room, 'LiveWebcast' for Live Webcast, 'SimuLive' for Simulated Live"),
         description: zod_1.z.string().optional().describe("Session Description. Example: 'Session 1 description'"),
         startDate: zod_1.z
             .string()
             .datetime()
-            .optional()
-            .describe("Session Start Date (ISO 8601). Example: '2025-05-01T14:00:00Z'"),
+            .describe("Session Start Date (ISO 8601). Example: '2025-05-01T14:00:00Z'")
+            .optional(),
         endDate: zod_1.z
             .string()
             .datetime()
-            .optional()
-            .describe("Session End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'"),
-        tags: zod_1.z.array(zod_1.z.string()).optional().describe('Session tags. Example: ["tag1", "tag2"]'),
-        visibility: zod_1.z
-            .enum(['published', 'unlisted', 'private'])
-            .optional()
-            .describe('Entry visibility. Example: "published"'),
+            .describe("Session End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'")
+            .optional(),
+        tags: zod_1.z.array(zod_1.z.string()).describe('Session tags. Example: ["tag1", "tag2"]').optional(),
+        visibility: zod_1.z.nativeEnum(SessionVisibility).describe('Entry visibility. Example: "published"').optional(),
         isManualLive: zod_1.z.boolean().optional(),
+        imageUrlEntryId: zod_1.z
+            .string()
+            .describe('Kaltura entry id for the session thumbnail image, example: 1_abcd1234')
+            .optional(),
+        sourceEntryId: zod_1.z
+            .string()
+            .describe('For Simulive session types, the VOD entry, example: 1_abcd1234')
+            .optional(),
     }),
-    imageUrlEntryId: zod_1.z.string().optional().describe('Image URL entry id. Example: "1_xextzqk8"'),
-    sourceEntryId: zod_1.z.string().optional().describe('Source entry id. Example: "1_xextzqk8"'),
 });

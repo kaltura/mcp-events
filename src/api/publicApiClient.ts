@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { config } from '../config/config'
-import { TListEventFilterDto } from '../schemas/eventSchemas'
+import { SessionVisibility, SessionType, TListEventFilterDto } from '../schemas/eventSchemas'
 
 /**
  * API client for Public API
@@ -16,6 +16,7 @@ export class PublicAPIClient {
       delete: 'events/delete',
     },
     session: {
+      create: 'sessions/create',
       list: 'sessions/list',
       speakerList: 'sessions/speakerList',
     },
@@ -145,6 +146,34 @@ export class PublicAPIClient {
 
     if (!response.ok) {
       await this.handleResponseError(response, 'listSessions')
+    }
+
+    return await response.text()
+  }
+
+  async createSession(
+    eventId: number,
+    session: {
+      name: string
+      type: SessionType
+      description?: string
+      startDate?: string
+      endDate?: string
+      tags?: string[]
+      isManualLive?: boolean
+      visibility?: SessionVisibility
+      sourceEntryId?: string
+      imageUrlEntryId?: string
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.session.create}`, {
+      method: 'POST',
+      headers: this.getHeaders,
+      body: JSON.stringify({ eventId, session }),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'createSession')
     }
 
     return await response.text()

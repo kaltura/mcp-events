@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerEventTools = registerEventTools;
 const eventSchemas_1 = require("../schemas/eventSchemas");
 const publicApiClient_1 = require("../api/publicApiClient");
-const epClient_1 = require("../api/epClient");
 /**
  * Register event-related tools with the MCP server
  */
@@ -142,9 +141,9 @@ function registerEventTools(server) {
         idempotentHint: false,
         openWorldHint: true,
         readOnlyHint: false,
-    }, (_a) => __awaiter(this, [_a], void 0, function* ({ id, imageUrlEntryId, sourceEntryId, session }) {
+    }, (_a) => __awaiter(this, [_a], void 0, function* ({ id, session }) {
         try {
-            const result = yield epClient_1.epClient.sessionCreate(id, session, imageUrlEntryId, sourceEntryId);
+            const result = yield publicApiClient_1.publicApiClient.createSession(id, session);
             return {
                 content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
             };

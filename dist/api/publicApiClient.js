@@ -28,6 +28,7 @@ class PublicAPIClient {
                 delete: 'events/delete',
             },
             session: {
+                create: 'sessions/create',
                 list: 'sessions/list',
                 speakerList: 'sessions/speakerList',
             },
@@ -128,6 +129,19 @@ class PublicAPIClient {
             });
             if (!response.ok) {
                 yield this.handleResponseError(response, 'listSessions');
+            }
+            return yield response.text();
+        });
+    }
+    createSession(eventId, session) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.session.create}`, {
+                method: 'POST',
+                headers: this.getHeaders,
+                body: JSON.stringify({ eventId, session }),
+            });
+            if (!response.ok) {
+                yield this.handleResponseError(response, 'createSession');
             }
             return yield response.text();
         });

@@ -9,7 +9,6 @@ import {
   ListSessionSpeakersDto,
 } from '../schemas/eventSchemas'
 import { publicApiClient } from '../api/publicApiClient'
-import { epClient } from '../api/epClient'
 
 /**
  * Register event-related tools with the MCP server
@@ -184,9 +183,9 @@ export function registerEventTools(server: McpServer): void {
       openWorldHint: true,
       readOnlyHint: false,
     },
-    async ({ id, imageUrlEntryId, sourceEntryId, session }) => {
+    async ({ id, session }) => {
       try {
-        const result = await epClient.sessionCreate(id, session, imageUrlEntryId, sourceEntryId)
+        const result = await publicApiClient.createSession(id, session)
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
