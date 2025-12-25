@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "start": "node --env-file=.env dist/index.js",
-    "inspect": "DANGEROUSLY_OMIT_AUTH=true ./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/index.js",
-    "client": "node dist/client.js",
-    "lint": "eslint . --ext .ts"
+    "prebuild": "rimraf dist",
+    "build": "nest build",
+    "format": "prettier --write 'apps/**/*.ts'",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "lint": "eslint --max-warnings=0 'apps/**/*.ts'",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +19,7 @@
   "description": "",
   "devDependencies": {
     "@modelcontextprotocol/inspector": "^0.16.6",
+    "@nestjs/cli": "^9.5.0",
     "@types/node": "^22.18.1",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
@@ -25,13 +29,22 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-unused-imports": "^4.2.0",
     "prettier": "^3.6.2",
+    "rimraf": "^3.0.2",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.42.0"
   },
   "dependencies": {
+    "@kaltura/commons-logger": "^0.1.18",
+    "@kaltura/commons-utils": "^2.2.2",
+    "@kaltura/services-common": "^4.3.0",
     "@modelcontextprotocol/sdk": "^1.17.5",
+    "@nestjs/common": "^9.4.3",
+    "@nestjs/core": "^9.4.3",
+    "@nestjs/platform-express": "^9.4.3",
     "import": "^0.0.6",
     "lru-cache": "^11.2.1",
+    "reflect-metadata": "^0.1.14",
+    "rxjs": "^7.8.2",
     "timezone-support": "^3.1.0",
     "zod": "^3.25.76"
   }

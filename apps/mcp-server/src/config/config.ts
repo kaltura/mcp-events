@@ -1,4 +1,5 @@
-import assert from 'node:assert'
+import assert from 'node:assert';
+import { McpConfig } from '../mcp-config';
 
 const Envs = Object.freeze({
   NVP: {
@@ -17,19 +18,19 @@ const Envs = Object.freeze({
     kalturaApi: 'https://api.frp2.ovp.kaltura.com/api_v3',
   },
   _CUSTOM: {
-    publicApi: process.env.KALTURA_PUBLIC_API,
-    epApi: process.env.KALTURA_EP_API,
-    kalturaApi: process.env.KALTURA_BE_API,
+    publicApi: McpConfig.kaltura.publicApi,
+    epApi: McpConfig.kaltura.epApi,
+    kalturaApi: McpConfig.kaltura.beApi,
   },
-})
+});
 
 // IF one of the custom env vars is not set, we fallback to defaults
-const isCustom = process.env.KALTURA_PUBLIC_API && process.env.KALTURA_EP_API && process.env.KALTURA_BE_API
-const env = isCustom ? '_CUSTOM' : process.env.KALTURA_ENV || 'NVP'
-assert(env in Envs, `Invalid ENV value: ${env}`)
+const isCustom = McpConfig.kaltura.publicApi && McpConfig.kaltura.epApi && McpConfig.kaltura.beApi;
+const env = isCustom ? '_CUSTOM' : McpConfig.kaltura.env;
+assert(env in Envs, `Invalid ENV value: ${env}`);
 
 export const config = {
-  ks: process.env.KALTURA_KS,
+  ks: McpConfig.kaltura.ks,
   urls: Envs[env as keyof typeof Envs],
   server: {
     name: 'Kaltura Events Server',
@@ -39,4 +40,4 @@ export const config = {
     name: 'example-client',
     version: '1.0.0',
   },
-}
+};
