@@ -74,14 +74,4 @@ export class McpController {
       throw error;
     }
   }
-
-  /**
-   * Health check endpoint
-   */
-  async healthCheck(): Promise<{ status: string }> {
-    const isHealthy = await this.mcpService.healthCheck();
-    return {
-      status: isHealthy ? 'healthy' : 'unhealthy',
-    };
-  }
 }
