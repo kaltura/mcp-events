@@ -9,8 +9,10 @@ const EpEventIdCache = new LRUCache<number, string>({
   ttl: 60 * 60 * 24 * 1,
 })
 
-// JWT cache per KS - Maps KS to JWT token and expiration
-const JwtCache = new Map<string, { token: string; exp: number }>()
+// JWT cache per KS - Maps KS to JWT token and expiration (bounded LRU cache)
+const JwtCache = new LRUCache<string, { token: string; exp: number }>({
+  max: 500,
+})
 
 /**
  * API client for EP
