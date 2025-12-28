@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { config } from '../config/config'
-import { TListEventFilterDto } from '../schemas/eventSchemas'
+import { SessionVisibility, SessionType, TListEventFilterDto } from '../schemas/eventSchemas'
 
 /**
  * API client for Public API
@@ -9,10 +9,17 @@ export class PublicAPIClient {
   private baseUrl: string
   private ks: string | undefined
   private readonly paths = Object.freeze({
-    create: 'event/create',
-    list: 'event/list',
-    update: 'event/update',
-    delete: 'event/delete',
+    event: {
+      create: 'events/create',
+      list: 'events/list',
+      update: 'events/update',
+      delete: 'events/delete',
+    },
+    session: {
+      create: 'sessions/create',
+      list: 'sessions/list',
+      speakerList: 'sessions/speakerList',
+    },
   })
 
   constructor() {
@@ -32,7 +39,7 @@ export class PublicAPIClient {
     timezone: string
     description?: string
   }): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.create}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.create}`, {
       method: 'POST',
       headers: this.getHeaders,
       body: JSON.stringify(params),
@@ -52,7 +59,7 @@ export class PublicAPIClient {
     filter?: TListEventFilterDto
     pager?: { offset?: number; limit?: number }
   }): Promise<unknown> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.list}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.list}`, {
       method: 'POST',
       headers: this.getHeaders,
       body: JSON.stringify(params),
@@ -80,7 +87,7 @@ export class PublicAPIClient {
     logoEntryId?: string
     bannerEntryId?: string
   }): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.update}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.update}`, {
       method: 'POST',
       headers: this.getHeaders,
       body: JSON.stringify(params),
@@ -97,7 +104,7 @@ export class PublicAPIClient {
    * Delete an event
    */
   async deleteEvent(id: number): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.delete}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.delete}`, {
       method: 'POST',
       headers: this.getHeaders,
       body: JSON.stringify({ id }),
@@ -105,6 +112,68 @@ export class PublicAPIClient {
 
     if (!response.ok) {
       await this.handleResponseError(response, 'deleteEvent')
+    }
+
+    return await response.text()
+  }
+
+  /**
+   * List event session speakers
+   */
+  async listSessionSpeakers(eventId: number, sessionId: string): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.session.speakerList}`, {
+      method: 'POST',
+      headers: this.getHeaders,
+      body: JSON.stringify({ eventId, sessionId }),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listSessions')
+    }
+
+    return await response.text()
+  }
+
+  /**
+   * List sessions for a given event
+   */
+  async listSessions(eventId: number): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.session.list}`, {
+      method: 'POST',
+      headers: this.getHeaders,
+      body: JSON.stringify({ eventId }),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listSessions')
+    }
+
+    return await response.text()
+  }
+
+  async createSession(
+    eventId: number,
+    session: {
+      name: string
+      type: SessionType
+      description?: string
+      startDate?: string
+      endDate?: string
+      tags?: string[]
+      isManualLive?: boolean
+      visibility?: SessionVisibility
+      sourceEntryId?: string
+      imageUrlEntryId?: string
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.session.create}`, {
+      method: 'POST',
+      headers: this.getHeaders,
+      body: JSON.stringify({ eventId, session }),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'createSession')
     }
 
     return await response.text()

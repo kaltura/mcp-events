@@ -6,9 +6,9 @@ import {
   DeleteEventDto,
   ListSessionDto,
   CreateSessionDto,
+  ListSessionSpeakersDto,
 } from '../schemas/eventSchemas'
 import { publicApiClient } from '../api/publicApiClient'
-import { epClient } from '../api/epClient'
 
 /**
  * Register event-related tools with the MCP server
@@ -171,6 +171,38 @@ export function registerEventTools(server: McpServer): void {
     },
   )
 
+  // Tool for creating an event session
+  server.tool(
+    'create-event-session',
+    'Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings',
+    CreateSessionDto.shape,
+    {
+      title: 'Create an Event Session',
+      destructiveHint: false,
+      idempotentHint: false,
+      openWorldHint: true,
+      readOnlyHint: false,
+    },
+    async ({ id, session }) => {
+      try {
+        const result = await publicApiClient.createSession(id, session)
+
+        return {
+          content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+        }
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error creating event session: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+        }
+      }
+    },
+  )
+
   // Tool for listing an event sessions
   server.tool(
     'list-event-sessions',
@@ -183,9 +215,9 @@ export function registerEventTools(server: McpServer): void {
       openWorldHint: true,
       readOnlyHint: true,
     },
-    async ({ filter, id }) => {
+    async ({ eventId }) => {
       try {
-        const result = await epClient.sessionList(id, filter?.tagsFilter)
+        const result = await publicApiClient.listSessions(eventId)
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
@@ -203,21 +235,21 @@ export function registerEventTools(server: McpServer): void {
     },
   )
 
-  // Tool for creating an event session
+  // Tool for listing event session sepakers list
   server.tool(
-    'create-event-session',
-    'Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings',
-    CreateSessionDto.shape,
+    'list-session-sepakers',
+    'Retrieves a list of speakers for as specific session in a specific event',
+    ListSessionSpeakersDto.shape,
     {
-      title: 'Create an Event Session',
+      title: 'List Event Sessions',
       destructiveHint: false,
-      idempotentHint: false,
+      idempotentHint: true,
       openWorldHint: true,
-      readOnlyHint: false,
+      readOnlyHint: true,
     },
-    async ({ id, imageUrlEntryId, sourceEntryId, session }) => {
+    async ({ eventId, sessionId }) => {
       try {
-        const result = await epClient.sessionCreate(id, session, imageUrlEntryId, sourceEntryId)
+        const result = await publicApiClient.listSessionSpeakers(eventId, sessionId)
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
@@ -227,7 +259,7 @@ export function registerEventTools(server: McpServer): void {
           content: [
             {
               type: 'text',
-              text: `Error creating event session: ${error instanceof Error ? error.message : String(error)}`,
+              text: `Error listing event session sepakers: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
         }

@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerEventTools = registerEventTools;
 const eventSchemas_1 = require("../schemas/eventSchemas");
 const publicApiClient_1 = require("../api/publicApiClient");
-const epClient_1 = require("../api/epClient");
 /**
  * Register event-related tools with the MCP server
  */
@@ -135,6 +134,31 @@ function registerEventTools(server) {
             };
         }
     }));
+    // Tool for creating an event session
+    server.tool('create-event-session', 'Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings', eventSchemas_1.CreateSessionDto.shape, {
+        title: 'Create an Event Session',
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+    }, (_a) => __awaiter(this, [_a], void 0, function* ({ id, session }) {
+        try {
+            const result = yield publicApiClient_1.publicApiClient.createSession(id, session);
+            return {
+                content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+            };
+        }
+        catch (error) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error creating event session: ${error instanceof Error ? error.message : String(error)}`,
+                    },
+                ],
+            };
+        }
+    }));
     // Tool for listing an event sessions
     server.tool('list-event-sessions', 'Retrieves a list of sessions for a specific event', eventSchemas_1.ListSessionDto.shape, {
         title: 'List Event Sessions',
@@ -142,9 +166,9 @@ function registerEventTools(server) {
         idempotentHint: true,
         openWorldHint: true,
         readOnlyHint: true,
-    }, (_a) => __awaiter(this, [_a], void 0, function* ({ filter, id }) {
+    }, (_a) => __awaiter(this, [_a], void 0, function* ({ eventId }) {
         try {
-            const result = yield epClient_1.epClient.sessionList(id, filter === null || filter === void 0 ? void 0 : filter.tagsFilter);
+            const result = yield publicApiClient_1.publicApiClient.listSessions(eventId);
             return {
                 content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
             };
@@ -160,16 +184,16 @@ function registerEventTools(server) {
             };
         }
     }));
-    // Tool for creating an event session
-    server.tool('create-event-session', 'Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings', eventSchemas_1.CreateSessionDto.shape, {
-        title: 'Create an Event Session',
+    // Tool for listing event session sepakers list
+    server.tool('list-session-sepakers', 'Retrieves a list of speakers for as specific session in a specific event', eventSchemas_1.ListSessionSpeakersDto.shape, {
+        title: 'List Event Sessions',
         destructiveHint: false,
-        idempotentHint: false,
+        idempotentHint: true,
         openWorldHint: true,
-        readOnlyHint: false,
-    }, (_a) => __awaiter(this, [_a], void 0, function* ({ id, imageUrlEntryId, sourceEntryId, session }) {
+        readOnlyHint: true,
+    }, (_a) => __awaiter(this, [_a], void 0, function* ({ eventId, sessionId }) {
         try {
-            const result = yield epClient_1.epClient.sessionCreate(id, session, imageUrlEntryId, sourceEntryId);
+            const result = yield publicApiClient_1.publicApiClient.listSessionSpeakers(eventId, sessionId);
             return {
                 content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
             };
@@ -179,7 +203,7 @@ function registerEventTools(server) {
                 content: [
                     {
                         type: 'text',
-                        text: `Error creating event session: ${error instanceof Error ? error.message : String(error)}`,
+                        text: `Error listing event session sepakers: ${error instanceof Error ? error.message : String(error)}`,
                     },
                 ],
             };

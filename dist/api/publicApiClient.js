@@ -21,10 +21,17 @@ const config_1 = require("../config/config");
 class PublicAPIClient {
     constructor() {
         this.paths = Object.freeze({
-            create: 'event/create',
-            list: 'event/list',
-            update: 'event/update',
-            delete: 'event/delete',
+            event: {
+                create: 'events/create',
+                list: 'events/list',
+                update: 'events/update',
+                delete: 'events/delete',
+            },
+            session: {
+                create: 'sessions/create',
+                list: 'sessions/list',
+                speakerList: 'sessions/speakerList',
+            },
         });
         this.baseUrl = config_1.config.urls.publicApi;
         this.ks = config_1.config.ks;
@@ -35,7 +42,7 @@ class PublicAPIClient {
      */
     createEvent(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(`${this.baseUrl}/${this.paths.create}`, {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.event.create}`, {
                 method: 'POST',
                 headers: this.getHeaders,
                 body: JSON.stringify(params),
@@ -51,7 +58,7 @@ class PublicAPIClient {
      */
     listEvents(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(`${this.baseUrl}/${this.paths.list}`, {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.event.list}`, {
                 method: 'POST',
                 headers: this.getHeaders,
                 body: JSON.stringify(params),
@@ -67,7 +74,7 @@ class PublicAPIClient {
      */
     updateEvent(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(`${this.baseUrl}/${this.paths.update}`, {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.event.update}`, {
                 method: 'POST',
                 headers: this.getHeaders,
                 body: JSON.stringify(params),
@@ -83,13 +90,58 @@ class PublicAPIClient {
      */
     deleteEvent(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(`${this.baseUrl}/${this.paths.delete}`, {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.event.delete}`, {
                 method: 'POST',
                 headers: this.getHeaders,
                 body: JSON.stringify({ id }),
             });
             if (!response.ok) {
                 yield this.handleResponseError(response, 'deleteEvent');
+            }
+            return yield response.text();
+        });
+    }
+    /**
+     * List event session speakers
+     */
+    listSessionSpeakers(eventId, sessionId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.session.speakerList}`, {
+                method: 'POST',
+                headers: this.getHeaders,
+                body: JSON.stringify({ eventId, sessionId }),
+            });
+            if (!response.ok) {
+                yield this.handleResponseError(response, 'listSessions');
+            }
+            return yield response.text();
+        });
+    }
+    /**
+     * List sessions for a given event
+     */
+    listSessions(eventId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.session.list}`, {
+                method: 'POST',
+                headers: this.getHeaders,
+                body: JSON.stringify({ eventId }),
+            });
+            if (!response.ok) {
+                yield this.handleResponseError(response, 'listSessions');
+            }
+            return yield response.text();
+        });
+    }
+    createSession(eventId, session) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(`${this.baseUrl}/${this.paths.session.create}`, {
+                method: 'POST',
+                headers: this.getHeaders,
+                body: JSON.stringify({ eventId, session }),
+            });
+            if (!response.ok) {
+                yield this.handleResponseError(response, 'createSession');
             }
             return yield response.text();
         });
