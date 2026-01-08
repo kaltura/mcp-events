@@ -1,16 +1,30 @@
-require('@kaltura/services-common/otel-tracer');
-import { createWebApp } from '@kaltura/services-common';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { McpConfig } from './mcp-config';
+import { AppLogger } from '@kaltura/services-common';
 
+/**
+ * Bootstrap MCP Server with plain NestJS
+ *
+ * Note: We don't use createWebApp() from @kaltura/services-common because:
+ * - It adds KsReaderMiddleware globally which conflicts with MCP authentication
+ * - MCP handles KS extraction manually per connection
+ */
 async function bootstrap() {
-  const app = await createWebApp(AppModule, {
-    apiTitle: 'Kaltura Events MCP Server',
+  const app = await NestFactory.create(AppModule, {
+    logger: new AppLogger('MCP Server'),
+  });
+
+  // Enable CORS for remote SSE connections
+  app.enableCors({
+    origin: '*',
+    credentials: true,
   });
 
   const serverPort = McpConfig.server.port;
 
   await app.listen(serverPort);
+  console.log(`MCP Server is listening on port ${serverPort}`);
 }
 
 bootstrap()

@@ -15,7 +15,7 @@ export const McpConfig = {
   },
 };
 
-console.log('McpConfig loaded:', {
+console.error('McpConfig loaded:', {
   ...McpConfig,
   kaltura: {
     ...McpConfig.kaltura,
