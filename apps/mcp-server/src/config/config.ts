@@ -1,6 +1,5 @@
 import { Env } from '@kaltura/commons-utils'
 import assert from 'node:assert'
-import { version } from 'node:os'
 
 const Envs = Object.freeze({
   NVP: {
