@@ -119,7 +119,7 @@ npm start  # Starts NestJS server on port 3000
 |----------|-------------|---------|
 | `KALTURA_ENV` | API environment (`NVP`, `EU`, `DE`) | `NVP` |
 | `KALTURA_KS` | Kaltura Session (stdio mode only) | - |
-| `MCP_SERVER_PORT` | Server port (remote mode) | `3000` |
+| `KALTURA_SERVER_PORT` | Server port (remote mode) | `3000` |
 | `KALTURA_PUBLIC_API` | Custom Public API URL | Auto-configured |
 | `KALTURA_EP_API` | Custom EP API URL | Auto-configured |
 | `KALTURA_BE_API` | Custom BE API URL | Auto-configured |
@@ -337,7 +337,7 @@ npm run build -- --watch
 npm start
 
 # Start with specific port
-MCP_SERVER_PORT=4000 npm start
+KALTURA_SERVER_PORT=4000 npm start
 ```
 
 ---

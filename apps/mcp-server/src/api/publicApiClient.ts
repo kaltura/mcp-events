@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { config } from '../config/config';
-import { TListEventFilterDto } from '../schemas/eventSchemas';
+import { Injectable } from '@nestjs/common'
+import { config } from '../config/config'
+import { TListEventFilterDto } from '../schemas/eventSchemas'
 
 /**
  * API client for Public API
@@ -8,16 +8,16 @@ import { TListEventFilterDto } from '../schemas/eventSchemas';
  */
 @Injectable()
 export class PublicAPIClient {
-  private baseUrl: string;
+  private baseUrl: string
   private readonly paths = Object.freeze({
     create: 'event/create',
     list: 'event/list',
     update: 'event/update',
     delete: 'event/delete',
-  });
+  })
 
   constructor() {
-    this.baseUrl = config.urls.publicApi as string;
+    this.baseUrl = config.urls.publicApi as string
   }
 
   /**
@@ -27,25 +27,25 @@ export class PublicAPIClient {
   async createEvent(
     ks: string,
     params: {
-      name: string;
-      templateId: string;
-      startDate: string;
-      endDate: string;
-      timezone: string;
-      description?: string;
-    }
+      name: string
+      templateId: string
+      startDate: string
+      endDate: string
+      timezone: string
+      description?: string
+    },
   ): Promise<string> {
     const response = await fetch(`${this.baseUrl}/${this.paths.create}`, {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
-    });
+    })
 
     if (!response.ok) {
-      await this.handleResponseError(response, 'createEvent');
+      await this.handleResponseError(response, 'createEvent')
     }
 
-    return await response.text();
+    return await response.text()
   }
 
   /**
@@ -55,21 +55,21 @@ export class PublicAPIClient {
   async listEvents(
     ks: string,
     params: {
-      filter?: TListEventFilterDto;
-      pager?: { offset?: number; limit?: number };
-    }
+      filter?: TListEventFilterDto
+      pager?: { offset?: number; limit?: number }
+    },
   ): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/${this.paths.list}`, {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
-    });
+    })
 
     if (!response.ok) {
-      await this.handleResponseError(response, 'listEvents');
+      await this.handleResponseError(response, 'listEvents')
     }
 
-    return await response.json();
+    return await response.json()
   }
 
   /**
@@ -79,29 +79,29 @@ export class PublicAPIClient {
   async updateEvent(
     ks: string,
     params: {
-      id: number;
-      name?: string;
-      description?: string;
-      startDate?: string;
-      endDate?: string;
-      doorsOpenDate?: string;
-      timezone?: string;
-      labels?: string[];
-      logoEntryId?: string;
-      bannerEntryId?: string;
-    }
+      id: number
+      name?: string
+      description?: string
+      startDate?: string
+      endDate?: string
+      doorsOpenDate?: string
+      timezone?: string
+      labels?: string[]
+      logoEntryId?: string
+      bannerEntryId?: string
+    },
   ): Promise<string> {
     const response = await fetch(`${this.baseUrl}/${this.paths.update}`, {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
-    });
+    })
 
     if (!response.ok) {
-      await this.handleResponseError(response, 'updateEvent');
+      await this.handleResponseError(response, 'updateEvent')
     }
 
-    return await response.text();
+    return await response.text()
   }
 
   /**
@@ -113,13 +113,13 @@ export class PublicAPIClient {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify({ id }),
-    });
+    })
 
     if (!response.ok) {
-      await this.handleResponseError(response, 'deleteEvent');
+      await this.handleResponseError(response, 'deleteEvent')
     }
 
-    return await response.text();
+    return await response.text()
   }
 
   /**
@@ -149,6 +149,6 @@ export class PublicAPIClient {
       Authorization: `Bearer ${ks}`,
       'Content-Type': 'application/json',
       'X-Kaltura-Client-Tag': 'mcp-events-pa-client',
-    };
+    }
   }
 }
