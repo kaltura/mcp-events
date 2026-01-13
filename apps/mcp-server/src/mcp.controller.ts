@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Res, Req, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, All, Res, Req, UnauthorizedException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AppLogger } from '@kaltura/services-common';
 import { McpService } from './mcp.service';
@@ -61,6 +61,41 @@ export class McpController {
       await this.mcpService.handlePostMessage(request, response);
     } catch (error) {
       this.logger.error('Failed to handle POST message:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Streamable HTTP endpoint for MCP connections
+   * This is the modern MCP transport that handles both GET and POST in a single endpoint
+   *
+   * Authentication:
+   * KS must be provided via Authorization header following company standard:
+   * - "Authorization: ks <KS_VALUE>" (recommended)
+   * - "Authorization: bearer <KS_VALUE>" (for Swagger UI compatibility)
+   */
+  @All('streamable')
+  async handleStreamableHttp(
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    // Extract KS from Authorization header (company standard format)
+    const ks = getKsFromRequest(request);
+
+    if (!ks) {
+      this.logger.error('Streamable HTTP connection rejected: No KS in Authorization header');
+      throw new UnauthorizedException(
+        'Kaltura Session (KS) required. Provide via Authorization header: "Authorization: ks <KS>" or "Authorization: bearer <KS>"'
+      );
+    }
+
+    this.logger.log('New Streamable HTTP connection (KS provided)');
+
+    try {
+      // Connect MCP server with Streamable HTTP transport
+      await this.mcpService.connectWithStreamableHttp(ks, request, response);
+    } catch (error) {
+      this.logger.error('Failed to establish Streamable HTTP connection:', error);
       throw error;
     }
   }

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { HealthChecker } from './health/health-check.provider';
+import { HealthController } from './health/health.controller';
 import { McpService } from './mcp.service';
 import { McpController } from './mcp.controller';
 import { PublicAPIClient } from './api/publicApiClient';
@@ -16,6 +17,6 @@ import { EpClient } from './api/epClient';
 @Module({
   imports: [],
   providers: [McpService, PublicAPIClient, EpClient, HealthChecker],
-  controllers: [McpController],
+  controllers: [McpController, HealthController],
 })
 export class AppModule {}

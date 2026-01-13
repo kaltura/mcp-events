@@ -2,24 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { AppLogger } from '@kaltura/services-common';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { config } from './config/config';
 import { registerEventTools } from './tools/eventTools';
 import { registerEventResources } from './resources/eventResources';
 import { PublicAPIClient } from './api/publicApiClient';
 import { EpClient } from './api/epClient';
 import { Request, Response } from 'express';
+import { randomUUID } from 'crypto';
 
 /**
  * MCP Service
- * Creates a new MCP server instance per SSE connection
+ * Creates a new MCP server instance per connection (SSE or Streamable HTTP)
  * Each connection has its own KS captured in closure
  */
 @Injectable()
 export class McpService {
   private readonly logger = new AppLogger(McpService.name);
 
-  // Store active transports by sessionId for POST message routing
-  private readonly transports = new Map<string, SSEServerTransport>();
+  // Store active SSE transports by sessionId for POST message routing
+  private readonly sseTransports = new Map<string, SSEServerTransport>();
+
+  // Store active Streamable HTTP transports by sessionId
+  private readonly streamableTransports = new Map<string, StreamableHTTPServerTransport>();
 
   constructor(
     private readonly publicApiClient: PublicAPIClient,
@@ -61,12 +66,12 @@ export class McpService {
 
         // Store transport by sessionId for POST message routing
         const sessionId = transport.sessionId;
-        this.transports.set(sessionId, transport);
+        this.sseTransports.set(sessionId, transport);
         this.logger.log(`MCP Server connected via SSE (sessionId: ${sessionId})`);
 
         // Cleanup when connection closes and resolve the promise
         response.on('close', () => {
-          this.transports.delete(sessionId);
+          this.sseTransports.delete(sessionId);
           this.logger.log(`SSE connection closed (sessionId: ${sessionId})`);
           resolve(); // Connection closed, resolve the promise
         });
@@ -74,7 +79,7 @@ export class McpService {
         // Handle errors
         response.on('error', (error) => {
           this.logger.error(`SSE connection error (sessionId: ${sessionId}):`, error);
-          this.transports.delete(sessionId);
+          this.sseTransports.delete(sessionId);
           reject(error);
         });
       } catch (error) {
@@ -99,11 +104,11 @@ export class McpService {
         return;
       }
 
-      // Find the transport for this session
-      const transport = this.transports.get(sessionId);
+      // Find the SSE transport for this session
+      const transport = this.sseTransports.get(sessionId);
 
       if (!transport) {
-        this.logger.error(`No active transport found for sessionId: ${sessionId}`);
+        this.logger.error(`No active SSE transport found for sessionId: ${sessionId}`);
         response.status(404).json({ error: 'Session not found' });
         return;
       }
@@ -129,6 +134,95 @@ export class McpService {
     } catch (error) {
       this.logger.error('Error handling POST message:', error);
       response.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  /**
+   * Connect MCP server with Streamable HTTP transport
+   * Handles session management: creates new server on first request, reuses on subsequent
+   * @param ks Kaltura Session for this connection
+   * @param request Express Request object
+   * @param response Express Response object
+   */
+  async connectWithStreamableHttp(ks: string, request: Request, response: Response): Promise<void> {
+    try {
+      // Parse request body
+      let body: unknown;
+      if (typeof request.body === 'string') {
+        body = JSON.parse(request.body);
+      } else {
+        body = request.body;
+      }
+
+      // Check if this is an existing session (has mcp-session-id header)
+      const existingSessionId = request.headers['mcp-session-id'] as string;
+
+      if (existingSessionId) {
+        // Reuse existing transport for this session
+        const transport = this.streamableTransports.get(existingSessionId);
+
+        if (!transport) {
+          this.logger.error(`No transport found for sessionId: ${existingSessionId}`);
+          response.status(404).json({
+            jsonrpc: '2.0',
+            error: { code: -32000, message: 'Session not found' },
+            id: null
+          });
+          return;
+        }
+
+        // Log the request
+        const jsonRpcBody = body as any;
+        if (jsonRpcBody?.method === 'tools/call') {
+          this.logger.log(`[${existingSessionId.substring(0, 8)}...] Tool call: ${jsonRpcBody.params?.name || 'unknown'}`);
+        } else if (jsonRpcBody?.method) {
+          this.logger.log(`[${existingSessionId.substring(0, 8)}...] MCP method: ${jsonRpcBody.method}`);
+        }
+
+        // Handle request with existing transport
+        await transport.handleRequest(request as any, response as any, body);
+        return;
+      }
+
+      // No existing session - this is the first request (initialize)
+      // Create a NEW MCP server instance for this session
+      const mcpServer = new McpServer({
+        name: config.server.name,
+        version: config.server.version,
+      });
+
+      // Register tools with THIS server and THIS KS
+      // KS is captured in closure - each tool handler will use this KS
+      registerEventTools(mcpServer, ks, this.publicApiClient, this.epClient);
+
+      // Register resources with THIS server and THIS KS
+      registerEventResources(mcpServer, ks, this.publicApiClient);
+
+      // Create Streamable HTTP transport for this session
+      const transport = new StreamableHTTPServerTransport({
+        sessionIdGenerator: () => randomUUID(),
+        onsessioninitialized: (sessionId) => {
+          this.streamableTransports.set(sessionId, transport);
+          this.logger.log(`MCP Server connected via Streamable HTTP (sessionId: ${sessionId})`);
+        },
+        onsessionclosed: (sessionId) => {
+          this.streamableTransports.delete(sessionId);
+          this.logger.log(`Streamable HTTP connection closed (sessionId: ${sessionId})`);
+        },
+      });
+
+      // Connect this server instance to this transport
+      await mcpServer.connect(transport);
+
+      // Log the initialize request
+      const jsonRpcBody = body as any;
+      this.logger.log(`[Streamable] New session - method: ${jsonRpcBody?.method || 'unknown'}`);
+
+      // Handle the first request (initialize)
+      await transport.handleRequest(request as any, response as any, body);
+    } catch (error) {
+      this.logger.error('Failed to connect MCP server with Streamable HTTP:', error);
+      throw error;
     }
   }
 
