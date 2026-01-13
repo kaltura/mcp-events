@@ -152,3 +152,6 @@ export class PublicAPIClient {
     }
   }
 }
+
+// Export a singleton instance
+export const publicApiClient = new PublicAPIClient()

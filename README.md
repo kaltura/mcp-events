@@ -63,14 +63,13 @@ curl -X POST \
 
 ## 🛠️ Available Tools
 
-| Tool | Description | Capabilities |
-|------|-------------|--------------|
-| `create-event` | Create a new virtual event | Name, dates, templates, timezone configuration |
-| `list-events` | Retrieve available events | Filtering, pagination support |
-| `update-event` | Modify event properties | Name, dates, banner, logo, labels |
-| `delete-event` | Remove an event | Permanently deletes event and resources |
-| `list-event-sessions` | Get event sessions | Filter by tags |
-| `create-event-session` | Add session to event | Configure session details, visibility |
+* **create-event**: Create a new virtual event with specified configuration
+* **list-events**: Retrieve a list of available events with filtering and pagination
+* **update-event**: Modify existing event properties
+* **delete-event**: Remove an event and its resources
+* **list-event**-sessions: Get all sessions for a specific event
+* **list-session**-sepakers: Get all speakers for a specific event session
+* **create-event**-session: Add a new session to an existing event
 
 ---
 
@@ -105,8 +104,6 @@ npm run build
 # For local stdio mode
 node dist/index.js
 
-# For remote HTTP/HTTPS mode
-npm start  # Starts NestJS server on port 3000
 ```
 
 ---
@@ -120,9 +117,12 @@ npm start  # Starts NestJS server on port 3000
 | `KALTURA_ENV` | API environment (`NVP`, `EU`, `DE`) | `NVP` |
 | `KALTURA_KS` | Kaltura Session (stdio mode only) | - |
 | `KALTURA_SERVER_PORT` | Server port (remote mode) | `3000` |
-| `KALTURA_PUBLIC_API` | Custom Public API URL | Auto-configured |
-| `KALTURA_EP_API` | Custom EP API URL | Auto-configured |
-| `KALTURA_BE_API` | Custom BE API URL | Auto-configured |
+
+### For custom API endpoints (instead of using `KALTURA_ENV`)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `KALTURA_PUBLIC_API` | Custom Public API URL | - |
+| `KALTURA_BE_API` | Custom BE API URL | - |
 
 ### API Environments
 
@@ -236,27 +236,6 @@ const client = new Client({
 await client.connect(transport);
 ```
 
----
-
-## 🧪 Testing
-
-### Using MCP Inspector
-
-```bash
-# Start the inspector
-npx @modelcontextprotocol/inspector
-
-# Connect to SSE endpoint
-URL: http://localhost:3000/mcp/events
-Transport: SSE
-Bearer Token: your-ks-here
-
-# Or connect to Streamable HTTP endpoint
-URL: http://localhost:3000/mcp/streamable
-Transport: Streamable HTTP
-Bearer Token: your-ks-here
-```
-
 ### Using curl
 
 ```bash
@@ -274,89 +253,6 @@ curl -X POST \
 
 ---
 
-## 🏗️ Architecture
-
-### Transport Layer
-
-```
-MCP Server
-├── stdio transport (StdioServerTransport)
-│   └── For local AI assistants
-│
-├── SSE transport (SSEServerTransport)
-│   ├── GET /mcp/events - Stream connection
-│   └── POST /mcp/events - Client messages
-│
-└── Streamable HTTP transport (StreamableHTTPServerTransport)
-    └── ALL /mcp/streamable - Unified endpoint
-```
-
-### Per-Connection Isolation
-
-```typescript
-// Each connection gets:
-- Unique sessionId
-- Isolated MCP server instance
-- Captured KS in closure
-- Independent tool/resource handlers
-```
-
----
-
-## 📝 Development
-
-### Project Structure
-
-```
-mcp-events/
-├── apps/mcp-server/
-│   ├── src/
-│   │   ├── api/           # API clients (PublicAPI, EP)
-│   │   ├── config/        # Configuration management
-│   │   ├── health/        # Health check endpoint
-│   │   ├── resources/     # MCP resources
-│   │   ├── schemas/       # Zod validation schemas
-│   │   ├── tools/         # MCP tools implementation
-│   │   ├── utils/         # Helper utilities
-│   │   ├── app.module.ts  # NestJS module
-│   │   ├── mcp.controller.ts  # HTTP endpoints
-│   │   ├── mcp.service.ts     # Core MCP logic
-│   │   ├── main.ts        # NestJS bootstrap
-│   │   └── server.ts      # stdio entry point
-│   └── dist/              # Compiled output
-└── README.md
-```
-
-### Running in Development
-
-```bash
-# Build and watch
-npm run build -- --watch
-
-# Start server (remote mode)
-npm start
-
-# Start with specific port
-KALTURA_SERVER_PORT=4000 npm start
-```
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please ensure:
-- Code follows existing patterns
-- All tests pass
-- Documentation is updated
-- Commit messages are descriptive
-
----
-
-## 📄 License
-
-[Add your license information here]
-
----
 
 ## 🔗 Resources
 

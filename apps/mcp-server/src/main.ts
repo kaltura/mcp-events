@@ -1,7 +1,7 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { McpConfig } from './mcp-config';
-import { AppLogger } from '@kaltura/services-common';
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module'
+import { McpConfig } from './mcp-config'
+import { AppLogger } from '@kaltura/services-common'
 
 /**
  * Bootstrap MCP Server with plain NestJS
@@ -10,23 +10,23 @@ import { AppLogger } from '@kaltura/services-common';
  * - It adds KsReaderMiddleware globally which conflicts with MCP authentication
  * - MCP handles KS extraction manually per connection
  */
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
     logger: new AppLogger('MCP Server'),
-  });
+  })
 
   // Enable CORS for remote SSE connections
   app.enableCors({
     origin: '*',
     credentials: true,
-  });
+  })
 
-  const serverPort = McpConfig.server.port;
+  const serverPort = McpConfig.server.port
 
-  await app.listen(serverPort);
-  console.log(`MCP Server is listening on port ${serverPort}`);
+  await app.listen(serverPort)
+  console.log(`MCP Server is listening on port ${serverPort}`)
 }
 
 bootstrap()
   .then(() => console.log('MCP Server is ready'))
-  .catch((r) => console.log('MCP Server failed to start:', r));
+  .catch((r) => console.log('MCP Server failed to start:', r))

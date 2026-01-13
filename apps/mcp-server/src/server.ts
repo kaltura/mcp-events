@@ -18,7 +18,7 @@ export async function startServer(): Promise<McpServer> {
     if (!ks) {
       throw new Error(
         'KALTURA_KS environment variable is required for stdio mode. ' +
-        'Set it in .env file or provide it when starting the server.'
+          'Set it in .env file or provide it when starting the server.',
       )
     }
 

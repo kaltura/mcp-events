@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request } from 'express'
 
 /**
  * Extract Kaltura Session (KS) from request Authorization header
@@ -11,21 +11,21 @@ import { Request } from 'express';
  * Returns undefined if KS is not found - will cause authentication failure
  */
 export function getKsFromRequest(request: Request): string | undefined {
-  const authorization = request.headers['authorization'];
+  const authorization = request.headers['authorization']
 
   if (!authorization) {
-    return undefined;
+    return undefined
   }
 
   // Split header into prefix and KS value
-  const [prefix, ks] = authorization.split(/\s+/, 2);
+  const [prefix, ks] = authorization.split(/\s+/, 2)
 
   // Accept 'ks' or 'bearer' prefix (case-insensitive, following company standard)
   if (prefix && ['ks', 'bearer'].includes(prefix.toLowerCase()) && ks) {
-    return ks;
+    return ks
   }
 
-  return undefined;
+  return undefined
 }
 
 /**
@@ -33,14 +33,14 @@ export function getKsFromRequest(request: Request): string | undefined {
  * Throws error if KS is not found
  */
 export function getRequiredKs(request: Request): string {
-  const ks = getKsFromRequest(request);
+  const ks = getKsFromRequest(request)
 
   if (!ks) {
     throw new Error(
       'Kaltura Session (KS) is required. ' +
-      'Provide via Authorization header: "Authorization: ks <KS>" or "Authorization: bearer <KS>"'
-    );
+        'Provide via Authorization header: "Authorization: ks <KS>" or "Authorization: bearer <KS>"',
+    )
   }
 
-  return ks;
+  return ks
 }
