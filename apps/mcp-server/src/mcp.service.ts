@@ -6,10 +6,9 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { config } from './config/config'
 import { registerEventTools } from './tools/eventTools'
 import { registerEventResources } from './resources/eventResources'
-import { PublicAPIClient } from './api/publicApiClient'
+import { PublicApiClient } from './api/publicApiClient'
 import { randomUUID, UUID } from 'crypto'
-import { ServerRequest } from '@modelcontextprotocol/sdk/types'
-import { ServerResponse } from 'http'
+import { Request, Response } from 'express'
 
 type JsonRpcRequest = {
   jsonrpc: '2.0'
@@ -33,7 +32,7 @@ export class McpService {
   // Store active Streamable HTTP transports by sessionId
   private readonly streamableTransports = new Map<string, StreamableHTTPServerTransport>()
 
-  constructor(private readonly publicApiClient: PublicAPIClient) {
+  constructor(private readonly publicApiClient: PublicApiClient) {
     this.logger.log('MCP Service initialized (per-connection mode)')
   }
 
@@ -45,7 +44,7 @@ export class McpService {
    * @param response Express Response object
    * @returns Promise that resolves when connection closes
    */
-  async connectWithSSE(ks: string, endpoint: string, response: ServerResponse): Promise<void> {
+  async connectWithSSE(ks: string, endpoint: string, response: Response): Promise<void> {
     // Return a promise that only resolves when the connection closes
     return new Promise<void>(async (resolve, reject) => {
       try {
@@ -97,7 +96,7 @@ export class McpService {
    * Handle POST messages for SSE transport
    * Routes messages to the appropriate transport based on sessionId
    */
-  async handlePostMessage(request: ServerRequest, response: Response): Promise<void> {
+  async handlePostMessage(request: Request, response: Response): Promise<void> {
     try {
       // Extract sessionId from query parameters
       const sessionId = request.query.sessionId as string
@@ -201,7 +200,7 @@ export class McpService {
 
       // Register tools with THIS server and THIS KS
       // KS is captured in closure - each tool handler will use this KS
-      registerEventTools(mcpServer, ks, this.publicApiClient, this.epClient)
+      registerEventTools(mcpServer, ks, this.publicApiClient)
 
       // Register resources with THIS server and THIS KS
       registerEventResources(mcpServer, ks, this.publicApiClient)

@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { McpConfig } from './mcp-config'
 import { AppLogger } from '@kaltura/services-common'
+import { config } from './config/config'
 
 /**
  * Bootstrap MCP Server with plain NestJS
@@ -21,7 +21,7 @@ async function bootstrap(): Promise<void> {
     credentials: true,
   })
 
-  const serverPort = McpConfig.server.port
+  const serverPort = config.server.port
 
   await app.listen(serverPort)
   console.log(`MCP Server is listening on port ${serverPort}`)

@@ -6,14 +6,17 @@ import {
   DeleteEventDto,
   ListSessionDto,
   CreateSessionDto,
-  ListSessionSpeakersDto,
 } from '../schemas/eventSchemas'
-import { publicApiClient } from '../api/publicApiClient'
+import { PublicApiClient } from '../api/publicApiClient'
 
 /**
  * Register event-related tools with the MCP server
+ * @param server MCP Server instance
+ * @param ks Kaltura Session for this connection (captured in closure)
+ * @param publicApiClient Public API client instance
+ * @param epClient EP client instance
  */
-export function registerEventTools(server: McpServer): void {
+export function registerEventTools(server: McpServer, ks: string, publicApiClient: PublicApiClient): void {
   // Tool for creating events
   server.tool(
     'create-event',
@@ -28,7 +31,7 @@ export function registerEventTools(server: McpServer): void {
     },
     async ({ name, templateId, startDate, endDate, timezone, description }) => {
       try {
-        const result = await publicApiClient.createEvent({
+        const result = await publicApiClient.createEvent(ks, {
           name,
           templateId,
           startDate,
@@ -67,7 +70,7 @@ export function registerEventTools(server: McpServer): void {
     },
     async ({ filter, pager }) => {
       try {
-        const result = await publicApiClient.listEvents({ filter, pager })
+        const result = await publicApiClient.listEvents(ks, { filter, pager })
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
@@ -110,7 +113,7 @@ export function registerEventTools(server: McpServer): void {
       bannerEntryId,
     }) => {
       try {
-        const result = await publicApiClient.updateEvent({
+        const result = await publicApiClient.updateEvent(ks, {
           id,
           name,
           description,
@@ -153,7 +156,7 @@ export function registerEventTools(server: McpServer): void {
     },
     async ({ id }) => {
       try {
-        const result = await publicApiClient.deleteEvent(id)
+        const result = await publicApiClient.deleteEvent(ks, id)
 
         return {
           content: [{ type: 'text', text: result }],
@@ -185,7 +188,7 @@ export function registerEventTools(server: McpServer): void {
     },
     async ({ id, session }) => {
       try {
-        const result = await publicApiClient.createSession(id, session)
+        const result = await publicApiClient.createSession(ks, id, session)
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
@@ -217,7 +220,7 @@ export function registerEventTools(server: McpServer): void {
     },
     async ({ eventId }) => {
       try {
-        const result = await publicApiClient.listSessions(eventId)
+        const result = await publicApiClient.listSessions(ks, eventId)
 
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
@@ -228,38 +231,6 @@ export function registerEventTools(server: McpServer): void {
             {
               type: 'text',
               text: `Error listing event sessions: ${error instanceof Error ? error.message : String(error)}`,
-            },
-          ],
-        }
-      }
-    },
-  )
-
-  // Tool for listing event session speakers list
-  server.tool(
-    'list-session-speakers',
-    'Retrieves a list of speakers for as specific session in a specific event',
-    ListSessionSpeakersDto.shape,
-    {
-      title: 'List Event Sessions',
-      destructiveHint: false,
-      idempotentHint: true,
-      openWorldHint: true,
-      readOnlyHint: true,
-    },
-    async ({ eventId, sessionId }) => {
-      try {
-        const result = await publicApiClient.listSessionSpeakers(eventId, sessionId)
-
-        return {
-          content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
-        }
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: 'text',
-              text: `Error listing event session speakers: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
         }

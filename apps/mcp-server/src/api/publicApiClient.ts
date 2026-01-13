@@ -1,23 +1,30 @@
 import { Injectable } from '@nestjs/common'
 import { config } from '../config/config'
-import { TListEventFilterDto } from '../schemas/eventSchemas'
+import { SessionType, SessionVisibility, TListEventFilterDto } from '../schemas/eventSchemas'
 
 /**
  * API client for Public API
  * Injectable service that accepts KS per request
  */
 @Injectable()
-export class PublicAPIClient {
+export class PublicApiClient {
   private baseUrl: string
   private readonly paths = Object.freeze({
-    create: 'event/create',
-    list: 'event/list',
-    update: 'event/update',
-    delete: 'event/delete',
+    event: {
+      create: 'events/create',
+      list: 'events/list',
+      update: 'events/update',
+      delete: 'events/delete',
+    },
+    session: {
+      create: 'sessions/create',
+      list: 'sessions/list',
+      speakerList: 'sessions/speakerList',
+    },
   })
 
   constructor() {
-    this.baseUrl = config.urls.publicApi as string
+    this.baseUrl = config.kaltura.urls.publicApi as string
   }
 
   /**
@@ -35,7 +42,7 @@ export class PublicAPIClient {
       description?: string
     },
   ): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.create}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.create}`, {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
@@ -59,7 +66,7 @@ export class PublicAPIClient {
       pager?: { offset?: number; limit?: number }
     },
   ): Promise<unknown> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.list}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.list}`, {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
@@ -91,7 +98,7 @@ export class PublicAPIClient {
       bannerEntryId?: string
     },
   ): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.update}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.update}`, {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
@@ -109,7 +116,7 @@ export class PublicAPIClient {
    * @param ks Kaltura Session for this request
    */
   async deleteEvent(ks: string, id: number): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/${this.paths.delete}`, {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.delete}`, {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify({ id }),
@@ -117,6 +124,62 @@ export class PublicAPIClient {
 
     if (!response.ok) {
       await this.handleResponseError(response, 'deleteEvent')
+    }
+
+    return await response.text()
+  }
+
+  /**
+   * List sessions for a specific event
+   * @param ks Kaltura Session for this request
+   * @param eventId The ID of the event to list sessions for
+   * @returns The list of sessions as a string
+   */
+  async listSessions(ks: string, eventId: number): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.session.list}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify({ eventId }),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listSessions')
+    }
+
+    return await response.text()
+  }
+
+  /**
+   * Create a new session for an event
+   * @param ks Kaltura Session for this request
+   * @param eventId The ID of the event to which the session belongs
+   * @param session The session details to create
+   * @returns The ID of the created session as a string
+   */
+  async createSession(
+    ks: string,
+    eventId: number,
+    session: {
+      name: string
+      type: SessionType
+      description?: string
+      startDate?: string
+      endDate?: string
+      tags?: string[]
+      isManualLive?: boolean
+      visibility?: SessionVisibility
+      sourceEntryId?: string
+      imageUrlEntryId?: string
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.session.create}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify({ eventId, session }),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'createSession')
     }
 
     return await response.text()
@@ -152,6 +215,3 @@ export class PublicAPIClient {
     }
   }
 }
-
-// Export a singleton instance
-export const publicApiClient = new PublicAPIClient()

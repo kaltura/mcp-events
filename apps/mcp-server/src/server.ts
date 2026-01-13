@@ -3,9 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { config } from './config/config'
 import { registerEventTools } from './tools/eventTools'
 import { registerEventResources } from './resources/eventResources'
-import { PublicAPIClient } from './api/publicApiClient'
-import { EpClient } from './api/epClient'
-import { McpConfig } from './mcp-config'
+import { PublicApiClient } from './api/publicApiClient'
 
 /**
  * Initialize and start the MCP server (stdio mode for local development)
@@ -14,7 +12,7 @@ import { McpConfig } from './mcp-config'
 export async function startServer(): Promise<McpServer> {
   try {
     // Get KS from environment (required for stdio mode)
-    const ks = McpConfig.kaltura.defaultKs
+    const ks = config.kaltura.ks
     if (!ks) {
       throw new Error(
         'KALTURA_KS environment variable is required for stdio mode. ' +
@@ -22,9 +20,8 @@ export async function startServer(): Promise<McpServer> {
       )
     }
 
-    // Create API client instances
-    const publicApiClient = new PublicAPIClient()
-    const epClient = new EpClient()
+    // Create API client instance
+    const publicApiClient = new PublicApiClient()
 
     // Create an MCP server with configuration
     const server = new McpServer({
@@ -33,7 +30,7 @@ export async function startServer(): Promise<McpServer> {
     })
 
     // Register all tools with KS from environment
-    registerEventTools(server, ks, publicApiClient, epClient)
+    registerEventTools(server, ks, publicApiClient)
     // Register all resources with KS from environment
     registerEventResources(server, ks, publicApiClient)
 

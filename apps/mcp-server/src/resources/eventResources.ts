@@ -1,5 +1,5 @@
 import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { PublicAPIClient } from '../api/publicApiClient'
+import { PublicApiClient } from '../api/publicApiClient'
 import assert from 'node:assert'
 import { PresetTemplates } from './presetTemplates'
 
@@ -12,7 +12,7 @@ import { PresetTemplates } from './presetTemplates'
 export function registerEventResources(
   server: McpServer,
   ks: string,
-  publicApiClient: PublicAPIClient,
+  publicApiClient: PublicApiClient,
 ): void {
   // Dynamic resource with parameters
   server.registerResource(
