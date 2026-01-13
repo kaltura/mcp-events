@@ -17,6 +17,15 @@ This MCP server enables AI assistants to interact seamlessly with the Kaltura Ev
 
 ---
 
+###  Tools
+
+- **create-event**: Create a new virtual event with specified configuration
+- **list-events**: Retrieve a list of available events with filtering and pagination
+- **update-event**: Modify existing event properties
+- **delete-event**: Remove an event and its resources
+- **create-event-session**: Add a new session to an existing event
+- **list-event-sessions**: Get all sessions for a specific event
+
 ## 🚀 Transport Modes
 
 ### Local Development (stdio)
