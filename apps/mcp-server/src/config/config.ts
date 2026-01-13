@@ -1,4 +1,3 @@
-import { Env } from '@kaltura/commons-utils'
 import assert from 'node:assert'
 
 const Envs = Object.freeze({
@@ -27,7 +26,7 @@ export const config = {
     ks: process.env.KALTURA_KS,
   },
   server: {
-    port: Env.optInt('KALTURA_SERVER_PORT', 3000),
+    port: process.env.KALTURA_SERVER_PORT ?? 3000,
     name: 'Kaltura Events Server',
     version: '1.0.0',
   },

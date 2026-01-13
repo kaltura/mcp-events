@@ -67,9 +67,8 @@ curl -X POST \
 * **list-events**: Retrieve a list of available events with filtering and pagination
 * **update-event**: Modify existing event properties
 * **delete-event**: Remove an event and its resources
-* **list-event**-sessions: Get all sessions for a specific event
-* **list-session**-sepakers: Get all speakers for a specific event session
-* **create-event**-session: Add a new session to an existing event
+* **list-event-sessions**-sessions: Get all sessions for a specific event
+* **create-event-session**-session: Add a new session to an existing event
 
 ---
 
