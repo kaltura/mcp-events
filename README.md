@@ -4,10 +4,6 @@ A production-ready Model Context Protocol (MCP) server for the Kaltura Event Pla
 
 ---
 
-## 🌟 Overview
-
-This MCP server enables AI assistants to interact seamlessly with the Kaltura Events Platform through the standardized Model Context Protocol. It provides a secure, multi-tenant architecture supporting both local and remote deployments.
-
 **Key Capabilities:**
 - 🎯 Create, update, and delete virtual events
 - 📅 Manage event sessions and resources
@@ -28,7 +24,7 @@ This MCP server enables AI assistants to interact seamlessly with the Kaltura Ev
 
 ## 🚀 Transport Modes
 
-### Local Development (stdio)
+### Local stdio
 Best for: Local testing with Claude Desktop, VS Code Copilot, or other desktop AI assistants.
 
 ```json
@@ -92,8 +88,7 @@ curl -X POST \
 
 ### Prerequisites
 
-- Node.js 18+ (required for dependencies)
-- Access to Kaltura Event Platform APIs
+- Node.js 22+ (required for dependencies)
 - Valid Kaltura Session (KS) with appropriate permissions
 
 ### Setup
@@ -103,15 +98,14 @@ curl -X POST \
 git clone https://github.com/kaltura/mcp-events.git
 cd mcp-events
 
-# Install dependencies
+# Install dependencies & build
 npm install
-
-# Build the project
 npm run build
 
-# For local stdio mode
-node dist/index.js
-
+# Run local stdio mode
+npm run start:stdio
+# Run streamable http 
+npm run start:http
 ```
 
 ---
@@ -123,8 +117,8 @@ node dist/index.js
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `KALTURA_ENV` | API environment (`NVP`, `EU`, `DE`) | `NVP` |
-| `KALTURA_KS` | Kaltura Session (stdio mode only) | - |
 | `KALTURA_SERVER_PORT` | Server port (remote mode) | `3000` |
+| `KALTURA_KS` | Kaltura Session for STDIO only | - |
 
 ### For custom API endpoints (instead of using `KALTURA_ENV`)
 | Variable | Description | Default |
@@ -137,33 +131,6 @@ node dist/index.js
 - **NVP** (Production): Default North America environment
 - **EU**: European region deployment (IRP)
 - **DE**: German region deployment (FRP)
-
----
-
-## 🔐 Authentication & Security
-
-### Multi-Tenant Architecture
-
-Each connection creates an isolated MCP server instance with its own Kaltura Session:
-- ✅ No cross-tenant data leakage
-- ✅ Per-connection KS validation
-- ✅ Secure session management
-
-### Authentication Methods
-
-**stdio mode** (local):
-```bash
-export KALTURA_KS="your-ks-here"
-node dist/index.js
-```
-
-**Remote mode** (HTTP/HTTPS):
-```bash
-# Authorization header (company standard)
-Authorization: ks YOUR_KS
-# or
-Authorization: bearer YOUR_KS
-```
 
 ---
 
@@ -220,54 +187,5 @@ Create `.vscode/mcp.json` in your project:
   }
 }
 ```
-
-### Remote HTTPS Client
-
-```typescript
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
-
-const transport = new SSEClientTransport(
-  new URL('https://your-domain.com/mcp/events'),
-  {
-    headers: {
-      'Authorization': 'ks YOUR_KS_HERE'
-    }
-  }
-);
-
-const client = new Client({
-  name: 'my-client',
-  version: '1.0.0'
-}, { capabilities: {} });
-
-await client.connect(transport);
-```
-
-### Using curl
-
-```bash
-# Test SSE connection
-curl -N -H "Authorization: ks YOUR_KS" http://localhost:3000/mcp/events
-
-# Test Streamable HTTP
-curl -X POST \
-  -H "Authorization: ks YOUR_KS" \
-  -H "Accept: application/json, text/event-stream" \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}' \
-  http://localhost:3000/mcp/streamable
-```
-
----
-
-
-## 🔗 Resources
-
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/)
-- [Kaltura Event Platform API Documentation](https://developer.kaltura.com/)
-- [MCP SDK Documentation](https://github.com/modelcontextprotocol/sdk)
-
----
 
 **Made with ❤️ by the Kaltura Team**

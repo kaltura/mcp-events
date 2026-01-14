@@ -1,12 +1,14 @@
-import { Controller, Get, Post, All, Res, Req, UnauthorizedException } from '@nestjs/common'
+import { Controller, Get, Post, All, Res, Req, UnauthorizedException, ConsoleLogger } from '@nestjs/common'
 import { Request, Response } from 'express'
-import { AppLogger } from '@kaltura/services-common'
 import { McpService } from './mcp.service'
 import { getKsFromRequest } from './utils/ks-helper'
 
 @Controller('mcp')
 export class McpController {
-  private readonly logger = new AppLogger(McpController.name)
+  private readonly logger = new ConsoleLogger({
+    json: true,
+    timestamp: true,
+  })
 
   constructor(private readonly mcpService: McpService) {}
 

@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common'
-import { AppLogger } from '@kaltura/services-common'
+import { ConsoleLogger, Injectable } from '@nestjs/common'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
@@ -24,7 +23,10 @@ type JsonRpcRequest = {
  */
 @Injectable()
 export class McpService {
-  private readonly logger = new AppLogger(McpService.name)
+  private readonly logger = new ConsoleLogger({
+    json: true,
+    timestamp: true,
+  })
 
   // Store active SSE transports by sessionId for POST message routing
   private readonly sseTransports = new Map<string, SSEServerTransport>()

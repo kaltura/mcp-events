@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node --env-file=.env dist/index.js",
+    "start:stdio": "node --env-file=.env dist/mcp-server/src/index.js",
+    "start:http": "node --env-file=.env dist/mcp-server/src/main.js",
     "inspect": "./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/index.js",
     "client": "node dist/client.js",
     "lint": "eslint . --ext .ts"
@@ -16,13 +17,9 @@
   "description": "",
   "devDependencies": {
     "@modelcontextprotocol/inspector": "^0.16.8",
-<<<<<<< HEAD
     "@nestjs/cli": "^11.0.14",
     "@types/express": "^5.0.6",
     "@types/node": "^22.19.5",
-=======
-    "@types/node": "^22.19.6",
->>>>>>> 8de3a0c (fix: build running now and fresh dist)
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
     "eslint": "^9.39.2",

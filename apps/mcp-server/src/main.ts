@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { AppLogger } from '@kaltura/services-common'
 import { config } from './config/config'
+import { ConsoleLogger } from '@nestjs/common'
 
 /**
  * Bootstrap MCP Server with plain NestJS
@@ -12,7 +12,10 @@ import { config } from './config/config'
  */
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
-    logger: new AppLogger('MCP Server'),
+    logger: new ConsoleLogger({
+      json: true,
+      timestamp: true,
+    }),
   })
 
   // Enable CORS for remote SSE connections
