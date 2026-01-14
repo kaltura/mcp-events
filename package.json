@@ -7,7 +7,8 @@
     "build": "tsc",
     "start:stdio": "node --env-file=.env dist/mcp-server/src/index.js",
     "start:http": "node --env-file=.env dist/mcp-server/src/main.js",
-    "inspect": "./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/index.js",
+    "inspect:stdio": "./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/index.js",
+    "inspect:http": "./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/main.js",
     "client": "node dist/client.js",
     "lint": "eslint . --ext .ts"
   },
