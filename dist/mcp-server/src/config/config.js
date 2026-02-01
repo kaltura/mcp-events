@@ -24,9 +24,12 @@ const isCustom = process.env.KALTURA_PUBLIC_API;
 const env = isCustom ? '_CUSTOM' : process.env.KALTURA_ENV || 'NVP';
 (0, node_assert_1.default)(env in Envs, `Invalid ENV value: ${env}`);
 exports.config = {
-    ks: process.env.KALTURA_KS,
-    urls: Envs[env],
+    kaltura: {
+        urls: Envs[env],
+        ks: process.env.KALTURA_KS,
+    },
     server: {
+        port: process.env.KALTURA_SERVER_PORT ?? 3000,
         name: 'Kaltura Events Server',
         version: '1.0.0',
     },

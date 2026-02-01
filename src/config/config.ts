@@ -16,7 +16,7 @@ const Envs = Object.freeze({
 })
 
 // IF one of the custom env vars is not set, we fallback to defaults
-const isCustom = process.env.KALTURA_PUBLIC_API && process.env.KALTURA_BE_API
+const isCustom = process.env.KALTURA_PUBLIC_API
 const env = isCustom ? '_CUSTOM' : process.env.KALTURA_ENV || 'NVP'
 assert(env in Envs, `Invalid ENV value: ${env}`)
 
