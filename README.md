@@ -188,4 +188,48 @@ Create `.vscode/mcp.json` in your project:
 }
 ```
 
+- **User-level configuration**  
+  Create or locate a `mcp.json` file (with the JSON config above) in your user settings directory:  
+  - 🐧 Linux/macOS: `~/.vscode/mcp.json`  
+  - 🪟 Windows: `%APPDATA%\Code\User\mcp.json`
+
+- **Workspace-level configuration**  
+  For project-specific settings, create a `.vscode` folder in your project's root directory, then add a `mcp.json` file (with the JSON config above) inside it:  
+  - 📁 Example: `your_project/.vscode/mcp.json`
+
+---
+
+### 🤖 Claude Code | Adding the MCP Config
+
+- **Add an MCP config:**
+
+  ```bash
+  claude mcp add-json kaltura-events '{"transport":"stdio","command":"node","args":["~/dev/mcp-events/dist/index.js"],"env":{"KALTURA_ENV":"NVP","KALTURA_KS":"YOUR-KALTURA-SECRET"}}'
+  ```
+
+
+### 🌱 Environment Configuration
+
+These are the environment variables (can be set via your terminal or directly in the agent config):
+
+- `KALTURA_ENV`: The environment to use  
+  - `NVP` (default)
+  - `EU` 
+  - `DE`
+
+- `KS`: Your Kaltura Session key **containing a user**
+
+---
+
+## 🌍 API Environments
+
+The MCP server supports multiple Kaltura API environments (regions):
+
+- **NVP** (Production): Default environment
+- **EU**: European region deployment (IRP)
+- **DE**: German region deployment (FRP)
+
+For custom environment URLs, use these environment variables:
+
+- `KALTURA_PUBLIC_API`
 **Made with ❤️ by the Kaltura Team**

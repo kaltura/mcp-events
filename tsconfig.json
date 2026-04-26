@@ -7,12 +7,12 @@
     "types": ["node"],
     "skipLibCheck": true,
     "outDir": "dist",
-    "rootDir": "apps",
+    "rootDir": "src",
     "esModuleInterop": true,
     "strict": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },
-  "include": ["apps/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

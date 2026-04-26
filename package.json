@@ -21,7 +21,7 @@
     "@nestjs/cli": "^11.0.14",
     "@nestjs/core": "^11.1.19",
     "@types/express": "^5.0.6",
-    "@types/node": "^22.19.5",
+    "@types/node": "^22.19.6",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
     "eslint": "^9.39.2",
