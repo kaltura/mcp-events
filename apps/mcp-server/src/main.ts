@@ -12,10 +12,7 @@ import { ConsoleLogger } from '@nestjs/common'
  */
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
-    logger: new ConsoleLogger({
-      json: true,
-      timestamp: true,
-    }),
+    logger: new ConsoleLogger('MCP Server', { timestamp: true }),
   })
 
   // Enable CORS for remote SSE connections

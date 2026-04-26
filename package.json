@@ -19,6 +19,7 @@
   "devDependencies": {
     "@modelcontextprotocol/inspector": "^0.16.8",
     "@nestjs/cli": "^11.0.14",
+    "@nestjs/core": "^11.1.19",
     "@types/express": "^5.0.6",
     "@types/node": "^22.19.5",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
@@ -34,6 +35,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/platform-express": "^11.1.19",
     "import": "^0.0.6",
     "timezone-support": "^3.1.0",
     "zod": "^3.25.76"

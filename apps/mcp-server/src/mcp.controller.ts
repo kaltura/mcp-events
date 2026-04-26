@@ -5,10 +5,7 @@ import { getKsFromRequest } from './utils/ks-helper'
 
 @Controller('mcp')
 export class McpController {
-  private readonly logger = new ConsoleLogger({
-    json: true,
-    timestamp: true,
-  })
+  private readonly logger = new ConsoleLogger(McpController.name, { timestamp: true })
 
   constructor(private readonly mcpService: McpService) {}
 

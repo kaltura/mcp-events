@@ -23,10 +23,7 @@ type JsonRpcRequest = {
  */
 @Injectable()
 export class McpService {
-  private readonly logger = new ConsoleLogger({
-    json: true,
-    timestamp: true,
-  })
+  private readonly logger = new ConsoleLogger(McpService.name, { timestamp: true })
 
   // Store active SSE transports by sessionId for POST message routing
   private readonly sseTransports = new Map<string, SSEServerTransport>()
