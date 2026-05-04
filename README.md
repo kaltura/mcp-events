@@ -1,135 +1,168 @@
+# Kaltura Events MCP Server
 
-# 🎉 Kaltura Events MCP
+A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for the Kaltura Event Platform API. Enables AI assistants to create, manage, and interact with Kaltura virtual events through a standardized tool interface.
 
-A Model Context Protocol (MCP) server for working with the Kaltura Event Platform API. This server provides tools and resources for creating, managing, and interacting with Kaltura virtual events.
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Tools](#tools)
+- [Resources](#resources)
+- [Running the MCP Server](#running-the-mcp-server)
+  - [Installation](#installation)
+  - [Server Configuration](#server-configuration)
+    - [Environment Variables](#environment-variables)
+    - [API Environments](#api-environments)
+- [Connecting Your Agent](#connecting-your-agent)
+  - [Claude Desktop](#claude-desktop)
+  - [Claude Code](#claude-code)
 
 ---
 
 ## Overview
 
-This MCP server provides an interface for AI assistants to interact with the Kaltura Events Platform. It enables:
+The Kaltura Events MCP Server exposes Kaltura's Event Platform API as MCP tools and resources, allowing any MCP-compatible AI agent to manage virtual events programmatically.
 
-- Creating, updating, and deleting virtual events
-- Managing event sessions and resources
-- Accessing event templates and timezone information
+**Key capabilities:**
 
----
-
-## Features
-
-###  Tools
-
-- **create-event**: Create a new virtual event with specified configuration
-- **list-events**: Retrieve a list of available events with filtering and pagination
-- **update-event**: Modify existing event properties
-- **delete-event**: Remove an event and its resources
-- **create-event-session**: Add a new session to an existing event
-- **list-event-sessions**: Get all sessions for a specific event
-
-### Resources
-
-- **events**: Access information about specific Kaltura events
-- **preset-templates**: Browse available preset templates for event creation
+- Create, update, and delete virtual events
+- Manage event sessions and resources
+- Access event templates and timezone information
+- Per-connection authentication with Kaltura Session (KS) isolation
+- Multiple transport protocols: `stdio`, `SSE`, and Streamable HTTP
 
 ---
 
-##  Prerequisites
+## Tools
 
-- Node.js 22+
-- Access to Kaltura Event Platform APIs
-- Valid Kaltura Session (KS) for authentication
+| Tool | Description |
+|------|-------------|
+| `create-event` | Create a new virtual event with specified configuration |
+| `list-events` | Retrieve a list of events with filtering and pagination |
+| `update-event` | Modify existing event properties |
+| `delete-event` | Remove an event and its associated resources |
+| `create-event-session` | Add a new session to an existing event |
+| `list-event-sessions` | Get all sessions for a specific event |
 
 ---
 
-## 📦 Installation
+## Resources
 
-Clone the repository:
+| Resource | Description |
+|----------|-------------|
+| `events` | Access information about specific Kaltura events |
+| `preset-templates` | Browse available preset templates for event creation |
+
+---
+
+## Running the MCP Server
+
+Before connecting any agent, you may need to build and start the MCP server locally.
+
+### Installation
+
+**Prerequisites**
+
+- Node.js 22 or later
+- A valid Kaltura Session (KS) with appropriate permissions
 
 ```bash
+# Clone the repository
 git clone https://github.com/kaltura/mcp-events.git
 cd mcp-events
+
+# Install dependencies and build
 npm install
+npm run build
+
+# Start the MCP server in stdio mode
+npm run start:stdio
+
+# OR start the MCP server in Streamable HTTP mode
+# (required for Claude Desktop, VS Code, and remote agents)
+npm run start:http
 ```
+
+Once the server is running, proceed to [Connecting Your Agent](#connecting-your-agent).
 
 ---
 
-## ⚙️ Configuration & Running
+### Server Configuration
 
-### Configuration your agent
+#### Environment Variables
 
-You can configure you agent to use the Kaltura Events MCP server by adding a new tool configuration.
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `KALTURA_ENV` | API environment (`NVP`, `EU`, `DE`) | `NVP` |
+| `KALTURA_SERVER_PORT` | Port the MCP server listens on (HTTP mode) | `3000` |
+| `KALTURA_KS` | Kaltura Session token (Local stdio mode only) | — |
+| `KALTURA_PUBLIC_API` | Custom Public API base URL (overrides `KALTURA_ENV`) | — |
 
-This differs depending on the agent you use, so Claude Code, VS Code Copilot, etc. would have different ways to add the MCP server.
+#### API Environments
 
-- JSON config example (standart should work for most agents):
+| Environment | Region |
+|-------------|--------|
+| `NVP` | North America (default) |
+| `EU` | European region (IRP) |
+| `DE` | German region (FRP) |
 
-  ```json
-  {
-    "mcpServers": {
-      "Kaltura Events API": {
-        "transport": "stdio",
-        "command": "node",
-        "args": [
-          "/home/john-doe/mcp-events/dist/index.js"
-        ],
-        "env": {
-          "KALTURA_ENV": "NVP",
-          "KALTURA_KS": "YOUR-KALTURA-SECRET_HERE" // Should be a user KS
-        }
+---
+
+## Connecting Your Agent
+
+All examples below assume the MCP server is already running locally on port `3000`. Set the `KALTURA_KS` environment variable in your shell, or substitute your session token directly in the config.
+
+### Claude Desktop
+
+Add the following to your Claude Desktop config file and restart the application.
+
+**Config file location:**
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "kaltura-events": {
+      "type": "http",
+      "url": "http://localhost:3000",
+      "headers": {
+        "Authorization": "KS ${KALTURA_KS}"
       }
     }
   }
+}
+```
 
-  ```
-## 🛠️ Helpful Examples for Different Agents
+### Claude Code
 
-### 💻 VS Code Copilot | Adding the MCP Config
+**Option 1 — CLI:**
 
-#### 1️⃣ Create or Locate `mcp.json`
+```bash
+claude mcp add --transport http kaltura-events http://localhost:3000 \
+  --header 'Authorization: KS ${KALTURA_KS}' \
+  [-s user|project|local]
+```
 
-You can configure MCP at either the **user** or **workspace** level:
+**Option 2 — Manual config (`~/.claude.json`):**
 
-- **User-level configuration**  
-  Create or locate a `mcp.json` file (with the JSON config above) in your user settings directory:  
-  - 🐧 Linux/macOS: `~/.vscode/mcp.json`  
-  - 🪟 Windows: `%APPDATA%\Code\User\mcp.json`
-
-- **Workspace-level configuration**  
-  For project-specific settings, create a `.vscode` folder in your project's root directory, then add a `mcp.json` file (with the JSON config above) inside it:  
-  - 📁 Example: `your_project/.vscode/mcp.json`
-
----
-
-### 🤖 Claude Code | Adding the MCP Config
-
-- **Add an MCP config:**
-
-  ```bash
-  claude mcp add-json kaltura-events '{"transport":"stdio","command":"node","args":["~/dev/mcp-events/dist/index.js"],"env":{"KALTURA_ENV":"NVP","KALTURA_KS":"YOUR-KALTURA-SECRET"}}'
-  ```
+```json
+{
+  "mcpServers": {
+    "kaltura-events": {
+      "type": "http",
+      "url": "http://localhost:3000",
+      "headers": {
+        "Authorization": "KS ${KALTURA_KS}"
+      }
+    }
+  }
+}
+```
 
 
-### 🌱 Environment Configuration
-
-These are the environment variables (can be set via your terminal or directly in the agent config):
-
-- `KALTURA_ENV`: The environment to use  
-  - `NVP` (default)
-  - `EU` 
-  - `DE`
-
-- `KS`: Your Kaltura Session key **containing a user**
 
 ---
 
-## 🌍 API Environments
-
-The MCP server supports multiple Kaltura API environments (regions):
-
-- **NVP** (Production): Default environment
-- **EU**: European region deployment (IRP)
-- **DE**: German region deployment (FRP)
-
-For custom environment URLs, use these environment variables:
-
-- `KALTURA_PUBLIC_API`
+Made with care by the [Kaltura](https://kaltura.com) team.

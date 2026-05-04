@@ -14,10 +14,13 @@ Thumbs.db
 
 # dotenv
 .env
-.env.*
+.env.local
+.env.development
+.env.production
+!.env.template
 
 # Compiled output
-# dist/
+dist/
 build/
 out/
 *.tsbuildinfo
@@ -25,6 +28,7 @@ out/
 # IDEs and editors
 .vscode/
 .idea/
+.claude/
 *.sublime-workspace
 *.sublime-project
 
