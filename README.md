@@ -143,7 +143,7 @@ Add the following to your Claude Desktop config file and restart the application
 ```bash
 claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
   --header 'Authorization: KS ${KALTURA_KS}' \
-  [-s user|project|local]
+  [-s <user|project|local>]
 ```
 
 **Option 2 — Manual config (`~/.claude.json`):**
