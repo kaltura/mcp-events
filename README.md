@@ -90,7 +90,7 @@ __can be set in a `mcp-events/.env` file or directly in the shell__
 | `KALTURA_ENV` | **[Optional]** API environment (`NVP`, `EU`, `DE`) | `NVP` |
 | `KALTURA_SERVER_PORT` | **[Optional]** Port the MCP server listens on (HTTP mode) | `3000` |
 | `KALTURA_PUBLIC_API` | **[Optional]** Custom Public API base URL (overrides `KALTURA_ENV`) | — |
-| `KALTURA_KS` | **[Optional][For Server Stdio Only]** Kaltura Session token for API authentication | — |
+| `KALTURA_KS` | **[Optional] [stdio only]** Kaltura Session token for API authentication | — |
 #### API Environments
 
 | Environment | Region |
