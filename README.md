@@ -1,5 +1,5 @@
-<h1>🤖 Kaltura Events MCP Server</h1>
-<p>A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for the Kaltura Event Platform API.</p>
+# 🤖 Kaltura Events MCP Server
+A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for the Kaltura Event Platform API.
 
 
 
