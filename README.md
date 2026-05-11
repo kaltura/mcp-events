@@ -91,6 +91,7 @@ Once the server is running, proceed to [Connecting Your Agent](#connecting-your-
 ### Server Configuration
 
 #### Environment Variables
+__can be set in a `mcp-events/.env` file or directly in the shell__
 
 | Variable | Description | Default |
 |----------|-------------|---------|
@@ -126,10 +127,10 @@ Add the following to your Claude Desktop config file and restart the application
   "mcpServers": {
     "kaltura-events": {
       "type": "http",
-      "url": "http://localhost:3000",
+      "url": "http://localhost:3000/mcp",
       "headers": {
         "Authorization": "KS ${KALTURA_KS}"
-      }
+      },
     }
   }
 }
@@ -140,7 +141,7 @@ Add the following to your Claude Desktop config file and restart the application
 **Option 1 — CLI:**
 
 ```bash
-claude mcp add --transport http kaltura-events http://localhost:3000 \
+claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
   --header 'Authorization: KS ${KALTURA_KS}' \
   [-s user|project|local]
 ```
@@ -152,10 +153,10 @@ claude mcp add --transport http kaltura-events http://localhost:3000 \
   "mcpServers": {
     "kaltura-events": {
       "type": "http",
-      "url": "http://localhost:3000",
+      "url": "http://localhost:3000/mcp",
       "headers": {
         "Authorization": "KS ${KALTURA_KS}"
-      }
+      },
     }
   }
 }
