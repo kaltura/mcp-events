@@ -155,4 +155,4 @@ claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
 
 ---
 
-Made with ❤️ by Kaltura
+Made with ❤️ by Kaltura.
