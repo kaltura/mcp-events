@@ -6,13 +6,9 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
 ## Table of Contents
 
 - [Overview](#-overview)
-- [Tools](#tools)
-- [Resources](#resources)
 - [Running the MCP Server](#️-running-the-mcp-server)
   - [Installation](#installation)
   - [Server Configuration](#server-configuration)
-    - [Environment Variables](#environment-variables)
-    - [API Environments](#api-environments)
 - [Connecting Your Client](#-connecting-your-client)
   - [Claude Desktop](#claude-desktop)
   - [Claude Code](#claude-code)
