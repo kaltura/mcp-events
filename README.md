@@ -6,10 +6,10 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
 ## Table of Contents
 
 - [Overview](#-overview)
-- [Running the MCP Server](#️-running-the-mcp-server)
+- [Running the MCP Server](#%EF%B8%8F-running-the-mcp-server)
   - [Installation](#installation)
   - [Server Configuration](#server-configuration)
-- [Connecting Your Client](#-connecting-your-client)
+- [Connecting Your Client](#%E2%80%8D-connecting-your-client)
   - [Claude Desktop](#claude-desktop)
   - [Claude Code](#claude-code)
 
@@ -76,7 +76,7 @@ npm run start:stdio
 npm run start:http
 ```
 
-Once the server is running, proceed to [Connecting Your Client](#-connecting-your-client).
+Once the server is running, proceed to [Connecting Your Client](#%E2%80%8D-connecting-your-client).
 
 ---
 
