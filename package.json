@@ -1,13 +1,13 @@
 {
   "name": "mcp-events",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "stdio.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start:stdio": "node --env-file=.env dist/mcp-server/src/index.js",
-    "start:http": "node --env-file=.env dist/mcp-server/src/main.js",
-    "inspect:stdio": "./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/mcp-server/src/index.js",
+    "start:stdio": "node --env-file=.env dist/mcp-server/src/stdio.js",
+    "start:http": "node --env-file=.env dist/mcp-server/src/http.js",
+    "inspect:stdio": "./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/mcp-server/src/stdio.js",
     "inspect:http": "npx @modelcontextprotocol/inspector  http://localhost:3000/mcp",
     "client": "node dist/client.js",
     "lint": "eslint . --ext .ts"
@@ -19,7 +19,6 @@
   "devDependencies": {
     "@modelcontextprotocol/inspector": "^0.21.2",
     "@nestjs/cli": "^11.0.14",
-    "@nestjs/core": "^11.1.19",
     "@types/express": "^5.0.6",
     "@types/node": "^22.19.6",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
@@ -36,6 +35,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
     "@nestjs/common": "^11.1.19",
+    "@nestjs/core": "^11.1.19",
     "@nestjs/platform-express": "^11.1.19",
     "import": "^0.0.6",
     "timezone-support": "^3.1.0",

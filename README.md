@@ -1,17 +1,13 @@
 # 🤖 Kaltura Events MCP Server
 A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for the Kaltura Event Platform API.
 
-
-
 ## Table of Contents
 
 - [Overview](#-overview)
-- [Running the MCP Server](#%EF%B8%8F-running-the-mcp-server)
-  - [Installation](#installation)
-  - [Server Configuration](#server-configuration)
-- [Connecting Your Client](#%E2%80%8D-connecting-your-client)
-  - [Claude Desktop](#claude-desktop)
-  - [Claude Code](#claude-code)
+- [Installation](#%EF%B8%8F-installation)
+  - [Docker — stdio](#docker--stdio)
+  - [Docker — HTTP](#docker--http)
+- [Environment Variables](#-environment-variables)
 
 ---
 
@@ -48,66 +44,30 @@ Resources
   | `preset-templates` | Browse available preset templates for event creation |
 
 
-## 🗄️ Running the MCP Server
-
-Before connecting any agent, you may need to build and start the MCP server locally.
-
-### Installation
-
-**Prerequisites**
-
-- Node.js 22 or later
-
-```bash
-# Clone the repository
-git clone https://github.com/kaltura/mcp-events.git
-cd mcp-events
-
-# Install dependencies and build
-npm install
-npm run build
-
-# Start the MCP server in Local stdio mode
-# (Requires a Kaltura Session token "KS", see Server Configuration below)
-npm run start:stdio
-
-# OR start the MCP server in Streamable HTTP mode
-# (For remote agents)
-npm run start:http
-```
-
-Once the server is running, proceed to [Connecting Your Client](#%E2%80%8D-connecting-your-client).
-
 ---
 
-### Server Configuration
+## 🗄️ Installation
 
-#### Environment Variables
-__can be set in a `mcp-events/.env` file or directly in the shell__
+**(Current Prerequisite) Build the image locally:**
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `KALTURA_ENV` | **[Optional]** API environment (`NVP`, `EU`, `DE`) | `NVP` |
-| `KALTURA_SERVER_PORT` | **[Optional]** Port the MCP server listens on (HTTP mode) | `3000` |
-| `KALTURA_PUBLIC_API` | **[Optional]** Custom Public API base URL (overrides `KALTURA_ENV`) | — |
-| `KALTURA_KS` | **[Optional] [stdio only]** Kaltura Session token for API authentication | — |
-#### API Environments
+```bash
+git clone https://github.com/kaltura/mcp-events.git
+cd mcp-events
+docker build -t kaltura-mcp-events .
+```
 
-| Environment | Region |
-|-------------|--------|
-| `NVP` | North America (default) |
-| `EU` | European region (IRP) |
-| `DE` | German region (FRP) |
+### Docker — stdio
 
-## 👩🏻‍💻 Connecting Your Client
+The MCP client spawns the container on demand. `KALTURA_KS` is passed from your local environment into the container at startup.
 
-All examples below assume the MCP server is already running locally on port `3000`. Set the `KALTURA_KS` environment variable in your shell, or substitute your session token directly in the config.
 
-### Claude Desktop
+**Adding via Claude Code** — CLI:
 
-Add the following to your Claude Desktop config file and restart the application.
+```bash
+claude mcp add kaltura-events docker -- run -i --rm -e KALTURA_KS kaltura-mcp-events
+```
 
-**Config file location:**
+**Adding via Claude Desktop** — add to `claude_desktop_config.json` and restart:
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
@@ -115,27 +75,36 @@ Add the following to your Claude Desktop config file and restart the application
 {
   "mcpServers": {
     "kaltura-events": {
-      "type": "http",
-      "url": "http://localhost:3000/mcp",
-      "headers": {
-        "Authorization": "KS ${KALTURA_KS}"
-      },
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "-e", "KALTURA_KS", "kaltura-mcp-events"],
+      "env": {
+        "KALTURA_KS": "${KALTURA_KS}"
+      }
     }
   }
 }
 ```
 
-### Claude Code
 
-**Option 1 — CLI:**
+---
+
+### Docker — HTTP
+
+The container runs as a persistent server. `KALTURA_KS` is **not** set on the container — it is sent per-request in the `Authorization` header by the client.
+
+**Manually Start the Server**:
+
+```bash
+docker run -p 3000:3000 kaltura-mcp-events node dist/mcp-server/src/http.js
+```
+**Adding via Claude Code** — CLI:
 
 ```bash
 claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
-  --header 'Authorization: KS ${KALTURA_KS}' \
-  [-s <user|project|local>]
+  --header "Authorization: KS ${KALTURA_KS}"
 ```
 
-**Option 2 — Manual config (`~/.claude.json`):**
+**Adding via Claude Desktop** — add to `claude_desktop_config.json` and restart:
 
 ```json
 {
@@ -145,13 +114,28 @@ claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
       "url": "http://localhost:3000/mcp",
       "headers": {
         "Authorization": "KS ${KALTURA_KS}"
-      },
+      }
     }
   }
 }
 ```
 
+---
 
+## ⚙️ Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `KALTURA_KS` | Kaltura Session token — passed at startup (stdio or HTTP) or per-request via `Authorization` header (HTTP only) | — |
+| `KALTURA_ENV` | API environment: `NVP`, `EU`, `DE` | `NVP` |
+| `KALTURA_SERVER_PORT` | Port the HTTP server listens on | `3000` |
+| `KALTURA_PUBLIC_API` | Custom API base URL (overrides `KALTURA_ENV`) | — |
+
+| `KALTURA_ENV` value | Region |
+|---------------------|--------|
+| `NVP` | North America (default) |
+| `EU` | European region (IRP) |
+| `DE` | German region (FRP) |
 
 ---
 

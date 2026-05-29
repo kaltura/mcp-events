@@ -11,7 +11,7 @@
     "mcp-server": {
       "type": "application",
       "root": "apps/mcp-server",
-      "entryFile": "main",
+      "entryFile": "http",
       "sourceRoot": "apps/mcp-server/src",
       "compilerOptions": {
         "tsConfigPath": "apps/mcp-server/tsconfig.app.json"

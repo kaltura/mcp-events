@@ -31,7 +31,7 @@ ${c.dim}  ───────────────────────�
  * - It adds KsReaderMiddleware globally which conflicts with MCP authentication
  * - MCP handles KS extraction manually per connection
  */
-async function bootstrap(): Promise<void> {
+async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new ConsoleLogger('MCP Server', { timestamp: true }),
   })
@@ -44,10 +44,11 @@ async function bootstrap(): Promise<void> {
 
   const serverPort = config.server.port
   await app.listen(serverPort)
+  return app
 }
 
 bootstrap()
-  .then(() => {
+  .then((app) => {
     console.log(BANNER)
     console.log(
       `${c.green}${c.bold}  ✔ Listening${c.reset}  port ${c.yellow}${c.bold}${config.server.port}${c.reset}`,
@@ -55,5 +56,9 @@ bootstrap()
     console.log(`${c.green}${c.bold}  ✔ Status   ${c.reset}  Ready`)
     console.log(`${c.cyan}  ✔ API URL  ${c.reset}  ${config.kaltura.urls.publicApi}`)
     console.log(`\n${c.dim}  ────────────────────────────────────────────────────────${c.reset}\n`)
+
+    const shutdown = () => app.close().then(() => process.exit(0))
+    process.on('SIGINT', shutdown)
+    process.on('SIGTERM', shutdown)
   })
   .catch((r) => console.log(`${c.yellow}  ✖ Failed to start:${c.reset}`, r))

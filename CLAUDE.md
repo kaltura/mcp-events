@@ -25,7 +25,7 @@ npm run inspect
 ### MCP Server Structure
 The server follows the standard MCP SDK pattern:
 
-1. **Entry Point** (`src/index.ts`): Launches the server
+1. **Entry Points** (`src/stdio.ts`, `src/http.ts`): Launch the server in stdio or HTTP mode
 2. **Server Setup** (`src/server.ts`): Initializes McpServer, registers tools and resources, connects to stdio transport
 3. **Tools** (`src/tools/eventTools.ts`): Registers MCP tools for event operations (create, list, update, delete events and sessions)
 4. **Resources** (`src/resources/`): Registers MCP resources for event info, templates, and timezones
@@ -74,7 +74,7 @@ The MCP server communicates over stdio transport. Agents configure it by pointin
 ```json
 {
   "command": "node",
-  "args": ["/path/to/dist/index.js"],
+  "args": ["/path/to/dist/mcp-server/src/stdio.js"],
   "env": {
     "KALTURA_ENV": "NVP",
     "KALTURA_KS": "your-kaltura-session"

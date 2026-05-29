@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.gitignore
+.env
+.env.*
+!.env.template
+.vscode
+.claude
+*.log
+npm-debug.log*
+*.tsbuildinfo
