@@ -15,7 +15,7 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
 
 ## ☰ Overview
 
-MCP server for Kaltura's Event Platform API — lets any MCP-compatible AI agent manage virtual events programmatically.
+MCP server for Kaltura's Event Platform API.
 
 
 ### Tools
