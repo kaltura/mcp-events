@@ -75,7 +75,7 @@ Add to `claude_desktop_config.json` and restart:
 
 ### HTTP Mode
 
-_Before Adding the MCP, manually start the Server:_
+_Before adding the MCP, manually start the server:_
   ```bash
   docker run -p 3000:3000 ghcr.io/kaltura/mcp-events:latest node dist/mcp-server/src/http.js
   ```
