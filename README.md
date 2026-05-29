@@ -78,7 +78,7 @@ _Before Adding the MCP, manually start the Server:_
   docker run -p 3000:3000 ghcr.io/kaltura/mcp-events:latest node dist/mcp-server/src/http.js
   ```
 
-**MCP via Claude Code** — CLI:
+**Claude Code** — CLI:
 
 _Make sure `KALTURA_KS` env var is set, then run:_
 
