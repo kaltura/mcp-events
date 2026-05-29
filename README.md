@@ -13,7 +13,7 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
 
 ## ☰ Overview
 
-The Kaltura Events MCP Server exposes Kaltura's Event Platform API as MCP tools and resources, allowing any MCP-compatible AI agent to manage virtual events programmatically.
+MCP server for Kaltura's Event Platform API — lets any MCP-compatible AI agent manage virtual events programmatically.
 
 **Key capabilities:**
 
@@ -58,7 +58,7 @@ docker build -t kaltura-mcp-events .
 
 ### Docker — stdio
 
-The MCP client spawns the container on demand. `KALTURA_KS` is passed from your local environment into the container at startup.
+The MCP client spawns the container on demand, passing `KALTURA_KS` from your local environment.
 
 
 **Adding via Claude Code** — CLI:
@@ -119,6 +119,7 @@ claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
   }
 }
 ```
+Claude will use the `KALTURA_KS` from your local environment when making requests to the HTTP server. 
 
 ---
 
