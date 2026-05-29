@@ -48,23 +48,14 @@ Resources
 
 ## 🗄️ Installation
 
-**(Current Prerequisite) Build the image locally:**
-
-```bash
-git clone https://github.com/kaltura/mcp-events.git
-cd mcp-events
-docker build -t kaltura-mcp-events .
-```
-
 ### Docker — stdio
-
-The MCP client spawns the container on demand, passing `KALTURA_KS` from your local environment.
-
 
 **Adding via Claude Code** — CLI:
 
+_Make sure `KALTURA_KS` env var is set, then run:_
+
 ```bash
-claude mcp add kaltura-events docker -- run -i --rm -e KALTURA_KS kaltura-mcp-events
+claude mcp add kaltura-events docker -- run -i --rm -e KALTURA_KS ghcr.io/kaltura/mcp-events:latest
 ```
 
 **Adding via Claude Desktop** — add to `claude_desktop_config.json` and restart:
@@ -76,7 +67,7 @@ claude mcp add kaltura-events docker -- run -i --rm -e KALTURA_KS kaltura-mcp-ev
   "mcpServers": {
     "kaltura-events": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "KALTURA_KS", "kaltura-mcp-events"],
+      "args": ["run", "-i", "--rm", "-e", "KALTURA_KS", "ghcr.io/kaltura/mcp-events:latest"],
       "env": {
         "KALTURA_KS": "${KALTURA_KS}"
       }
@@ -90,21 +81,21 @@ claude mcp add kaltura-events docker -- run -i --rm -e KALTURA_KS kaltura-mcp-ev
 
 ### Docker — HTTP
 
-The container runs as a persistent server. `KALTURA_KS` is **not** set on the container — it is sent per-request in the `Authorization` header by the client.
+_Before Adding the MCP, manually start the Server:_
+  ```bash
+  docker run -p 3000:3000 ghcr.io/kaltura/mcp-events:latest node dist/mcp-server/src/http.js
+  ```
 
-**Manually Start the Server**:
+**Adding the MCP via Claude Code** — CLI:
 
-```bash
-docker run -p 3000:3000 kaltura-mcp-events node dist/mcp-server/src/http.js
-```
-**Adding via Claude Code** — CLI:
+_Make sure `KALTURA_KS` env var is set, then run:_
 
 ```bash
 claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
   --header "Authorization: KS ${KALTURA_KS}"
 ```
 
-**Adding via Claude Desktop** — add to `claude_desktop_config.json` and restart:
+**Adding the MCP via Claude Desktop** — add to `claude_desktop_config.json` and restart:
 
 ```json
 {
@@ -119,7 +110,7 @@ claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
   }
 }
 ```
-Claude will use the `KALTURA_KS` from your local environment when making requests to the HTTP server. 
+
 
 ---
 
