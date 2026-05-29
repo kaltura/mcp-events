@@ -1,5 +1,5 @@
 # 🤖 Kaltura Events MCP Server
-A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for the Kaltura Event Platform API.
+A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for Kaltura Events Platform API.
 
 ## Table of Contents
 
