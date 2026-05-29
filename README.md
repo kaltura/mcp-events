@@ -15,16 +15,8 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
 
 MCP server for Kaltura's Event Platform API — lets any MCP-compatible AI agent manage virtual events programmatically.
 
-**Key capabilities:**
 
-- Create, update, and delete virtual events
-- Manage event sessions and resources
-- Access event templates and timezone information
-- Per-connection authentication with Kaltura Session (KS) isolation
-- Multiple transport protocols: `stdio` and Streamable HTTP
-
-
-Tools
+### Tools
 
   | Tool | Description |
   |------|-------------|
@@ -36,7 +28,7 @@ Tools
   | `list-event-sessions` | Get all sessions for a specific event |
 
 
-Resources
+### Resources
 
   | Resource | Description |
   |----------|-------------|
