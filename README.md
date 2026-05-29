@@ -4,10 +4,12 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
 ## Table of Contents
 
 - [Overview](#-overview)
+  - [Tools](#tools)
+  - [Resources](#resources)
 - [Installation](#%EF%B8%8F-installation)
-  - [Docker — stdio](#docker--stdio)
-  - [Docker — HTTP](#docker--http)
-- [Environment Variables](#-environment-variables)
+  - [STDIO Mode](#stdio-mode-recommended)
+  - [HTTP Mode](#http-mode)
+- [Environment Variables](#%EF%B8%8F-environment-variables)
 
 ---
 
@@ -40,16 +42,17 @@ MCP server for Kaltura's Event Platform API — lets any MCP-compatible AI agent
 
 ## 🗄️ Installation
 
-### Docker — stdio
+### STDIO Mode (Recommended)
 
-#### Claude Code — CLI:
+#### Claude Code CLI:
 
 ```bash
 claude mcp add kaltura-events docker -- run -i --rm -e KALTURA_KS ghcr.io/kaltura/mcp-events:latest
 ```
 _Next time you open Claude make sure `KALTURA_KS` env var is set, and that's it!_
 
-#### Claude Desktop — add to `claude_desktop_config.json` and restart:
+#### Claude Desktop
+Add to `claude_desktop_config.json` and restart:
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
@@ -70,14 +73,14 @@ _Next time you open Claude make sure `KALTURA_KS` env var is set, and that's it!
 
 ---
 
-### Docker — HTTP
+### HTTP Mode
 
 _Before Adding the MCP, manually start the Server:_
   ```bash
   docker run -p 3000:3000 ghcr.io/kaltura/mcp-events:latest node dist/mcp-server/src/http.js
   ```
 
-#### Claude Code — CLI:
+#### Claude Code CLI:
 
 ```bash
 claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
@@ -85,7 +88,8 @@ claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
 ```
 _Next time you open Claude make sure `KALTURA_KS` env var is set, and that's it!_
 
-#### Claude Desktop — add to `claude_desktop_config.json` and restart:
+#### Claude Desktop 
+Add to `claude_desktop_config.json` and restart:
 
 ```json
 {
