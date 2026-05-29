@@ -42,7 +42,7 @@ MCP server for Kaltura's Event Platform API — lets any MCP-compatible AI agent
 
 ### Docker — stdio
 
-**Adding via Claude Code** — CLI:
+**Claude Code** — CLI:
 
 _Make sure `KALTURA_KS` env var is set, then run:_
 
@@ -50,7 +50,7 @@ _Make sure `KALTURA_KS` env var is set, then run:_
 claude mcp add kaltura-events docker -- run -i --rm -e KALTURA_KS ghcr.io/kaltura/mcp-events:latest
 ```
 
-**Adding via Claude Desktop** — add to `claude_desktop_config.json` and restart:
+**Claude Desktop** — add to `claude_desktop_config.json` and restart:
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
@@ -78,7 +78,7 @@ _Before Adding the MCP, manually start the Server:_
   docker run -p 3000:3000 ghcr.io/kaltura/mcp-events:latest node dist/mcp-server/src/http.js
   ```
 
-**Adding the MCP via Claude Code** — CLI:
+**MCP via Claude Code** — CLI:
 
 _Make sure `KALTURA_KS` env var is set, then run:_
 
@@ -87,7 +87,7 @@ claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
   --header "Authorization: KS ${KALTURA_KS}"
 ```
 
-**Adding the MCP via Claude Desktop** — add to `claude_desktop_config.json` and restart:
+**Claude Desktop** — add to `claude_desktop_config.json` and restart:
 
 ```json
 {
