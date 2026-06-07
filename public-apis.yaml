@@ -1,0 +1,2353 @@
+openapi: 3.0.0
+paths:
+  /api/v1/events/create:
+    post:
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventRequestDto"
+      responses:
+        "200":
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateEventResponseDto"
+              example:
+                event:
+                  id: 1
+                  publicDomain: example.com
+                  name: Sample Event
+                  description: This is a sample event description.
+                  startDate: 2023-10-01T00:00:00Z
+                  endDate: 2023-10-02T00:00:00Z
+                  timezone: UTC
+                  logoUrl: https://example.com/logo.png
+                  bannerImageUrl: https://example.com/banner.png
+                  labels:
+                    - label1
+                    - label2
+                  createdAt: 2023-09-01T00:00:00Z
+                  updatedAt: 2023-09-02T00:00:00Z
+                  languages:
+                    - en
+                    - fr
+                  isRegistrationOpen: true
+                  doorsOpenDate: 2023-10-01T08:00:00Z
+                  templateId: tm1000
+                  templateName: Interactive session
+                status: ok
+      security:
+        - ks: []
+      summary: Creates a new virtual event with provided configuration including name,
+        start/end dates, templates, and timezone settings
+      tags: &a1
+        - Events
+  /api/v1/events/delete:
+    post:
+      operationId: delete
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteEventRequestDto"
+      responses:
+        "200":
+          description: Event deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteEventResponseDto"
+              example:
+                event:
+                  id: 1
+                  publicDomain: example.com
+                  name: Sample Event
+                  description: This is a sample event description.
+                  startDate: 2023-10-01T00:00:00Z
+                  endDate: 2023-10-02T00:00:00Z
+                  timezone: UTC
+                  logoUrl: https://example.com/logo.png
+                  bannerImageUrl: https://example.com/banner.png
+                  labels:
+                    - label1
+                    - label2
+                  createdAt: 2023-09-01T00:00:00Z
+                  updatedAt: 2023-09-02T00:00:00Z
+                  languages:
+                    - en
+                    - fr
+                  isRegistrationOpen: true
+                  doorsOpenDate: 2023-10-01T08:00:00Z
+                  templateId: tm1000
+                  templateName: Interactive session
+                status: ok
+      security:
+        - ks: []
+      summary: Permanently removes an event by its ID, including all associated
+        resources and configurations
+      tags: *a1
+  /api/v1/events/list:
+    post:
+      operationId: list
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListEventRequestDto"
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListEventResponseDto"
+              example:
+                events:
+                  - id: 1
+                    publicDomain: example.com
+                    name: Sample Event
+                    description: This is a sample event description.
+                    startDate: 2023-10-01T00:00:00Z
+                    endDate: 2023-10-02T00:00:00Z
+                    timezone: UTC
+                    logoUrl: https://example.com/logo.png
+                    bannerImageUrl: https://example.com/banner.png
+                    labels:
+                      - label1
+                      - label2
+                    createdAt: 2023-09-01T00:00:00Z
+                    updatedAt: 2023-09-02T00:00:00Z
+                    languages:
+                      - en
+                      - fr
+                    isRegistrationOpen: true
+                    doorsOpenDate: 2023-10-01T08:00:00Z
+                    templateId: tm1000
+                    templateName: Interactive session
+                totalCount: 1
+                status: ok
+      security:
+        - ks: []
+      summary: Retrieves a paginated list of events with filtering and sorting options
+        to manage large event catalogs
+      tags: *a1
+  /api/v1/events/update:
+    post:
+      operationId: update
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEventRequestDto"
+      responses:
+        "200":
+          description: Event updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateEventResponseDto"
+              example:
+                event:
+                  id: 1
+                  publicDomain: example.com
+                  name: Sample Event
+                  description: This is a sample event description.
+                  startDate: 2023-10-01T00:00:00Z
+                  endDate: 2023-10-02T00:00:00Z
+                  timezone: UTC
+                  logoUrl: https://example.com/logo.png
+                  bannerImageUrl: https://example.com/banner.png
+                  labels:
+                    - label1
+                    - label2
+                  createdAt: 2023-09-01T00:00:00Z
+                  updatedAt: 2023-09-02T00:00:00Z
+                  languages:
+                    - en
+                    - fr
+                  isRegistrationOpen: true
+                  doorsOpenDate: 2023-10-01T08:00:00Z
+                  templateId: tm1000
+                  templateName: Interactive session
+                status: ok
+      security:
+        - ks: []
+      summary: Modifies an existing event's properties such as name, dates, banner,
+        logo, and other configuration settings
+      tags: *a1
+  /api/v1/events/duplicate:
+    post:
+      operationId: duplicate
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DuplicateEventRequestDto"
+      responses:
+        "200":
+          description: Event duplication initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DuplicateEventResponseDto"
+              example:
+                jobId: 1234567890abcdef
+                status: ok
+      security:
+        - ks: []
+      summary: Creates a copy of an existing event with all its configurations,
+        returning a job ID to track the duplication process
+      tags: *a1
+  /api/v1/events/duplicateStatus:
+    post:
+      operationId: duplicateStatus
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DuplicateStatusEventRequestDto"
+      responses:
+        "200":
+          description: Event duplication status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DuplicateStatusEventResponseDto"
+              example:
+                jobId: 1234567890abcdef
+                jobState: completed
+                eventId: abcdef1234567890
+                status: ok
+      security:
+        - ks: []
+      summary: Checks the status of an event duplication job, returning job state and
+        new event ID when complete
+      tags: *a1
+  /api/v1/sessions/create:
+    post:
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionRequestDto"
+      responses:
+        "200":
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateSessionResponseDto"
+              example:
+                session:
+                  id: 0_4q5ie48b
+                  createdAt: 2024-01-01T12:00:00Z
+                  updatedAt: 2024-01-02T12:00:00Z
+                  name: Sample Session
+                  description: This is a sample session description.
+                  startDate: 2024-02-01T10:00:00Z
+                  endDate: 2024-02-01T11:00:00Z
+                  tags:
+                    - QA
+                    - Workshop
+                  rsvpCount: 150
+                  type: MeetingEntry
+                  visibility: published
+                  thumbnailUrl: https://example.com/thumbnail.png
+                status: ok
+      security:
+        - ks: []
+      summary: Creates a new session under the specified event with the provided
+        configuration
+      tags: &a2
+        - Sessions
+  /api/v1/sessions/list:
+    post:
+      operationId: list
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListSessionRequestDto"
+      responses:
+        "200":
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListSessionResponseDto"
+              example:
+                sessions:
+                  - id: 0_4q5ie48b
+                    createdAt: 2024-01-01T12:00:00Z
+                    updatedAt: 2024-01-02T12:00:00Z
+                    name: Sample Session
+                    description: This is a sample session description.
+                    startDate: 2024-02-01T10:00:00Z
+                    endDate: 2024-02-01T11:00:00Z
+                    tags:
+                      - QA
+                      - Workshop
+                    rsvpCount: 150
+                    type: MeetingEntry
+                    visibility: published
+                    thumbnailUrl: https://example.com/thumbnail.png
+                status: ok
+      security:
+        - ks: []
+      summary: Retrieves a list of all sessions of a specified event
+      tags: *a2
+  /api/v1/sessions/speakerList:
+    post:
+      operationId: speakerList
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpeakerListRequestDto"
+      responses:
+        "200":
+          description: List of event session speakers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SpeakerListResponseDto"
+              example:
+                speakers:
+                  - id: speaker_12345
+                    email: john@company.com
+                    order: 1
+                    isHidden: false
+                    firstName: John
+                    lastName: Doe
+                    profileLink: https://company.com/johndoe
+                    title: Senior Developer
+                    bio: John has over 10 years of experience in software development.
+                    thumbnailUrl: https://example.com/speaker_thumbnail.png
+                status: ok
+      security:
+        - ks: []
+      summary: Retrieves a list of an event session speakers
+      tags: *a2
+  /api/v1/team-members/create:
+    post:
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTeamRequestDto"
+      responses:
+        "200":
+          description: Created team member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateTeamResponseDto"
+              example:
+                status: ok
+                teamMember:
+                  id: user_123456
+                  firstName: John
+                  lastName: Doe
+                  email: john@example.com
+                  disabled: false
+      security:
+        - ks: []
+      summary: Creates a new Event Platform team member
+      tags: &a3
+        - Team members
+  /api/v1/team-members/update:
+    post:
+      operationId: update
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTeamRequestDto"
+      responses:
+        "200":
+          description: Updated team member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateTeamResponseDto"
+              example:
+                status: ok
+                teamMember:
+                  id: user_123456
+                  firstName: John
+                  lastName: Doe
+                  email: john@example.com
+                  disabled: false
+      security:
+        - ks: []
+      summary: Updates an Event Platform team member
+      tags: *a3
+  /api/v1/team-members/delete:
+    post:
+      operationId: delete
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteTeamRequestDto"
+      responses:
+        "200":
+          description: Deleted team member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteTeamResponseDto"
+              example:
+                status: ok
+      security:
+        - ks: []
+      summary: Deletes an Event Platform team member
+      tags: *a3
+  /api/v1/team-members/list:
+    post:
+      operationId: list
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListTeamRequestDto"
+      responses:
+        "200":
+          description: List of team members
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListTeamResponseDto"
+              example:
+                totalCount: 1
+                status: ok
+                teamMembers:
+                  - id: user_123456
+                    firstName: John
+                    lastName: Doe
+                    email: john@example.com
+                    disabled: false
+      security:
+        - ks: []
+      summary: Retrieves a list of Event Platform team members
+      tags: *a3
+  /api/v1/event-users/invite:
+    post:
+      operationId: invite
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InviteEventUserRequestDto"
+      responses:
+        "200":
+          description: User invited successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InviteEventUserResponseDto"
+              example:
+                user:
+                  id: 1ef91ea60970881d430d4c6658eb8dba12a25e6083037b594a1871d129dd32b9
+                  firstName: Jane
+                  lastName: Doe
+                  email: jane@example.com
+                  title: VP Engineering
+                  company: Acme Corp
+                  bio: Speaker bio text
+                  roles:
+                    - Speaker
+                  thumbnailUrl: https://cdn.kaltura.com/p/999/thumbnail/entry_id/1_p9ek1ngh/height/173/width/173
+                  createdAt: 2025-01-01T10:00:00.000Z
+                  updatedAt: 2025-01-02T10:00:00.000Z
+                  status: Invited
+                status: ok
+      security:
+        - ks: []
+      summary: Invites a user to the event with the specified roles and profile data
+      tags: &a4
+        - Event Users
+  /api/v1/event-users/list:
+    post:
+      operationId: list
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListEventUserRequestDto"
+      responses:
+        "200":
+          description: List of event users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListEventUserResponseDto"
+              example:
+                users:
+                  - id: 1ef91ea60970881d430d4c6658eb8dba12a25e6083037b594a1871d129dd32b9
+                    firstName: Jane
+                    lastName: Doe
+                    email: jane@example.com
+                    title: VP Engineering
+                    company: Acme Corp
+                    bio: Speaker bio text
+                    roles:
+                      - Speaker
+                    thumbnailUrl: https://cdn.kaltura.com/p/999/thumbnail/entry_id/1_p9ek1ngh/height/173/width/173
+                    createdAt: 2025-01-01T10:00:00.000Z
+                    updatedAt: 2025-01-02T10:00:00.000Z
+                    status: Invited
+                totalCount: 1
+                status: ok
+      security:
+        - ks: []
+      summary: Returns a paginated list of event users with optional filtering and
+        sorting
+      tags: *a4
+  /api/v1/event-users/update:
+    post:
+      operationId: update
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEventUserRequestDto"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateEventUserResponseDto"
+              example:
+                user:
+                  id: 1ef91ea60970881d430d4c6658eb8dba12a25e6083037b594a1871d129dd32b9
+                  firstName: Jane
+                  lastName: Doe
+                  email: jane@example.com
+                  title: VP Engineering
+                  company: Acme Corp
+                  bio: Speaker bio text
+                  roles:
+                    - Speaker
+                  thumbnailUrl: https://cdn.kaltura.com/p/999/thumbnail/entry_id/1_p9ek1ngh/height/173/width/173
+                  createdAt: 2025-01-01T10:00:00.000Z
+                  updatedAt: 2025-01-02T10:00:00.000Z
+                  status: Invited
+                status: ok
+      security:
+        - ks: []
+      summary: Updates an event user profile and roles (role updates are additive only)
+      tags: *a4
+  /api/v1/event-users/delete:
+    post:
+      operationId: delete
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteEventUserRequestDto"
+      responses:
+        "200":
+          description: User removed from event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteEventUserResponseDto"
+              example:
+                status: ok
+      security:
+        - ks: []
+      summary: Removes a user from the event context including their session roles and
+        groups
+      tags: *a4
+  /api/v1/session-participants/add:
+    post:
+      operationId: add
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddSessionParticipantsRequestDto"
+            examples:
+              example:
+                value:
+                  eventId: 98765
+                  sessionId: 0_syswy6uj
+                  speakers:
+                    - userId: 1ef91ea60970881d430d4c6658eb8dba12a25e6083037b594a1871d129dd32b9
+                      order: 1
+                      isHidden: false
+                      role: advancedSpeaker
+                    - userId: abc123def456abc123def456abc123def456abc123def456abc123def456abc1
+                      order: 2
+                      isHidden: false
+                      role: simpleSpeaker
+                  moderatorIds:
+                    - def789abc012def789abc012def789abc012def789abc012def789abc012def7
+      responses:
+        "200":
+          description: Participants added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddSessionParticipantsResponseDto"
+              example:
+                status: ok
+      security:
+        - ks: []
+      summary: Adds speakers and/or moderators to a session (users must have
+        event-level Speaker/Moderator role)
+      tags: &a5
+        - Session Participants
+  /api/v1/session-participants/remove:
+    post:
+      operationId: remove
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RemoveSessionParticipantsRequestDto"
+      responses:
+        "200":
+          description: Participants removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RemoveSessionParticipantsResponseDto"
+              example:
+                status: ok
+      security:
+        - ks: []
+      summary: Removes speakers and/or moderators from a session
+      tags: *a5
+  /api/v1/session-participants/list:
+    post:
+      operationId: list
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListSessionParticipantsRequestDto"
+      responses:
+        "200":
+          description: Session participants
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListSessionParticipantsResponseDto"
+              example:
+                speakers:
+                  - id: 1ef91ea60970881d430d4c6658eb8dba12a25e6083037b594a1871d129dd32b9
+                    firstName: Jane
+                    lastName: Doe
+                    email: jane@example.com
+                    title: VP Engineering
+                    bio: Speaker bio
+                    thumbnailUrl: https://cdn.kaltura.com/thumbnail.jpg
+                    type: speaker
+                    order: 1
+                    isHidden: false
+                    sessionRole: simpleSpeaker
+                moderators:
+                  - id: abc123def456abc123def456abc123def456abc123def456abc123def456abc1
+                    firstName: John
+                    lastName: Smith
+                    email: john@example.com
+                    type: moderator
+                status: ok
+      security:
+        - ks: []
+      summary: Lists all speakers and moderators for a session
+      tags: *a5
+  /metrics:
+    get:
+      operationId: index
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Prometheus
+info:
+  title: Kaltura Event Platform 🌍 Public API
+  description: ""
+  version: 1.1.2
+  contact: {}
+tags:
+  - name: Events
+    description: 🎉 Event Management
+  - name: Team members
+    description: 👥 Event Platform Team Members
+  - name: Sessions
+    description: 🕒 Event Sessions
+servers:
+  - url: http://localhost:3001
+  - url: https://events-api.nvq2.ovp
+  - url: https://events-api.nvp1.ovp.kaltura.com
+  - url: https://events-api.irp2.ovp.kaltura.com
+  - url: https://events-api.frp2.ovp.kaltura.com
+components:
+  securitySchemes:
+    ks:
+      scheme: bearer
+      bearerFormat: KS
+      type: http
+  schemas:
+    CreateEventRequestDto:
+      type: object
+      properties:
+        templateId:
+          type: string
+          description: Kaltura Event Template ID
+          example: 507f1f77bcf86cd799439011
+        name:
+          type: string
+          description: Event Name
+          example: Virtual Townhall 2025
+        description:
+          type: string
+          description: Event Description
+          example: Annual company-wide update
+        startDate:
+          type: string
+          description: Event Start Date
+          example: 2025-05-01T14:00:00Z
+        endDate:
+          type: string
+          description: Event End Date
+          example: 2025-05-01T16:00:00Z
+        timezone:
+          type: string
+          description: Event Timezone
+          example: America/New_York
+      required:
+        - templateId
+        - name
+        - startDate
+        - endDate
+        - timezone
+    PublicEventDto:
+      type: object
+      properties:
+        id:
+          type: number
+          description: Unique identifier for the event
+        publicDomain:
+          type: string
+          description: Public domain of the event
+        name:
+          type: string
+          description: Name of the event
+        description:
+          type: string
+          description: Description of the event
+        startDate:
+          type: string
+          description: Start date of the event (ISO string)
+        endDate:
+          type: string
+          description: End date of the event (ISO string)
+        timezone:
+          type: string
+          description: Timezone of the event
+        logoUrl:
+          type: string
+          description: URL of the event logo
+        bannerImageUrl:
+          type: string
+          description: URL of the event banner image
+        labels:
+          description: Labels associated with the event
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          description: Creation timestamp (ISO string)
+        updatedAt:
+          type: string
+          description: Last update timestamp (ISO string)
+        languages:
+          description: Supported languages for the event
+          type: array
+          items:
+            type: string
+        isRegistrationOpen:
+          type: boolean
+          description: Indicates if registration is open
+        doorsOpenDate:
+          type: string
+          description: Date when doors open (ISO string)
+        templateId:
+          type: string
+          description: Template ID used for the event, custom or preset
+        templateName:
+          type: string
+          description: Template description for the event
+      required:
+        - id
+        - publicDomain
+        - name
+        - description
+        - startDate
+        - endDate
+        - timezone
+        - logoUrl
+        - bannerImageUrl
+        - labels
+        - createdAt
+        - updatedAt
+        - languages
+        - isRegistrationOpen
+        - doorsOpenDate
+        - templateId
+        - templateName
+    CreateEventResponseDto:
+      type: object
+      properties:
+        event:
+          description: Created event details
+          example: &a6
+            id: 1
+            publicDomain: example.com
+            name: Sample Event
+            description: This is a sample event description.
+            startDate: 2023-10-01T00:00:00Z
+            endDate: 2023-10-02T00:00:00Z
+            timezone: UTC
+            logoUrl: https://example.com/logo.png
+            bannerImageUrl: https://example.com/banner.png
+            labels:
+              - label1
+              - label2
+            createdAt: 2023-09-01T00:00:00Z
+            updatedAt: 2023-09-02T00:00:00Z
+            languages:
+              - en
+              - fr
+            isRegistrationOpen: true
+            doorsOpenDate: 2023-10-01T08:00:00Z
+            templateId: tm1000
+            templateName: Interactive session
+          allOf:
+            - $ref: "#/components/schemas/PublicEventDto"
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - event
+        - status
+    DeleteEventRequestDto:
+      type: object
+      properties:
+        id:
+          type: number
+          description: Event ID
+          example: 98765
+      required:
+        - id
+    DeleteEventResponseDto:
+      type: object
+      properties:
+        event:
+          description: Deleted event details
+          example: *a6
+          allOf:
+            - $ref: "#/components/schemas/PublicEventDto"
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - event
+        - status
+    ListEventFilterDto:
+      type: object
+      properties:
+        idIn:
+          description: Filter for events with ids in the provided array
+          example:
+            - 98765
+          type: array
+          items:
+            type: number
+        templateIdIn:
+          description: Filter for events with template ids in the provided array (preset
+            or custom)
+          example:
+            - tm0000
+            - tm1000
+            - tm2000
+            - tm3000
+            - tm4000
+            - 62170c5af3d27e919f30b100
+          type: array
+          items:
+            type: string
+        searchTerm:
+          type: string
+          description: Filter for events including the search term provided (by Name)
+          example: townhall
+        endDateGreaterThanOrEqual:
+          format: date-time
+          type: string
+          description: Filter for events with end date greater than or equal to the
+            provided value
+        endDateLessOrEqualThan:
+          format: date-time
+          type: string
+          description: Filter for events with end date less than or equal to the provided
+            value
+        startDateGreaterThanOrEqual:
+          format: date-time
+          type: string
+          description: Filter for events with start date greater than or equal to the
+            provided value
+        startDateLessOrEqualThan:
+          format: date-time
+          type: string
+          description: Filter for events with start date less than or equal to the
+            provided value
+        labels:
+          description: Filter for events containing any label of the provided array
+          example:
+            - all-hands
+            - Q4
+            - Q3
+          type: array
+          items:
+            type: string
+    ListEventPagerDto:
+      type: object
+      properties:
+        offset:
+          type: number
+          description: Page index
+          default: 0
+          example: 0
+        limit:
+          type: number
+          description: Page size
+          default: 5
+          example: 10
+    ListEventOrderFields:
+      type: string
+      enum:
+        - +name
+        - -name
+        - +createdAt
+        - -createdAt
+        - +startDate
+        - -startDate
+    ListEventRequestDto:
+      type: object
+      properties:
+        filter:
+          description: Filter information
+          allOf:
+            - $ref: "#/components/schemas/ListEventFilterDto"
+        pager:
+          description: Pagination information
+          allOf:
+            - $ref: "#/components/schemas/ListEventPagerDto"
+        orderBy:
+          description: Order by field
+          example: -createdAt
+          allOf:
+            - $ref: "#/components/schemas/ListEventOrderFields"
+    ListEventResponseDto:
+      type: object
+      properties:
+        events:
+          description: List of events
+          example:
+            - *a6
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicEventDto"
+        totalCount:
+          type: number
+          description: Total number of events
+          example: 100
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - events
+        - totalCount
+        - status
+    UpdateEventRequestDto:
+      type: object
+      properties:
+        id:
+          type: number
+          description: Event ID
+          example: 98765
+        name:
+          type: string
+          description: Event name
+          example: Updated Virtual Townhall
+        description:
+          type: string
+          description: Event description
+          example: Updated description
+        startDate:
+          type: string
+          description: Event start date
+          example: 2025-05-01T14:00:00Z
+        endDate:
+          type: string
+          description: Event end date
+          example: 2025-05-01T16:00:00Z
+        doorsOpenDate:
+          type: string
+          description: Event doors open date
+          example: 2025-05-01T13:30:00Z
+        timezone:
+          type: string
+          description: Event timezone
+          example: America/New_York
+        labels:
+          description: Event labels
+          example:
+            - all-hands
+            - q2
+          type: array
+          items:
+            type: string
+        logoEntryId:
+          type: string
+          description: Event logo entry id
+          example: 1_xextzqk8
+        bannerEntryId:
+          type: string
+          description: Event banner id
+          example: 1_p3im68oa
+      required:
+        - id
+    UpdateEventResponseDto:
+      type: object
+      properties:
+        event:
+          description: Updated event details
+          example: *a6
+          allOf:
+            - $ref: "#/components/schemas/PublicEventDto"
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - event
+        - status
+    EventDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Event Name
+          example: Virtual Townhall 2025
+        description:
+          type: string
+          description: Event Description
+          example: Annual company-wide update
+        startDate:
+          type: string
+          description: Event Start Date
+          example: 2025-05-01T14:00:00Z
+        endDate:
+          type: string
+          description: Event End Date
+          example: 2025-05-01T16:00:00Z
+        timezone:
+          type: string
+          description: Event Timezone
+          example: America/New_York
+      required:
+        - name
+        - timezone
+    DuplicateUsersDto:
+      type: object
+      properties:
+        roles:
+          type: array
+          description: User roles to duplicate
+          example:
+            - Speaker
+            - Moderator
+          items:
+            type: string
+            enum:
+              - Speaker
+              - Moderator
+              - EventTeam
+        skipEmail:
+          type: boolean
+          description: Skip sending emails to duplicated users
+      required:
+        - roles
+        - skipEmail
+    DuplicateEventRequestDto:
+      type: object
+      properties:
+        sourceEventId:
+          type: number
+          description: Source Event ID to duplicate from
+          example: 98765
+        event:
+          description: Event details
+          allOf:
+            - $ref: "#/components/schemas/EventDto"
+        duplicateUsers:
+          description: User duplication options
+          allOf:
+            - $ref: "#/components/schemas/DuplicateUsersDto"
+      required:
+        - sourceEventId
+        - event
+    DuplicateEventResponseDto:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Job identifier for the duplication process
+          example: 1234567890abcdef
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - jobId
+        - status
+    DuplicateStatusEventRequestDto:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: The duplicate event jobId received by calling duplicateEvent
+          example: "4687"
+      required:
+        - jobId
+    DuplicateStatusEventResponseDto:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Job identifier for the duplication process
+          example: 1234567890abcdef
+        jobState:
+          type: string
+          description: Job state of the duplication process
+          enum:
+            - completed
+            - failed
+            - paused
+            - repeat
+            - wait
+            - unknown
+          example: completed
+        eventId:
+          type: string
+          description: Event identifier for the duplicated event, only if the job state is
+            completed
+          example: 1234567890abcdef
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - jobId
+        - jobState
+        - status
+    CreateSessionDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Session name
+          example: Keynote session
+        type:
+          type: string
+          description: Session type
+          enum:
+            - MeetingEntry
+            - SimuLive
+            - LiveWebcast
+            - LiveKME
+            - VirtualLearningRoom
+            - Invalid
+        description:
+          type: string
+          description: Session description
+          example: Quarterly company keynote session
+        visibility:
+          type: string
+          description: Session visibility on the host event
+          enum:
+            - published
+            - unlisted
+            - private
+        startDate:
+          type: string
+          description: Session start date (ISO 8601 string)
+          example: 2025-05-01T14:00:00Z
+        endDate:
+          type: string
+          description: Session end date (ISO 8601 string)
+          example: 2025-05-01T15:00:00Z
+        tags:
+          description: List of session tags
+          example:
+            - Keynote
+            - "2025"
+          type: array
+          items:
+            type: string
+        isManualLive:
+          type: boolean
+          description: Whether the session is "Manual Live"
+          example: false
+        imageUrlEntryId:
+          type: string
+          description: Kaltura entry id for the session thumbnail image
+          example: 1_p3im68oa
+        sourceEntryId:
+          type: string
+          description: For Simulive session types, the VOD entry
+          example: 1_x9D4m02k
+      required:
+        - name
+        - type
+    CreateSessionRequestDto:
+      type: object
+      properties:
+        eventId:
+          type: number
+          description: Event ID for which to list the sessions for
+          example: 98765
+        session:
+          description: Session details
+          allOf:
+            - $ref: "#/components/schemas/CreateSessionDto"
+      required:
+        - eventId
+        - session
+    SourceSessionEntryDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Session source entry id
+        status:
+          type: string
+          description: Session source status
+          enum:
+            - blocked
+            - deleted
+            - errorConverting
+            - errorImporting
+            - import
+            - moderate
+            - noContent
+            - pending
+            - preconvert
+            - ready
+            - virusScan.Infected
+            - virusScan.ScanFailure
+        createdAt:
+          type: string
+          description: Creation date of the source entry (ISO string)
+      required:
+        - id
+        - createdAt
+    PublicSessionDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Session entry id
+        createdAt:
+          type: string
+          description: Creation date of the session (ISO string)
+        updatedAt:
+          type: string
+          description: Last update date of the session (ISO string)
+        type:
+          type: string
+          description: Session type
+          enum:
+            - MeetingEntry
+            - SimuLive
+            - LiveWebcast
+            - LiveKME
+            - VirtualLearningRoom
+            - Invalid
+        visibility:
+          type: string
+          description: Session visibility on the host event
+          enum:
+            - published
+            - unlisted
+            - private
+        name:
+          type: string
+          description: Session name
+        description:
+          type: string
+          description: Session description
+        startDate:
+          type: string
+          description: Session start date (ISO string)
+        endDate:
+          type: string
+          description: Session end date (ISO string)
+        thumbnailUrl:
+          type: string
+          description: Session thumbnail URL
+        sourceEntry:
+          description: For Simulive session types, the VOD entry
+          allOf:
+            - $ref: "#/components/schemas/SourceSessionEntryDto"
+        tags:
+          description: List of session tags
+          type: array
+          items:
+            type: string
+        rsvpCount:
+          type: number
+          description: Number of RSVPs for the session
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - type
+        - visibility
+        - name
+        - description
+        - thumbnailUrl
+        - tags
+    CreateSessionResponseDto:
+      type: object
+      properties:
+        session:
+          description: Created session details
+          example: &a7
+            id: 0_4q5ie48b
+            createdAt: 2024-01-01T12:00:00Z
+            updatedAt: 2024-01-02T12:00:00Z
+            name: Sample Session
+            description: This is a sample session description.
+            startDate: 2024-02-01T10:00:00Z
+            endDate: 2024-02-01T11:00:00Z
+            tags:
+              - QA
+              - Workshop
+            rsvpCount: 150
+            type: MeetingEntry
+            visibility: published
+            thumbnailUrl: https://example.com/thumbnail.png
+          allOf:
+            - $ref: "#/components/schemas/PublicSessionDto"
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - session
+        - status
+    ListSessionRequestDto:
+      type: object
+      properties:
+        eventId:
+          type: number
+          description: Event ID for which to list the sessions for
+          example: 98765
+      required:
+        - eventId
+    ListSessionResponseDto:
+      type: object
+      properties:
+        sessions:
+          description: List of sessions
+          example:
+            - *a7
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicSessionDto"
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - sessions
+        - status
+    SpeakerListRequestDto:
+      type: object
+      properties:
+        eventId:
+          type: number
+          description: Event ID for which to list the sessions for
+          example: 98765
+        sessionId:
+          type: string
+          description: Session entry id
+          example: 1_abcd1234
+      required:
+        - eventId
+        - sessionId
+    PublicSpeakerDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Speaker Kaltura user ID
+        email:
+          type: string
+          description: Speaker email
+        order:
+          type: number
+          description: Speaker display order in the session page
+        isHidden:
+          type: boolean
+          description: Is the speaker hidden from the session page
+        firstName:
+          type: string
+          description: Speaker first name
+        lastName:
+          type: string
+          description: Speaker last name
+        profileLink:
+          type: string
+          description: Link to the speaker profile page
+        title:
+          type: string
+          description: Speaker title
+        bio:
+          type: string
+          description: Speaker bio
+        thumbnailUrl:
+          type: string
+          description: Speaker thumbnail url
+      required:
+        - id
+        - email
+        - order
+        - isHidden
+        - firstName
+        - lastName
+        - profileLink
+        - title
+        - bio
+        - thumbnailUrl
+    SpeakerListResponseDto:
+      type: object
+      properties:
+        speakers:
+          description: List of session speakers
+          example:
+            - id: speaker_12345
+              email: john@company.com
+              order: 1
+              isHidden: false
+              firstName: John
+              lastName: Doe
+              profileLink: https://company.com/johndoe
+              title: Senior Developer
+              bio: John has over 10 years of experience in software development.
+              thumbnailUrl: https://example.com/speaker_thumbnail.png
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicSpeakerDto"
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - speakers
+        - status
+    CreateTeamRequestDto:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Team member email
+          example: john@company.com
+        role:
+          type: string
+          description: Team member Event Platform role
+          enum:
+            - Admin
+            - Organizer
+            - ContentManager
+          example: Organizer
+        firstName:
+          type: string
+          description: Team member first name
+          example: John
+        lastName:
+          type: string
+          description: Team member last name
+          example: Doe
+      required:
+        - email
+        - role
+        - firstName
+        - lastName
+    PublicTeamDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Team member Kaltura user ID
+        firstName:
+          type: string
+          description: Team member first name
+        lastName:
+          type: string
+          description: Team member last name
+        email:
+          type: string
+          description: Team member email
+        updatedAt:
+          type: string
+          description: Team member last update time (ISO string)
+        createdAt:
+          type: string
+          description: Team member creation time (ISO string)
+        lastLoginAt:
+          type: string
+          description: Team member last login time (ISO string)
+        role:
+          type: string
+          description: Team member event platform role
+          enum:
+            - Admin
+            - Organizer
+            - ContentManager
+        disabled:
+          type: boolean
+          description: Whether the user is disabled for Event Platform login
+      required:
+        - id
+        - email
+        - disabled
+    CreateTeamResponseDto:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+        teamMember:
+          description: The created team member details
+          example: &a8
+            id: user_123456
+            firstName: John
+            lastName: Doe
+            email: john@example.com
+            disabled: false
+          allOf:
+            - $ref: "#/components/schemas/PublicTeamDto"
+      required:
+        - status
+        - teamMember
+    UpdateTeamRequestDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Team member Kaltura id
+          example: e3b0c44298fc1c149
+        firstName:
+          type: string
+          description: Team member first name
+          example: John
+        lastName:
+          type: string
+          description: Team member last name
+          example: Doe
+        role:
+          type: string
+          description: Team member Event Platform role
+          enum:
+            - Admin
+            - Organizer
+            - ContentManager
+          example: Organizer
+        disabled:
+          type: boolean
+          description: Whether the team member is disabled for Event Platform login
+          example: false
+      required:
+        - id
+    UpdateTeamResponseDto:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+        teamMember:
+          description: Updated team member details
+          example: *a8
+          allOf:
+            - $ref: "#/components/schemas/PublicTeamDto"
+      required:
+        - status
+        - teamMember
+    DeleteTeamRequestDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Team member Kaltura id
+          example: e3b0c44298fc1c149
+      required:
+        - id
+    DeleteTeamResponseDto:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - status
+    ListTeamPagerDto:
+      type: object
+      properties:
+        offset:
+          type: number
+          description: Page index
+          default: 0
+          example: 0
+        limit:
+          type: number
+          description: Page size
+          default: 30
+          example: 10
+    ListTeamRequestDto:
+      type: object
+      properties:
+        pager:
+          description: Pagination information
+          allOf:
+            - $ref: "#/components/schemas/ListTeamPagerDto"
+    ListTeamResponseDto:
+      type: object
+      properties:
+        totalCount:
+          type: number
+          description: Total number of team users
+          example: 100
+        status:
+          type: string
+          description: Status of the request
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+        teamMembers:
+          description: List of team members
+          example:
+            - *a8
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicTeamDto"
+      required:
+        - totalCount
+        - status
+        - teamMembers
+    InviteEventUserRequestDto:
+      type: object
+      properties:
+        eventId:
+          type: number
+          description: Kaltura event ID
+          example: 98765
+        firstName:
+          type: string
+          description: First name
+          example: Jane
+        lastName:
+          type: string
+          description: Last name
+          example: Doe
+        email:
+          type: string
+          description: Email address
+          example: jane@example.com
+        title:
+          type: string
+          description: Job title
+          example: VP Engineering
+        company:
+          type: string
+          description: Company name
+          example: Acme Corp
+        bio:
+          type: string
+          description: Bio / description
+        roles:
+          type: array
+          description: 'Event roles to assign (default: ["Attendees"])'
+          example:
+            - Speaker
+          items:
+            type: string
+            enum:
+              - Attendees
+              - Speaker
+              - Moderator
+        imageUrlEntryId:
+          type: string
+          description: Kaltura entry ID of uploaded profile image
+          example: 1_p9ek1ngh
+        skipEmail:
+          type: boolean
+          description: Skip sending invitation email
+          default: false
+      required:
+        - eventId
+        - firstName
+        - lastName
+        - email
+    PublicEventUserDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Kaltura user ID (hashed string)
+        firstName:
+          type: string
+          description: First name
+        lastName:
+          type: string
+          description: Last name
+        email:
+          type: string
+          description: Email address
+        title:
+          type: string
+          description: Job title
+        company:
+          type: string
+          description: Company name
+        bio:
+          type: string
+          description: Bio / description
+        roles:
+          type: array
+          description: Event roles
+          items:
+            type: string
+            enum:
+              - Attendees
+              - Speaker
+              - Moderator
+        thumbnailUrl:
+          type: string
+          description: Resolved profile image URL
+        createdAt:
+          type: string
+          description: Creation timestamp (ISO string)
+        updatedAt:
+          type: string
+          description: Last update timestamp (ISO string)
+        status:
+          type: string
+          description: User status (Invited, Registered, Confirmed, etc.)
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - roles
+    InviteEventUserResponseDto:
+      type: object
+      properties:
+        user:
+          description: Invited user
+          allOf:
+            - $ref: "#/components/schemas/PublicEventUserDto"
+        status:
+          type: string
+          description: Request status
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - user
+        - status
+    ListEventUserFilterDto:
+      type: object
+      properties:
+        searchTerm:
+          type: string
+          description: Search across name and email
+        roles:
+          type: array
+          description: Filter by roles
+          items:
+            type: string
+            enum:
+              - Attendees
+              - Speaker
+              - Moderator
+        idIn:
+          description: Filter by user IDs
+          type: array
+          items:
+            type: string
+    ListEventUserPagerDto:
+      type: object
+      properties:
+        offset:
+          type: number
+          description: Offset (0-based)
+          default: 0
+        limit:
+          type: number
+          description: Page size
+          default: 30
+    ListEventUserRequestDto:
+      type: object
+      properties:
+        eventId:
+          type: number
+          description: Kaltura event ID
+          example: 98765
+        filter:
+          description: Filter options
+          allOf:
+            - $ref: "#/components/schemas/ListEventUserFilterDto"
+        pager:
+          description: Pager options
+          allOf:
+            - $ref: "#/components/schemas/ListEventUserPagerDto"
+        orderBy:
+          type: string
+          description: "Sort order: +createdAt, -createdAt, +fullName, -fullName"
+          example: -createdAt
+      required:
+        - eventId
+    ListEventUserResponseDto:
+      type: object
+      properties:
+        users:
+          description: Event users
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicEventUserDto"
+        totalCount:
+          type: number
+          description: Total matching users
+        status:
+          type: string
+          description: Request status
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - users
+        - totalCount
+        - status
+    UpdateEventUserRequestDto:
+      type: object
+      properties:
+        eventId:
+          type: number
+          description: Kaltura event ID
+          example: 98765
+        userId:
+          type: string
+          description: User ID to update
+        firstName:
+          type: string
+          description: First name
+        lastName:
+          type: string
+          description: Last name
+        title:
+          type: string
+          description: Job title
+        company:
+          type: string
+          description: Company
+        bio:
+          type: string
+          description: Bio
+        roles:
+          type: array
+          description: Roles to assign. Replaces the user's current roles via diff — send
+            all desired roles, not just new ones.
+          example:
+            - Speaker
+          items:
+            type: string
+            enum:
+              - Attendees
+              - Speaker
+              - Moderator
+        imageUrlEntryId:
+          type: string
+          description: Profile image entry ID
+          example: 1_p9ek1ngh
+      required:
+        - eventId
+        - userId
+    UpdateEventUserResponseDto:
+      type: object
+      properties:
+        user:
+          description: Updated user
+          allOf:
+            - $ref: "#/components/schemas/PublicEventUserDto"
+        status:
+          type: string
+          description: Request status
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - user
+        - status
+    DeleteEventUserRequestDto:
+      type: object
+      properties:
+        eventId:
+          type: number
+          description: Kaltura event ID
+          example: 98765
+        userId:
+          type: string
+          description: User ID to remove from event
+      required:
+        - eventId
+        - userId
+    DeleteEventUserResponseDto:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Request status
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - status
+    SpeakerInputDto:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Event user ID (from event-users/invite)
+        order:
+          type: number
+          description: Display order (default 0)
+          default: 0
+        isHidden:
+          type: boolean
+          description: Whether speaker is hidden (default false)
+          default: false
+        role:
+          type: string
+          description: "Speaker sub-role (default: simpleSpeaker)"
+          enum:
+            - simpleSpeaker
+            - advancedSpeaker
+          default: simpleSpeaker
+      required:
+        - userId
+    AddSessionParticipantsRequestDto:
+      type: object
+      properties:
+        eventId:
+          type: number
+          description: Kaltura event ID
+          example: 98765
+        sessionId:
+          type: string
+          description: Session entry ID
+          example: 0_syswy6uj
+        speakers:
+          description: Speakers to add (max 10)
+          type: array
+          items:
+            $ref: "#/components/schemas/SpeakerInputDto"
+        moderatorIds:
+          description: Moderator user IDs to add (max 10)
+          example:
+            - def789abc012def789abc012def789abc012def789abc012def789abc012def7
+          type: array
+          items:
+            type: string
+      required:
+        - eventId
+        - sessionId
+    AddSessionParticipantsResponseDto:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Request status
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - status
+    RemoveSessionParticipantsRequestDto:
+      type: object
+      properties:
+        eventId:
+          type: number
+          description: Kaltura event ID
+          example: 98765
+        sessionId:
+          type: string
+          description: Session entry ID
+          example: 0_syswy6uj
+        speakerIds:
+          description: Speaker user IDs to remove (max 10)
+          example:
+            - 1ef91ea60970881d430d4c6658eb8dba12a25e6083037b594a1871d129dd32b9
+          type: array
+          items:
+            type: array
+        moderatorIds:
+          description: Moderator user IDs to remove (max 10)
+          example:
+            - abc123def456abc123def456abc123def456abc123def456abc123def456abc1
+          type: array
+          items:
+            type: array
+      required:
+        - eventId
+        - sessionId
+    RemoveSessionParticipantsResponseDto:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Request status
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - status
+    ListSessionParticipantsRequestDto:
+      type: object
+      properties:
+        eventId:
+          type: number
+          description: Kaltura event ID
+          example: 98765
+        sessionId:
+          type: string
+          description: Session entry ID
+          example: 0_syswy6uj
+      required:
+        - eventId
+        - sessionId
+    PublicSessionParticipantDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Kaltura user ID (hashed string)
+        firstName:
+          type: string
+          description: First name
+        lastName:
+          type: string
+          description: Last name
+        email:
+          type: string
+          description: Email address
+        title:
+          type: string
+          description: Job title
+        bio:
+          type: string
+          description: Bio
+        thumbnailUrl:
+          type: string
+          description: Profile image URL
+        type:
+          type: string
+          description: Participant type
+          enum:
+            - speaker
+            - moderator
+        order:
+          type: number
+          description: Speaker display order (speakers only)
+        isHidden:
+          type: boolean
+          description: Whether speaker is hidden (speakers only)
+        sessionRole:
+          type: string
+          description: Speaker sub-role (speakers only)
+          enum:
+            - simpleSpeaker
+            - advancedSpeaker
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - type
+    ListSessionParticipantsResponseDto:
+      type: object
+      properties:
+        speakers:
+          description: Session speakers
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicSessionParticipantDto"
+        moderators:
+          description: Session moderators
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicSessionParticipantDto"
+        status:
+          type: string
+          description: Request status
+          enum:
+            - ok
+            - Forbidden
+            - InvalidArgument
+            - RateLimitReached
+            - OperationNotAllowed
+            - ResourceDoesNotExist
+            - NEW_LOGIN_REQUIRED
+            - MISSING_OTP
+            - AuthLoginMissingOrg
+          example: ok
+      required:
+        - speakers
+        - moderators
+        - status

@@ -2,7 +2,11 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { CreateTeamMemberDto, UpdateTeamMemberDto, DeleteTeamMemberDto, ListTeamMembersDto } from './schemas'
 import { PublicApiClient } from '../../api/publicApiClient'
 
-export function registerTeamMemberTools(server: McpServer, ks: string, publicApiClient: PublicApiClient): void {
+export function registerTeamMemberTools(
+  server: McpServer,
+  ks: string,
+  publicApiClient: PublicApiClient,
+): void {
   server.tool(
     'create-team-member',
     'Creates a new Event Platform team member with the specified role',
@@ -21,7 +25,10 @@ export function registerTeamMemberTools(server: McpServer, ks: string, publicApi
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error creating team member: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error creating team member: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -46,7 +53,10 @@ export function registerTeamMemberTools(server: McpServer, ks: string, publicApi
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error updating team member: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error updating team member: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -71,7 +81,10 @@ export function registerTeamMemberTools(server: McpServer, ks: string, publicApi
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error deleting team member: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error deleting team member: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -96,7 +109,10 @@ export function registerTeamMemberTools(server: McpServer, ks: string, publicApi
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error listing team members: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error listing team members: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }

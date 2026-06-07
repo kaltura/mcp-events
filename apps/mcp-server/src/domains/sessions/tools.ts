@@ -28,7 +28,10 @@ export function registerSessionTools(server: McpServer, ks: string, publicApiCli
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error creating event session: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error creating event session: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -54,7 +57,10 @@ export function registerSessionTools(server: McpServer, ks: string, publicApiCli
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error listing event sessions: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error listing event sessions: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }

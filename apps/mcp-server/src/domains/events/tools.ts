@@ -35,7 +35,10 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error creating event: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error creating event: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -61,7 +64,10 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error listing events: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error listing events: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -80,16 +86,39 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
       openWorldHint: true,
       readOnlyHint: false,
     },
-    async ({ id, name, description, startDate, endDate, doorsOpenDate, timezone, labels, logoEntryId, bannerEntryId }) => {
+    async ({
+      id,
+      name,
+      description,
+      startDate,
+      endDate,
+      doorsOpenDate,
+      timezone,
+      labels,
+      logoEntryId,
+      bannerEntryId,
+    }) => {
       try {
         const result = await publicApiClient.updateEvent(ks, {
-          id, name, description, startDate, endDate, doorsOpenDate, timezone, labels, logoEntryId, bannerEntryId,
+          id,
+          name,
+          description,
+          startDate,
+          endDate,
+          doorsOpenDate,
+          timezone,
+          labels,
+          logoEntryId,
+          bannerEntryId,
         })
         return { content: [{ type: 'text', text: result }] }
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error updating event: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error updating event: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -115,7 +144,10 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error deleting event: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error deleting event: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }

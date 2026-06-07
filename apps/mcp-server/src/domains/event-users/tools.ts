@@ -2,7 +2,11 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { InviteEventUserDto, ListEventUsersDto, UpdateEventUserDto, DeleteEventUserDto } from './schemas'
 import { PublicApiClient } from '../../api/publicApiClient'
 
-export function registerEventUserTools(server: McpServer, ks: string, publicApiClient: PublicApiClient): void {
+export function registerEventUserTools(
+  server: McpServer,
+  ks: string,
+  publicApiClient: PublicApiClient,
+): void {
   server.tool(
     'invite-event-user',
     'Invites a user to the event with the specified roles and profile data',
@@ -14,16 +18,39 @@ export function registerEventUserTools(server: McpServer, ks: string, publicApiC
       openWorldHint: true,
       readOnlyHint: false,
     },
-    async ({ eventId, firstName, lastName, email, title, company, bio, roles, imageUrlEntryId, skipEmail }) => {
+    async ({
+      eventId,
+      firstName,
+      lastName,
+      email,
+      title,
+      company,
+      bio,
+      roles,
+      imageUrlEntryId,
+      skipEmail,
+    }) => {
       try {
         const result = await publicApiClient.inviteEventUser(ks, {
-          eventId, firstName, lastName, email, title, company, bio, roles, imageUrlEntryId, skipEmail,
+          eventId,
+          firstName,
+          lastName,
+          email,
+          title,
+          company,
+          bio,
+          roles,
+          imageUrlEntryId,
+          skipEmail,
         })
         return { content: [{ type: 'text', text: result }] }
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error inviting event user: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error inviting event user: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -48,7 +75,10 @@ export function registerEventUserTools(server: McpServer, ks: string, publicApiC
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error listing event users: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error listing event users: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -69,13 +99,24 @@ export function registerEventUserTools(server: McpServer, ks: string, publicApiC
     async ({ eventId, userId, firstName, lastName, title, company, bio, roles, imageUrlEntryId }) => {
       try {
         const result = await publicApiClient.updateEventUser(ks, {
-          eventId, userId, firstName, lastName, title, company, bio, roles, imageUrlEntryId,
+          eventId,
+          userId,
+          firstName,
+          lastName,
+          title,
+          company,
+          bio,
+          roles,
+          imageUrlEntryId,
         })
         return { content: [{ type: 'text', text: result }] }
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error updating event user: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error updating event user: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -100,7 +141,10 @@ export function registerEventUserTools(server: McpServer, ks: string, publicApiC
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error deleting event user: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error deleting event user: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }

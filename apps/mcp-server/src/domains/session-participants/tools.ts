@@ -25,13 +25,19 @@ export function registerSessionParticipantTools(
     async ({ eventId, sessionId, speakers, moderatorIds }) => {
       try {
         const result = await publicApiClient.addSessionParticipants(ks, {
-          eventId, sessionId, speakers, moderatorIds,
+          eventId,
+          sessionId,
+          speakers,
+          moderatorIds,
         })
         return { content: [{ type: 'text', text: result }] }
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error adding session participants: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error adding session participants: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -52,13 +58,19 @@ export function registerSessionParticipantTools(
     async ({ eventId, sessionId, speakerIds, moderatorIds }) => {
       try {
         const result = await publicApiClient.removeSessionParticipants(ks, {
-          eventId, sessionId, speakerIds, moderatorIds,
+          eventId,
+          sessionId,
+          speakerIds,
+          moderatorIds,
         })
         return { content: [{ type: 'text', text: result }] }
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error removing session participants: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error removing session participants: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }
@@ -83,7 +95,10 @@ export function registerSessionParticipantTools(
       } catch (error) {
         return {
           content: [
-            { type: 'text', text: `Error listing session participants: ${error instanceof Error ? error.message : String(error)}` },
+            {
+              type: 'text',
+              text: `Error listing session participants: ${error instanceof Error ? error.message : String(error)}`,
+            },
           ],
         }
       }

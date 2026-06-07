@@ -23,7 +23,9 @@ export const UpdateTeamMemberDto = z.object({
   disabled: z
     .boolean()
     .optional()
-    .describe('Whether the team member is disabled for Event Platform login. Set to true to suspend access. Example: false'),
+    .describe(
+      'Whether the team member is disabled for Event Platform login. Set to true to suspend access. Example: false',
+    ),
 })
 
 export const DeleteTeamMemberDto = z.object({

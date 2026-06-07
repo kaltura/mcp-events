@@ -207,27 +207,42 @@ export class PublicApiClient {
 
   async createTeamMember(
     ks: string,
-    params: { email: string; role: 'Admin' | 'Organizer' | 'ContentManager'; firstName: string; lastName: string },
+    params: {
+      email: string
+      role: 'Admin' | 'Organizer' | 'ContentManager'
+      firstName: string
+      lastName: string
+    },
   ): Promise<string> {
     const response = await fetch(`${this.baseUrl}/${this.paths.teamMember.create}`, {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'createTeamMember') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'createTeamMember')
+    }
     return await response.text()
   }
 
   async updateTeamMember(
     ks: string,
-    params: { id: string; firstName?: string; lastName?: string; role?: 'Admin' | 'Organizer' | 'ContentManager'; disabled?: boolean },
+    params: {
+      id: string
+      firstName?: string
+      lastName?: string
+      role?: 'Admin' | 'Organizer' | 'ContentManager'
+      disabled?: boolean
+    },
   ): Promise<string> {
     const response = await fetch(`${this.baseUrl}/${this.paths.teamMember.update}`, {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'updateTeamMember') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'updateTeamMember')
+    }
     return await response.text()
   }
 
@@ -237,7 +252,9 @@ export class PublicApiClient {
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'deleteTeamMember') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'deleteTeamMember')
+    }
     return await response.text()
   }
 
@@ -250,7 +267,9 @@ export class PublicApiClient {
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'listTeamMembers') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listTeamMembers')
+    }
     return await response.text()
   }
 
@@ -276,7 +295,9 @@ export class PublicApiClient {
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'inviteEventUser') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'inviteEventUser')
+    }
     return await response.text()
   }
 
@@ -294,7 +315,9 @@ export class PublicApiClient {
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'listEventUsers') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listEventUsers')
+    }
     return await response.text()
   }
 
@@ -317,7 +340,9 @@ export class PublicApiClient {
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'updateEventUser') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'updateEventUser')
+    }
     return await response.text()
   }
 
@@ -327,7 +352,9 @@ export class PublicApiClient {
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'deleteEventUser') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'deleteEventUser')
+    }
     return await response.text()
   }
 
@@ -347,7 +374,9 @@ export class PublicApiClient {
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'addSessionParticipants') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'addSessionParticipants')
+    }
     return await response.text()
   }
 
@@ -365,20 +394,21 @@ export class PublicApiClient {
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'removeSessionParticipants') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'removeSessionParticipants')
+    }
     return await response.text()
   }
 
-  async listSessionParticipants(
-    ks: string,
-    params: { eventId: number; sessionId: string },
-  ): Promise<string> {
+  async listSessionParticipants(ks: string, params: { eventId: number; sessionId: string }): Promise<string> {
     const response = await fetch(`${this.baseUrl}/${this.paths.sessionParticipant.list}`, {
       method: 'POST',
       headers: this.getHeaders(ks),
       body: JSON.stringify(params),
     })
-    if (!response.ok) { await this.handleResponseError(response, 'listSessionParticipants') }
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listSessionParticipants')
+    }
     return await response.text()
   }
 
