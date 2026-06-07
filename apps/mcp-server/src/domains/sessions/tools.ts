@@ -9,17 +9,14 @@ import { PublicApiClient } from '../../api/publicApiClient'
  * @param publicApiClient Public API client instance
  */
 export function registerSessionTools(server: McpServer, ks: string, publicApiClient: PublicApiClient): void {
-  // Tool for creating an event session
-  server.tool(
+  server.registerTool(
     'create-event-session',
-    'Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings',
-    CreateSessionDto.shape,
     {
       title: 'Create an Event Session',
-      destructiveHint: false,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description:
+        'Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings',
+      inputSchema: CreateSessionDto,
+      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
     async ({ id, session }) => {
       try {
@@ -38,17 +35,13 @@ export function registerSessionTools(server: McpServer, ks: string, publicApiCli
     },
   )
 
-  // Tool for listing event sessions
-  server.tool(
+  server.registerTool(
     'list-event-sessions',
-    'Retrieves a list of sessions for a specific event',
-    ListSessionDto.shape,
     {
       title: 'List Event Sessions',
-      destructiveHint: false,
-      idempotentHint: true,
-      openWorldHint: true,
-      readOnlyHint: true,
+      description: 'Retrieves a list of sessions for a specific event',
+      inputSchema: ListSessionDto,
+      annotations: { destructiveHint: false, idempotentHint: true, openWorldHint: true, readOnlyHint: true },
     },
     async ({ eventId }) => {
       try {

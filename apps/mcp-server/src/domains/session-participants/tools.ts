@@ -1,9 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import {
-  AddSessionParticipantsDto,
-  RemoveSessionParticipantsDto,
-  ListSessionParticipantsDto,
-} from './schemas'
+import { AddSessionParticipantsDto, RemoveSessionParticipantsDto, ListSessionParticipantsDto } from './schemas'
 import { PublicApiClient } from '../../api/publicApiClient'
 
 export function registerSessionParticipantTools(
@@ -11,18 +7,14 @@ export function registerSessionParticipantTools(
   ks: string,
   publicApiClient: PublicApiClient,
 ): void {
-  server.tool(
+  server.registerTool(
     'add-session-participants',
-    'Adds speakers and/or moderators to a session (users must have event-level Speaker/Moderator role)',
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore — Zod type depth on nested optional/default chains exceeds TS inference limit
-    AddSessionParticipantsDto.shape,
     {
       title: 'Add Session Participants',
-      destructiveHint: false,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description:
+        'Adds speakers and/or moderators to a session (users must have event-level Speaker/Moderator role)',
+      inputSchema: AddSessionParticipantsDto,
+      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
     async ({ eventId, sessionId, speakers, moderatorIds }) => {
       try {
@@ -46,16 +38,13 @@ export function registerSessionParticipantTools(
     },
   )
 
-  server.tool(
+  server.registerTool(
     'remove-session-participants',
-    'Removes speakers and/or moderators from a session',
-    RemoveSessionParticipantsDto.shape,
     {
       title: 'Remove Session Participants',
-      destructiveHint: true,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description: 'Removes speakers and/or moderators from a session',
+      inputSchema: RemoveSessionParticipantsDto,
+      annotations: { destructiveHint: true, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
     async ({ eventId, sessionId, speakerIds, moderatorIds }) => {
       try {
@@ -79,16 +68,13 @@ export function registerSessionParticipantTools(
     },
   )
 
-  server.tool(
+  server.registerTool(
     'list-session-participants',
-    'Lists all speakers and moderators for a session',
-    ListSessionParticipantsDto.shape,
     {
       title: 'List Session Participants',
-      destructiveHint: false,
-      idempotentHint: true,
-      openWorldHint: true,
-      readOnlyHint: true,
+      description: 'Lists all speakers and moderators for a session',
+      inputSchema: ListSessionParticipantsDto,
+      annotations: { destructiveHint: false, idempotentHint: true, openWorldHint: true, readOnlyHint: true },
     },
     async ({ eventId, sessionId }) => {
       try {

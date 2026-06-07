@@ -9,17 +9,14 @@ import { PublicApiClient } from '../../api/publicApiClient'
  * @param publicApiClient Public API client instance
  */
 export function registerEventTools(server: McpServer, ks: string, publicApiClient: PublicApiClient): void {
-  // Tool for creating events
-  server.tool(
+  server.registerTool(
     'create-event',
-    'Creates a new virtual event with provided configuration including name, start/end dates, templates, and timezone settings',
-    CreateEventDto.shape,
     {
       title: 'Create a Kaltura Event',
-      destructiveHint: false,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description:
+        'Creates a new virtual event with provided configuration including name, start/end dates, templates, and timezone settings',
+      inputSchema: CreateEventDto,
+      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
     async ({ name, templateId, startDate, endDate, timezone, description }) => {
       try {
@@ -45,17 +42,13 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
     },
   )
 
-  // Tool for listing events
-  server.tool(
+  server.registerTool(
     'list-events',
-    'get a list of available events',
-    ListEventDto.shape,
     {
       title: 'List Events',
-      destructiveHint: false,
-      idempotentHint: true,
-      openWorldHint: true,
-      readOnlyHint: true,
+      description: 'get a list of available events',
+      inputSchema: ListEventDto,
+      annotations: { destructiveHint: false, idempotentHint: true, openWorldHint: true, readOnlyHint: true },
     },
     async ({ filter, pager }) => {
       try {
@@ -74,30 +67,16 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
     },
   )
 
-  // Tool for updating events
-  server.tool(
+  server.registerTool(
     'update-event',
-    "Modifies an existing event's properties such as name, dates, banner, logo, and other configuration settings",
-    UpdateEventDto.shape,
     {
       title: 'Update an Event',
-      destructiveHint: false,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description:
+        "Modifies an existing event's properties such as name, dates, banner, logo, and other configuration settings",
+      inputSchema: UpdateEventDto,
+      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
-    async ({
-      id,
-      name,
-      description,
-      startDate,
-      endDate,
-      doorsOpenDate,
-      timezone,
-      labels,
-      logoEntryId,
-      bannerEntryId,
-    }) => {
+    async ({ id, name, description, startDate, endDate, doorsOpenDate, timezone, labels, logoEntryId, bannerEntryId }) => {
       try {
         const result = await publicApiClient.updateEvent(ks, {
           id,
@@ -125,17 +104,13 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
     },
   )
 
-  // Tool for deleting events
-  server.tool(
+  server.registerTool(
     'delete-event',
-    'Permanently removes an event by its ID, including all associated resources and configurations',
-    DeleteEventDto.shape,
     {
       title: 'Delete an Event',
-      destructiveHint: true,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description: 'Permanently removes an event by its ID, including all associated resources and configurations',
+      inputSchema: DeleteEventDto,
+      annotations: { destructiveHint: true, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
     async ({ id }) => {
       try {

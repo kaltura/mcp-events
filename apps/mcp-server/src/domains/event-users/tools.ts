@@ -7,29 +7,15 @@ export function registerEventUserTools(
   ks: string,
   publicApiClient: PublicApiClient,
 ): void {
-  server.tool(
+  server.registerTool(
     'invite-event-user',
-    'Invites a user to the event with the specified roles and profile data',
-    InviteEventUserDto.shape,
     {
       title: 'Invite Event User',
-      destructiveHint: false,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description: 'Invites a user to the event with the specified roles and profile data',
+      inputSchema: InviteEventUserDto,
+      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
-    async ({
-      eventId,
-      firstName,
-      lastName,
-      email,
-      title,
-      company,
-      bio,
-      roles,
-      imageUrlEntryId,
-      skipEmail,
-    }) => {
+    async ({ eventId, firstName, lastName, email, title, company, bio, roles, imageUrlEntryId, skipEmail }) => {
       try {
         const result = await publicApiClient.inviteEventUser(ks, {
           eventId,
@@ -57,16 +43,13 @@ export function registerEventUserTools(
     },
   )
 
-  server.tool(
+  server.registerTool(
     'list-event-users',
-    'Returns a paginated list of event users with optional filtering and sorting',
-    ListEventUsersDto.shape,
     {
       title: 'List Event Users',
-      destructiveHint: false,
-      idempotentHint: true,
-      openWorldHint: true,
-      readOnlyHint: true,
+      description: 'Returns a paginated list of event users with optional filtering and sorting',
+      inputSchema: ListEventUsersDto,
+      annotations: { destructiveHint: false, idempotentHint: true, openWorldHint: true, readOnlyHint: true },
     },
     async ({ eventId, filter, pager, orderBy }) => {
       try {
@@ -85,16 +68,13 @@ export function registerEventUserTools(
     },
   )
 
-  server.tool(
+  server.registerTool(
     'update-event-user',
-    "Updates an event user profile and roles (role updates replace the user's current roles via diff)",
-    UpdateEventUserDto.shape,
     {
       title: 'Update Event User',
-      destructiveHint: false,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description: "Updates an event user profile and roles (role updates replace the user's current roles via diff)",
+      inputSchema: UpdateEventUserDto,
+      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
     async ({ eventId, userId, firstName, lastName, title, company, bio, roles, imageUrlEntryId }) => {
       try {
@@ -123,16 +103,13 @@ export function registerEventUserTools(
     },
   )
 
-  server.tool(
+  server.registerTool(
     'delete-event-user',
-    'Removes a user from the event context including their session roles and groups',
-    DeleteEventUserDto.shape,
     {
       title: 'Delete Event User',
-      destructiveHint: true,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description: 'Removes a user from the event context including their session roles and groups',
+      inputSchema: DeleteEventUserDto,
+      annotations: { destructiveHint: true, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
     async ({ eventId, userId }) => {
       try {

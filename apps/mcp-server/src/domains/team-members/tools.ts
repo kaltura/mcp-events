@@ -7,18 +7,14 @@ export function registerTeamMemberTools(
   ks: string,
   publicApiClient: PublicApiClient,
 ): void {
-  server.tool(
+  server.registerTool(
     'create-team-member',
-    'Creates a new account-level Event Platform team member with the specified role. Team members have platform-wide access (not scoped to a single event). Use invite-event-user to add users to a specific event instead.',
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore — ZodEnum with .describe() breaks ZodRawShapeCompat inference
-    CreateTeamMemberDto.shape,
     {
       title: 'Create Team Member',
-      destructiveHint: false,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description:
+        'Creates a new account-level Event Platform team member with the specified role. Team members have platform-wide access (not scoped to a single event). Use invite-event-user to add users to a specific event instead.',
+      inputSchema: CreateTeamMemberDto,
+      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
     async ({ email, role, firstName, lastName }) => {
       try {
@@ -37,18 +33,13 @@ export function registerTeamMemberTools(
     },
   )
 
-  server.tool(
+  server.registerTool(
     'update-team-member',
-    'Updates an account-level Event Platform team member profile or role.',
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore — ZodEnum with .describe() breaks ZodRawShapeCompat inference
-    UpdateTeamMemberDto.shape,
     {
       title: 'Update Team Member',
-      destructiveHint: false,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description: 'Updates an account-level Event Platform team member profile or role.',
+      inputSchema: UpdateTeamMemberDto,
+      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
     async ({ id, firstName, lastName, role, disabled }) => {
       try {
@@ -67,16 +58,13 @@ export function registerTeamMemberTools(
     },
   )
 
-  server.tool(
+  server.registerTool(
     'delete-team-member',
-    'Removes an account-level Event Platform team member, revoking their platform access.',
-    DeleteTeamMemberDto.shape,
     {
       title: 'Delete Team Member',
-      destructiveHint: true,
-      idempotentHint: false,
-      openWorldHint: true,
-      readOnlyHint: false,
+      description: 'Removes an account-level Event Platform team member, revoking their platform access.',
+      inputSchema: DeleteTeamMemberDto,
+      annotations: { destructiveHint: true, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },
     async ({ id }) => {
       try {
@@ -95,18 +83,13 @@ export function registerTeamMemberTools(
     },
   )
 
-  server.tool(
+  server.registerTool(
     'list-team-members',
-    'Retrieves a list of account-level Event Platform team members.',
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore — nested ZodDefault inside optional breaks ZodRawShapeCompat inference
-    ListTeamMembersDto.shape,
     {
       title: 'List Team Members',
-      destructiveHint: false,
-      idempotentHint: true,
-      openWorldHint: true,
-      readOnlyHint: true,
+      description: 'Retrieves a list of account-level Event Platform team members.',
+      inputSchema: ListTeamMembersDto,
+      annotations: { destructiveHint: false, idempotentHint: true, openWorldHint: true, readOnlyHint: true },
     },
     async ({ pager }) => {
       try {
