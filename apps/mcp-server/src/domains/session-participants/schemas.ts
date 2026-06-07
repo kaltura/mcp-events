@@ -2,12 +2,12 @@ import { z } from 'zod'
 
 const SpeakerInputDto = z.object({
   userId: z.string().describe('Event user ID (from event-users/invite)'),
-  order: z.number().default(0).optional().describe('Display order (default 0)'),
-  isHidden: z.boolean().default(false).optional().describe('Whether speaker is hidden (default false)'),
+  order: z.number().optional().default(0).describe('Display order (default 0)'),
+  isHidden: z.boolean().optional().default(false).describe('Whether speaker is hidden (default false)'),
   role: z
     .enum(['simpleSpeaker', 'advancedSpeaker'])
-    .default('simpleSpeaker')
     .optional()
+    .default('simpleSpeaker')
     .describe("Speaker sub-role (default: 'simpleSpeaker')"),
 })
 

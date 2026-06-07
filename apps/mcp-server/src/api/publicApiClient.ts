@@ -207,7 +207,7 @@ export class PublicApiClient {
 
   async createTeamMember(
     ks: string,
-    params: { email: string; role: string; firstName: string; lastName: string },
+    params: { email: string; role: 'Admin' | 'Organizer' | 'ContentManager'; firstName: string; lastName: string },
   ): Promise<string> {
     const response = await fetch(`${this.baseUrl}/${this.paths.teamMember.create}`, {
       method: 'POST',
@@ -220,7 +220,7 @@ export class PublicApiClient {
 
   async updateTeamMember(
     ks: string,
-    params: { id: string; firstName?: string; lastName?: string; role?: string; disabled?: boolean },
+    params: { id: string; firstName?: string; lastName?: string; role?: 'Admin' | 'Organizer' | 'ContentManager'; disabled?: boolean },
   ): Promise<string> {
     const response = await fetch(`${this.baseUrl}/${this.paths.teamMember.update}`, {
       method: 'POST',
