@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const TeamMemberRole = z
   .enum(['Admin', 'Organizer', 'ContentManager'])
   .describe(
-    "Team member Event Platform role. Admin: full platform access including billing and team management. Organizer: can create and fully manage events. ContentManager: can manage event content but cannot create events or manage team. Example: 'Organizer'",
+    "Account-level role on the Event Platform (applies across all events, not scoped to one event). Admin: full platform access including billing and team management. Organizer: can create and fully manage events. ContentManager: can manage event content but cannot create events or manage team. Example: 'Organizer'",
   )
 
 export const CreateTeamMemberDto = z.object({

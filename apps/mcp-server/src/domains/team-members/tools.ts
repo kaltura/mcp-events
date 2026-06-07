@@ -9,7 +9,7 @@ export function registerTeamMemberTools(
 ): void {
   server.tool(
     'create-team-member',
-    'Creates a new Event Platform team member with the specified role',
+    'Creates a new account-level Event Platform team member with the specified role. Team members have platform-wide access (not scoped to a single event). Use invite-event-user to add users to a specific event instead.',
     CreateTeamMemberDto.shape,
     {
       title: 'Create Team Member',
@@ -37,7 +37,7 @@ export function registerTeamMemberTools(
 
   server.tool(
     'update-team-member',
-    'Updates an Event Platform team member profile or role',
+    'Updates an account-level Event Platform team member profile or role.',
     UpdateTeamMemberDto.shape,
     {
       title: 'Update Team Member',
@@ -65,7 +65,7 @@ export function registerTeamMemberTools(
 
   server.tool(
     'delete-team-member',
-    'Deletes an Event Platform team member',
+    'Removes an account-level Event Platform team member, revoking their platform access.',
     DeleteTeamMemberDto.shape,
     {
       title: 'Delete Team Member',
@@ -93,7 +93,7 @@ export function registerTeamMemberTools(
 
   server.tool(
     'list-team-members',
-    'Retrieves a list of Event Platform team members',
+    'Retrieves a list of account-level Event Platform team members.',
     ListTeamMembersDto.shape,
     {
       title: 'List Team Members',
