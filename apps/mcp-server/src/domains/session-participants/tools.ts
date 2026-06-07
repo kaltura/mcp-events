@@ -14,6 +14,8 @@ export function registerSessionParticipantTools(
   server.tool(
     'add-session-participants',
     'Adds speakers and/or moderators to a session (users must have event-level Speaker/Moderator role)',
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore — Zod type depth on nested optional/default chains exceeds TS inference limit
     AddSessionParticipantsDto.shape,
     {
       title: 'Add Session Participants',
