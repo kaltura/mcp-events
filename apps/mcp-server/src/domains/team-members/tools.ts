@@ -98,6 +98,8 @@ export function registerTeamMemberTools(
   server.tool(
     'list-team-members',
     'Retrieves a list of account-level Event Platform team members.',
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore — nested ZodDefault inside optional breaks ZodRawShapeCompat inference
     ListTeamMembersDto.shape,
     {
       title: 'List Team Members',
