@@ -2,8 +2,7 @@ import { ConsoleLogger, Injectable } from '@nestjs/common'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
 import { config } from './config/config'
-import { registerEventTools } from './tools/eventTools'
-import { registerEventResources } from './resources/eventResources'
+import { registerAllDomainTools, registerAllDomainResources } from './domains'
 import { PublicApiClient } from './api/publicApiClient'
 import { Request, Response } from 'express'
 
@@ -27,8 +26,8 @@ export class McpService {
       version: config.server.version,
     })
 
-    registerEventTools(mcpServer, ks, this.publicApiClient)
-    registerEventResources(mcpServer, ks, this.publicApiClient)
+    registerAllDomainTools(mcpServer, ks, this.publicApiClient)
+    registerAllDomainResources(mcpServer, ks, this.publicApiClient)
 
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined, // stateless — no session tracking

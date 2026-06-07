@@ -1,8 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { config } from './config/config'
-import { registerEventTools } from './tools/eventTools'
-import { registerEventResources } from './resources/eventResources'
+import { registerAllDomainTools, registerAllDomainResources } from './domains'
 import { PublicApiClient } from './api/publicApiClient'
 
 /**
@@ -30,9 +29,9 @@ export async function startServer(): Promise<McpServer> {
     })
 
     // Register all tools with KS from environment
-    registerEventTools(server, ks, publicApiClient)
+    registerAllDomainTools(server, ks, publicApiClient)
     // Register all resources with KS from environment
-    registerEventResources(server, ks, publicApiClient)
+    registerAllDomainResources(server, ks, publicApiClient)
 
     // Create a transport for communication
     const transport = new StdioServerTransport()

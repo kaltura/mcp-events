@@ -1,7 +1,7 @@
 import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { PublicApiClient } from '../api/publicApiClient'
+import { PublicApiClient } from '../../api/publicApiClient'
 import assert from 'node:assert'
-import { PresetTemplates } from './presetTemplates'
+import { PresetTemplates } from '../../resources/presetTemplates'
 
 /**
  * Register event-related resources with the MCP server
@@ -14,7 +14,6 @@ export function registerEventResources(
   ks: string,
   publicApiClient: PublicApiClient,
 ): void {
-  // Dynamic resource with parameters
   server.registerResource(
     'events',
     new ResourceTemplate('events://{eventId}/info', { list: undefined }),
@@ -61,12 +60,7 @@ export function registerEventResources(
     },
     async (uri) => {
       return {
-        contents: [
-          {
-            uri: uri.href,
-            text: JSON.stringify(PresetTemplates, null, 2),
-          },
-        ],
+        contents: [{ uri: uri.href, text: JSON.stringify(PresetTemplates, null, 2) }],
       }
     },
   )

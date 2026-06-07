@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { config } from '../config/config'
-import { SessionType, SessionVisibility, TListEventFilterDto } from '../schemas/eventSchemas'
+import { SessionType, SessionVisibility } from '../domains/sessions/schemas'
+import { TListEventFilterDto } from '../domains/events/schemas'
 
 /**
  * API client for Public API
