@@ -1,14 +1,13 @@
 import { z } from 'zod'
 
-export const TeamMemberRole = z
-  .enum(['Admin', 'Organizer', 'ContentManager'])
-  .describe(
-    "Account-level role on the Event Platform (applies across all events, not scoped to one event). Admin: full platform access including billing and team management. Organizer: can create and fully manage events. ContentManager: can manage event content but cannot create events or manage team. Example: 'Organizer'",
-  )
+const roleDescription =
+  "Account-level role on the Event Platform. Admin: full platform access including billing and team management. Organizer: can create and fully manage events. ContentManager: can manage event content but cannot create events or manage team. Example: 'Organizer'"
+
+export const TeamMemberRole = z.enum(['Admin', 'Organizer', 'ContentManager'])
 
 export const CreateTeamMemberDto = z.object({
   email: z.string().email().describe("Team member email. Example: 'john@company.com'"),
-  role: TeamMemberRole,
+  role: TeamMemberRole.describe(roleDescription),
   firstName: z.string().describe("Team member first name. Example: 'John'"),
   lastName: z.string().describe("Team member last name. Example: 'Doe'"),
 })
@@ -17,9 +16,7 @@ export const UpdateTeamMemberDto = z.object({
   id: z.string().describe("Team member Kaltura id. Example: 'e3b0c44298fc1c149'"),
   firstName: z.string().optional().describe("Team member first name. Example: 'John'"),
   lastName: z.string().optional().describe("Team member last name. Example: 'Doe'"),
-  role: TeamMemberRole.optional().describe(
-    "New role for this team member. Admin: full platform access. Organizer: can manage events. ContentManager: content-only access. Example: 'Organizer'",
-  ),
+  role: TeamMemberRole.optional().describe(roleDescription),
   disabled: z
     .boolean()
     .optional()

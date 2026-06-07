@@ -42,7 +42,7 @@ export const CreateSessionDto = z.object({
     type: z
       .nativeEnum(SessionType)
       .describe(
-        "Session Type. Example: 'MeetingEntry' for Interactive Room, 'LiveWebcast' for Live Webcast, 'SimuLive' for Simulated Live",
+        "Session type. Allowed values: 'MeetingEntry' (Interactive Room — participants join with camera/mic), 'LiveWebcast' (one-way broadcast to large audience), 'SimuLive' (pre-recorded video broadcast as live), 'LiveKME' (DIY live webcast via Kaltura MediaEngine), 'VirtualLearningRoom' (educational session), 'Invalid' (placeholder, do not use).",
       ),
     description: z.string().optional().describe("Session Description. Example: 'Session 1 description'"),
     startDate: z
@@ -56,7 +56,12 @@ export const CreateSessionDto = z.object({
       .describe("Session End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'")
       .optional(),
     tags: z.array(z.string()).describe('Session tags. Example: ["tag1", "tag2"]').optional(),
-    visibility: z.nativeEnum(SessionVisibility).describe('Entry visibility. Example: "published"').optional(),
+    visibility: z
+      .nativeEnum(SessionVisibility)
+      .describe(
+        "Controls who can see the session. 'published': visible on the event site if in related media. 'unlisted': accessible only via direct link (KMS only). 'private': visible on the event site even when not in related media. Default is 'published'.",
+      )
+      .optional(),
     isManualLive: z.boolean().optional(),
     imageUrlEntryId: z
       .string()

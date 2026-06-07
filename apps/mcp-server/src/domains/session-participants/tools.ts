@@ -1,5 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { AddSessionParticipantsDto, RemoveSessionParticipantsDto, ListSessionParticipantsDto } from './schemas'
+import {
+  AddSessionParticipantsDto,
+  RemoveSessionParticipantsDto,
+  ListSessionParticipantsDto,
+} from './schemas'
 import { PublicApiClient } from '../../api/publicApiClient'
 
 export function registerSessionParticipantTools(
@@ -14,7 +18,12 @@ export function registerSessionParticipantTools(
       description:
         'Adds speakers and/or moderators to a session (users must have event-level Speaker/Moderator role)',
       inputSchema: AddSessionParticipantsDto,
-      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
+      annotations: {
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+      },
     },
     async ({ eventId, sessionId, speakers, moderatorIds }) => {
       try {

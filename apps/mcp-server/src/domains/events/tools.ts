@@ -16,7 +16,12 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
       description:
         'Creates a new virtual event with provided configuration including name, start/end dates, templates, and timezone settings',
       inputSchema: CreateEventDto,
-      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
+      annotations: {
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+      },
     },
     async ({ name, templateId, startDate, endDate, timezone, description }) => {
       try {
@@ -74,9 +79,25 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
       description:
         "Modifies an existing event's properties such as name, dates, banner, logo, and other configuration settings",
       inputSchema: UpdateEventDto,
-      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
+      annotations: {
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+      },
     },
-    async ({ id, name, description, startDate, endDate, doorsOpenDate, timezone, labels, logoEntryId, bannerEntryId }) => {
+    async ({
+      id,
+      name,
+      description,
+      startDate,
+      endDate,
+      doorsOpenDate,
+      timezone,
+      labels,
+      logoEntryId,
+      bannerEntryId,
+    }) => {
       try {
         const result = await publicApiClient.updateEvent(ks, {
           id,
@@ -108,7 +129,8 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
     'delete-event',
     {
       title: 'Delete an Event',
-      description: 'Permanently removes an event by its ID, including all associated resources and configurations',
+      description:
+        'Permanently removes an event by its ID, including all associated resources and configurations',
       inputSchema: DeleteEventDto,
       annotations: { destructiveHint: true, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
     },

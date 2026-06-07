@@ -76,14 +76,16 @@ export const PagerDto = z.object({
   limit: z.number().min(1).max(15).default(15).describe('Page size. Default: 30. Example: 10'),
 })
 
-export const EventOrderBy = z.enum(['+name', '-name', '+createdAt', '-createdAt', '+startDate', '-startDate'])
+export const EventOrderBy = z
+  .enum(['+name', '-name', '+createdAt', '-createdAt', '+startDate', '-startDate'])
+  .describe(
+    "Sort order. '+name' A-Z by name, '-name' Z-A by name, '+createdAt' oldest first, '-createdAt' newest first, '+startDate' earliest start first, '-startDate' latest start first.",
+  )
 
 export const ListEventDto = z.object({
   filter: ListEventFilterDto.optional().describe('Filter information.'),
   pager: PagerDto.optional().describe('Pagination information.'),
-  orderBy: EventOrderBy.optional().describe(
-    "Order by field and direction. Example: '+name' for ascending, '-name' for descending",
-  ),
+  orderBy: EventOrderBy.optional(),
 })
 
 export const UpdateEventDto = z.object({

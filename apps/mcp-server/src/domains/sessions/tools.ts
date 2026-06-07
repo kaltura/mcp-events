@@ -16,7 +16,12 @@ export function registerSessionTools(server: McpServer, ks: string, publicApiCli
       description:
         'Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings',
       inputSchema: CreateSessionDto,
-      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
+      annotations: {
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+      },
     },
     async ({ id, session }) => {
       try {

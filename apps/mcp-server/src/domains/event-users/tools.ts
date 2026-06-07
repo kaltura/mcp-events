@@ -13,9 +13,25 @@ export function registerEventUserTools(
       title: 'Invite Event User',
       description: 'Invites a user to the event with the specified roles and profile data',
       inputSchema: InviteEventUserDto,
-      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
+      annotations: {
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+      },
     },
-    async ({ eventId, firstName, lastName, email, title, company, bio, roles, imageUrlEntryId, skipEmail }) => {
+    async ({
+      eventId,
+      firstName,
+      lastName,
+      email,
+      title,
+      company,
+      bio,
+      roles,
+      imageUrlEntryId,
+      skipEmail,
+    }) => {
       try {
         const result = await publicApiClient.inviteEventUser(ks, {
           eventId,
@@ -72,9 +88,15 @@ export function registerEventUserTools(
     'update-event-user',
     {
       title: 'Update Event User',
-      description: "Updates an event user profile and roles (role updates replace the user's current roles via diff)",
+      description:
+        "Updates an event user profile and roles (role updates replace the user's current roles via diff)",
       inputSchema: UpdateEventUserDto,
-      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
+      annotations: {
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+      },
     },
     async ({ eventId, userId, firstName, lastName, title, company, bio, roles, imageUrlEntryId }) => {
       try {

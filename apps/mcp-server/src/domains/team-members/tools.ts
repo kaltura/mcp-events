@@ -14,7 +14,12 @@ export function registerTeamMemberTools(
       description:
         'Creates a new account-level Event Platform team member with the specified role. Team members have platform-wide access (not scoped to a single event). Use invite-event-user to add users to a specific event instead.',
       inputSchema: CreateTeamMemberDto,
-      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
+      annotations: {
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+      },
     },
     async ({ email, role, firstName, lastName }) => {
       try {
@@ -39,7 +44,12 @@ export function registerTeamMemberTools(
       title: 'Update Team Member',
       description: 'Updates an account-level Event Platform team member profile or role.',
       inputSchema: UpdateTeamMemberDto,
-      annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true, readOnlyHint: false },
+      annotations: {
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+      },
     },
     async ({ id, firstName, lastName, role, disabled }) => {
       try {
