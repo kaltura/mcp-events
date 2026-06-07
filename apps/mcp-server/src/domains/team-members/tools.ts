@@ -10,6 +10,8 @@ export function registerTeamMemberTools(
   server.tool(
     'create-team-member',
     'Creates a new account-level Event Platform team member with the specified role. Team members have platform-wide access (not scoped to a single event). Use invite-event-user to add users to a specific event instead.',
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore — ZodEnum with .describe() breaks ZodRawShapeCompat inference
     CreateTeamMemberDto.shape,
     {
       title: 'Create Team Member',
@@ -38,6 +40,8 @@ export function registerTeamMemberTools(
   server.tool(
     'update-team-member',
     'Updates an account-level Event Platform team member profile or role.',
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore — ZodEnum with .describe() breaks ZodRawShapeCompat inference
     UpdateTeamMemberDto.shape,
     {
       title: 'Update Team Member',
