@@ -12,7 +12,7 @@ export function registerTeamMemberTools(
     {
       title: 'Create Team Member',
       description:
-        'Creates a new account-level Event Platform team member with the specified role. Team members have platform-wide access (not scoped to a single event). Use invite-event-user to add users to a specific event instead.',
+        'Creates a new account-level Event Platform team member with the specified role. Team members have platform-wide access (not scoped to a single event). Use invite-event-user to add users to a specific event instead. IMPORTANT: Always inform the user before calling this tool that they are granting account-level platform access, and confirm they intended this and not an event-scoped invite.',
       inputSchema: CreateTeamMemberDto,
       annotations: {
         destructiveHint: false,
