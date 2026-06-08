@@ -8,6 +8,7 @@ const SpeakerInputDto = z.object({
     ),
   order: z
     .number()
+    .min(1)
     .optional()
     .default(0)
     .describe('Display order on the session page (0-based, lower = appears first). Example: 1'),
@@ -74,6 +75,7 @@ const SpeakerUpdateInputDto = z.object({
     ),
   order: z
     .number()
+    .min(1)
     .optional()
     .describe('New display order on the session page (0-based, lower = appears first). Example: 1'),
   isHidden: z
