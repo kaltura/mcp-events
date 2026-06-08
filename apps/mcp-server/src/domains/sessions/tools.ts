@@ -26,7 +26,7 @@ export function registerSessionTools(server: McpServer, ks: string, publicApiCli
     async ({ id, session }) => {
       try {
         const result = await publicApiClient.createSession(ks, id, session)
-        return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] }
+        return { content: [{ type: 'text', text: result }] }
       } catch (error) {
         return {
           content: [
@@ -51,7 +51,7 @@ export function registerSessionTools(server: McpServer, ks: string, publicApiCli
     async ({ eventId }) => {
       try {
         const result = await publicApiClient.listSessions(ks, eventId)
-        return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] }
+        return { content: [{ type: 'text', text: result }] }
       } catch (error) {
         return {
           content: [
