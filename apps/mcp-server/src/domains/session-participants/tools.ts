@@ -16,7 +16,7 @@ export function registerSessionParticipantTools(
     {
       title: 'Add Session Participants',
       description:
-        'Adds speakers and/or moderators to a session (users must have event-level Speaker/Moderator role)',
+        'Adds speakers and/or moderators to a session (users must have event-level Speaker/Moderator role). To update an existing speaker\'s role, order, or visibility, first remove them with remove-session-participants, then re-add with the new values. To preserve or set a specific order, call list-session-participants first to see current order values — when order is omitted, the speaker is added with order 0.',
       inputSchema: AddSessionParticipantsDto,
       annotations: {
         destructiveHint: false,
