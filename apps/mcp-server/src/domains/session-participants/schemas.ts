@@ -65,3 +65,35 @@ export const ListSessionParticipantsDto = z.object({
   eventId: z.number().describe('Kaltura event ID. Example: 98765'),
   sessionId: z.string().describe("Session entry ID. Example: '0_syswy6uj'"),
 })
+
+const SpeakerUpdateInputDto = z.object({
+  userId: z
+    .string()
+    .describe(
+      "Hashed Kaltura user ID of the speaker to update. Obtain the ID from list-event-users or list-session-participants. Example: '1ef91ea60970881d430d4c6658eb8dba12a25e6083037b594a1871d129dd32b9'",
+    ),
+  order: z
+    .number()
+    .optional()
+    .describe('New display order on the session page (0-based, lower = appears first). Example: 1'),
+  isHidden: z
+    .boolean()
+    .optional()
+    .describe('Set to true to hide this speaker from the public session page (still active in the session).'),
+  role: z
+    .enum(['simpleSpeaker', 'advancedSpeaker'])
+    .optional()
+    .describe(
+      'New speaker sub-role. simpleSpeaker: standard presenter (camera, mic, screen share). advancedSpeaker: elevated permissions (can manage other speakers, access backstage controls).',
+    ),
+})
+
+export const UpdateSessionParticipantsDto = z.object({
+  eventId: z.number().describe('Kaltura event ID. Example: 98765'),
+  sessionId: z.string().describe("Session entry ID. Example: '0_syswy6uj'"),
+  speakers: z
+    .array(SpeakerUpdateInputDto)
+    .describe(
+      'Speakers to update (max 10). Only the fields provided will be changed — omitted fields remain unchanged.',
+    ),
+})

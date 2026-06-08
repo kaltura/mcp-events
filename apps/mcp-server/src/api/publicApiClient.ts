@@ -37,6 +37,7 @@ export class PublicApiClient {
     sessionParticipant: {
       add: 'session-participants/add',
       remove: 'session-participants/remove',
+      update: 'session-participants/update',
       list: 'session-participants/list',
     },
   })
@@ -396,6 +397,25 @@ export class PublicApiClient {
     })
     if (!response.ok) {
       await this.handleResponseError(response, 'removeSessionParticipants')
+    }
+    return await response.text()
+  }
+
+  async updateSessionParticipants(
+    ks: string,
+    params: {
+      eventId: number
+      sessionId: string
+      speakers: { userId: string; order?: number; isHidden?: boolean; role?: string }[]
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.sessionParticipant.update}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'updateSessionParticipants')
     }
     return await response.text()
   }

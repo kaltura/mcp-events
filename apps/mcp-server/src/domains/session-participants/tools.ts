@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import {
   AddSessionParticipantsDto,
   RemoveSessionParticipantsDto,
+  UpdateSessionParticipantsDto,
   ListSessionParticipantsDto,
 } from './schemas'
 import { PublicApiClient } from '../../api/publicApiClient'
@@ -16,7 +17,7 @@ export function registerSessionParticipantTools(
     {
       title: 'Add Session Participants',
       description:
-        'Adds speakers and/or moderators to a session (users must have event-level Speaker/Moderator role). To update an existing speaker\'s role, order, or visibility, first remove them with remove-session-participants, then re-add with the new values. To preserve or set a specific order, call list-session-participants first to see current order values — when order is omitted, the speaker is added with order 0.',
+        "Adds speakers and/or moderators to a session (users must have event-level Speaker/Moderator role). To update an existing speaker's role, order, or visibility, use update-session-participants instead. To preserve or set a specific order, call list-session-participants first to see current order values — when order is omitted, the speaker is added with order 0.",
       inputSchema: AddSessionParticipantsDto,
       annotations: {
         destructiveHint: false,
@@ -70,6 +71,32 @@ export function registerSessionParticipantTools(
             {
               type: 'text',
               text: `Error removing session participants: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+        }
+      }
+    },
+  )
+
+  server.registerTool(
+    'update-session-participants',
+    {
+      title: 'Update Session Participants',
+      description:
+        'Updates properties of speakers already assigned to a session (role, order, visibility). Only the fields provided are changed — omitted fields remain unchanged.',
+      inputSchema: UpdateSessionParticipantsDto,
+      annotations: { destructiveHint: false, idempotentHint: true, openWorldHint: true, readOnlyHint: false },
+    },
+    async ({ eventId, sessionId, speakers }) => {
+      try {
+        const result = await publicApiClient.updateSessionParticipants(ks, { eventId, sessionId, speakers })
+        return { content: [{ type: 'text', text: result }] }
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error updating session participants: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
         }
