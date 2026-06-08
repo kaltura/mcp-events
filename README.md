@@ -33,6 +33,7 @@ MCP server for Kaltura's Event Platform API.
   | `update-event-user` | Update an event user's profile and roles |
   | `delete-event-user` | Remove a user from an event |
   | `add-session-participants` | Add speakers or moderators to a session |
+  | `update-session-participants` | Update role, order, or visibility of existing session speakers |
   | `list-session-participants` | List speakers and moderators for a session |
   | `remove-session-participants` | Remove speakers or moderators from a session |
   | `create-team-member` | Create an account-level Event Platform team member |
