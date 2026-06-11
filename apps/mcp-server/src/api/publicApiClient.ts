@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { config } from '../config/config'
-import { SessionType, SessionVisibility, TListEventFilterDto } from '../schemas/eventSchemas'
+import { SessionType, SessionVisibility } from '../domains/sessions/schemas'
+import { TListEventFilterDto } from '../domains/events/schemas'
 
 /**
  * API client for Public API
@@ -20,6 +21,24 @@ export class PublicApiClient {
       create: 'sessions/create',
       list: 'sessions/list',
       speakerList: 'sessions/speakerList',
+    },
+    teamMember: {
+      create: 'team-members/create',
+      update: 'team-members/update',
+      delete: 'team-members/delete',
+      list: 'team-members/list',
+    },
+    eventUser: {
+      invite: 'event-users/invite',
+      list: 'event-users/list',
+      update: 'event-users/update',
+      delete: 'event-users/delete',
+    },
+    sessionParticipant: {
+      add: 'session-participants/add',
+      remove: 'session-participants/remove',
+      update: 'session-participants/update',
+      list: 'session-participants/list',
     },
   })
 
@@ -182,6 +201,234 @@ export class PublicApiClient {
       await this.handleResponseError(response, 'createSession')
     }
 
+    return await response.text()
+  }
+
+  // ─── Team Members ────────────────────────────────────────────────────────────
+
+  async createTeamMember(
+    ks: string,
+    params: {
+      email: string
+      role: 'Admin' | 'Organizer' | 'ContentManager'
+      firstName: string
+      lastName: string
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.teamMember.create}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'createTeamMember')
+    }
+    return await response.text()
+  }
+
+  async updateTeamMember(
+    ks: string,
+    params: {
+      id: string
+      firstName?: string
+      lastName?: string
+      role?: 'Admin' | 'Organizer' | 'ContentManager'
+      disabled?: boolean
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.teamMember.update}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'updateTeamMember')
+    }
+    return await response.text()
+  }
+
+  async deleteTeamMember(ks: string, params: { id: string }): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.teamMember.delete}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'deleteTeamMember')
+    }
+    return await response.text()
+  }
+
+  async listTeamMembers(
+    ks: string,
+    params: { pager?: { offset?: number; limit?: number } },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.teamMember.list}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listTeamMembers')
+    }
+    return await response.text()
+  }
+
+  // ─── Event Users ─────────────────────────────────────────────────────────────
+
+  async inviteEventUser(
+    ks: string,
+    params: {
+      eventId: number
+      firstName: string
+      lastName: string
+      email: string
+      title?: string
+      company?: string
+      bio?: string
+      roles?: string[]
+      imageUrlEntryId?: string
+      skipEmail?: boolean
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.eventUser.invite}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'inviteEventUser')
+    }
+    return await response.text()
+  }
+
+  async listEventUsers(
+    ks: string,
+    params: {
+      eventId: number
+      filter?: { searchTerm?: string; roles?: string[]; idIn?: string[] }
+      pager?: { offset?: number; limit?: number }
+      orderBy?: string
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.eventUser.list}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listEventUsers')
+    }
+    return await response.text()
+  }
+
+  async updateEventUser(
+    ks: string,
+    params: {
+      eventId: number
+      userId: string
+      firstName?: string
+      lastName?: string
+      title?: string
+      company?: string
+      bio?: string
+      roles?: string[]
+      imageUrlEntryId?: string
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.eventUser.update}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'updateEventUser')
+    }
+    return await response.text()
+  }
+
+  async deleteEventUser(ks: string, params: { eventId: number; userId: string }): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.eventUser.delete}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'deleteEventUser')
+    }
+    return await response.text()
+  }
+
+  // ─── Session Participants ─────────────────────────────────────────────────────
+
+  async addSessionParticipants(
+    ks: string,
+    params: {
+      eventId: number
+      sessionId: string
+      speakers?: { userId: string; order?: number; isHidden?: boolean; role?: string }[]
+      moderatorIds?: string[]
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.sessionParticipant.add}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'addSessionParticipants')
+    }
+    return await response.text()
+  }
+
+  async removeSessionParticipants(
+    ks: string,
+    params: {
+      eventId: number
+      sessionId: string
+      speakerIds?: string[]
+      moderatorIds?: string[]
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.sessionParticipant.remove}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'removeSessionParticipants')
+    }
+    return await response.text()
+  }
+
+  async updateSessionParticipants(
+    ks: string,
+    params: {
+      eventId: number
+      sessionId: string
+      speakers: { userId: string; order?: number; isHidden?: boolean; role?: string }[]
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.sessionParticipant.update}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'updateSessionParticipants')
+    }
+    return await response.text()
+  }
+
+  async listSessionParticipants(ks: string, params: { eventId: number; sessionId: string }): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.sessionParticipant.list}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+    if (!response.ok) {
+      await this.handleResponseError(response, 'listSessionParticipants')
+    }
     return await response.text()
   }
 

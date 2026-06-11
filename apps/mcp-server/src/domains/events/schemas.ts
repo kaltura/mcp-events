@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { PresetTemplates } from '../resources/presetTemplates'
-import { SupportedTimeZones } from '../resources/timeZones'
+import { PresetTemplates } from '../../resources/presetTemplates'
+import { SupportedTimeZones } from '../../resources/timeZones'
 
 const templateIdEnum = z
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -10,30 +10,6 @@ const templateIdEnum = z
     'default ids: no session: tm0000, with interactive room: tm1000, with Live Webcast: tm2000, simulated live session: tm3000, room broadcasting to live webcast: tm4000',
   )
 const ObjectId = z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId')
-
-export enum SessionType {
-  InteractiveRoom = 'MeetingEntry',
-  SimuLive = 'SimuLive',
-  LiveWebcast = 'LiveWebcast',
-  DiyLiveWebcast = 'LiveKME',
-  VirtualLearningRoom = 'VirtualLearningRoom',
-  Invalid = 'Invalid',
-}
-
-export enum SessionVisibility {
-  /**
-   * In sites, if in related media.
-   */
-  published = 'published',
-  /**
-   * Only KMS.
-   */
-  unlisted = 'unlisted',
-  /**
-   * In Sites, if not in related media.
-   */
-  private = 'private',
-}
 
 export const CreateEventDto = z.object({
   templateId: z
@@ -100,14 +76,16 @@ export const PagerDto = z.object({
   limit: z.number().min(1).max(15).default(15).describe('Page size. Default: 30. Example: 10'),
 })
 
-export const EventOrderBy = z.enum(['+name', '-name', '+createdAt', '-createdAt', '+startDate', '-startDate'])
+export const EventOrderBy = z
+  .enum(['+name', '-name', '+createdAt', '-createdAt', '+startDate', '-startDate'])
+  .describe(
+    "Sort order. '+name' A-Z by name, '-name' Z-A by name, '+createdAt' oldest first, '-createdAt' newest first, '+startDate' earliest start first, '-startDate' latest start first.",
+  )
 
 export const ListEventDto = z.object({
   filter: ListEventFilterDto.optional().describe('Filter information.'),
   pager: PagerDto.optional().describe('Pagination information.'),
-  orderBy: EventOrderBy.optional().describe(
-    "Order by field and direction. Example: '+name' for ascending, '-name' for descending",
-  ),
+  orderBy: EventOrderBy.optional(),
 })
 
 export const UpdateEventDto = z.object({
@@ -134,49 +112,3 @@ export const UpdateEventDto = z.object({
   logoEntryId: z.string().optional().describe("Event logo entry id. Example: '1_xextzqk8'"),
   bannerEntryId: z.string().optional().describe("Event banner id. Example: '1_p3im68oa'"),
 })
-
-export const ListSessionDto = z.object({
-  eventId: z.number().describe('Event ID. Example: 98765'),
-})
-
-export const ListSessionSpeakersDto = z.object({
-  eventId: z.number().describe('Event ID. Example: 98765'),
-  sessionId: z
-    .string()
-    .describe("Session Entry ID (Belonging to the sepecified event). Example: '1_abcd1234'"),
-})
-
-export const CreateSessionDto = z.object({
-  id: z.number().describe('Event ID. Example: 98765'),
-  session: z.object({
-    name: z.string().describe("Session Name. Example: 'Virtual Town hall 2025 - Session 1'"),
-    type: z
-      .nativeEnum(SessionType)
-      .describe(
-        "Session Type. Example: 'MeetingEntry' for Interactive Room, 'LiveWebcast' for Live Webcast, 'SimuLive' for Simulated Live",
-      ),
-    description: z.string().optional().describe("Session Description. Example: 'Session 1 description'"),
-    startDate: z
-      .string()
-      .datetime()
-      .describe("Session Start Date (ISO 8601). Example: '2025-05-01T14:00:00Z'")
-      .optional(),
-    endDate: z
-      .string()
-      .datetime()
-      .describe("Session End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'")
-      .optional(),
-    tags: z.array(z.string()).describe('Session tags. Example: ["tag1", "tag2"]').optional(),
-    visibility: z.nativeEnum(SessionVisibility).describe('Entry visibility. Example: "published"').optional(),
-    isManualLive: z.boolean().optional(),
-    imageUrlEntryId: z
-      .string()
-      .describe('Kaltura entry id for the session thumbnail image, example: 1_abcd1234')
-      .optional(),
-    sourceEntryId: z
-      .string()
-      .describe('For Simulive session types, the VOD entry, example: 1_abcd1234')
-      .optional(),
-  }),
-})
-export type TCreateSessionDto = z.infer<typeof CreateSessionDto>
