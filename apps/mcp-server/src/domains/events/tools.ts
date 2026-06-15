@@ -58,7 +58,7 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
     async ({ filter, pager }) => {
       try {
         const result = await publicApiClient.listEvents(ks, { filter, pager })
-        return { content: [{ type: 'text', text: result }] }
+        return { content: [{ type: 'text', text: JSON.stringify(result) }] }
       } catch (error) {
         return {
           content: [
