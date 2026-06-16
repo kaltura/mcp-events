@@ -1,0 +1,44 @@
+{
+  "name": "mcp-events",
+  "version": "1.0.0",
+  "main": "stdio.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start:stdio": "node --env-file=.env dist/mcp-server/src/stdio.js",
+    "start:http": "node --env-file=.env dist/mcp-server/src/http.js",
+    "inspect:stdio": "./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/mcp-server/src/stdio.js",
+    "inspect:http": "npx @modelcontextprotocol/inspector  http://localhost:3000/mcp",
+    "client": "node dist/client.js",
+    "lint": "eslint . --ext .ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@modelcontextprotocol/inspector": "^0.22.0",
+    "@nestjs/cli": "^11.0.14",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.19.6",
+    "@typescript-eslint/eslint-plugin": "^8.26.0",
+    "@typescript-eslint/parser": "^8.26.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-unused-imports": "^4.3.0",
+    "prettier": "^3.7.4",
+    "typescript": "5.7.2",
+    "typescript-eslint": "^8.53.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/core": "^11.1.19",
+    "@nestjs/platform-express": "^11.1.19",
+    "import": "^0.0.6",
+    "timezone-support": "^3.1.0",
+    "zod": "^3.25.76"
+  }
+}

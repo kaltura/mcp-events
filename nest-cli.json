@@ -1,0 +1,21 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/mcp-server/src",
+  "monorepo": true,
+  "root": "apps/mcp-server",
+  "compilerOptions": {
+    "webpack": false,
+    "tsConfigPath": "apps/mcp-server/tsconfig.app.json"
+  },
+  "projects": {
+    "mcp-server": {
+      "type": "application",
+      "root": "apps/mcp-server",
+      "entryFile": "http",
+      "sourceRoot": "apps/mcp-server/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mcp-server/tsconfig.app.json"
+      }
+    }
+  }
+}
