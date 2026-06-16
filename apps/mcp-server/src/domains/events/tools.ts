@@ -1,5 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { CreateEventDto, ListEventDto, UpdateEventDto, DeleteEventDto } from './schemas'
+import { CreateEventDto, ListEventDto, UpdateEventDto, DeleteEventDto, DuplicateEventDto } from './schemas'
 import { PublicApiClient } from '../../api/publicApiClient'
 
 /**
@@ -144,6 +144,82 @@ export function registerEventTools(server: McpServer, ks: string, publicApiClien
             {
               type: 'text',
               text: `Error deleting event: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+        }
+      }
+    },
+  )
+
+  server.registerTool(
+    'duplicate-event',
+    {
+      title: 'Duplicate an Event',
+      description:
+        'Creates a copy of an existing event with all its configurations. Starts the duplication job, polls until complete (up to ~90s), then returns the full duplicated event details.',
+      inputSchema: DuplicateEventDto,
+      annotations: {
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+      },
+    },
+    async ({ sourceEventId, name, timezone, description, startDate, endDate, duplicateUsers }) => {
+      const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
+      try {
+        const initResult = await publicApiClient.duplicateEvent(ks, {
+          sourceEventId,
+          event: { name, timezone, description, startDate, endDate },
+          duplicateUsers,
+        })
+
+        if (initResult.status !== 'ok' || !initResult.jobId) {
+          return {
+            content: [{ type: 'text', text: `Failed to start duplication: ${JSON.stringify(initResult)}` }],
+          }
+        }
+
+        const { jobId } = initResult
+        const MAX_ATTEMPTS = 9
+        let lastJobState = 'unknown'
+
+        for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+          await sleep(10_000)
+          const statusResult = await publicApiClient.getDuplicateStatus(ks, jobId)
+          lastJobState = statusResult.jobState
+
+          if (statusResult.jobState === 'completed' && statusResult.eventId != null) {
+            const event = await publicApiClient.listEvents(ks, { filter: { idIn: [Number(statusResult.eventId)] } })
+            return { content: [{ type: 'text', text: JSON.stringify(event) }] }
+          }
+
+          if (statusResult.jobState === 'failed') {
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: `Duplication job failed. jobId: ${jobId}, status: ${statusResult.status}`,
+                },
+              ],
+            }
+          }
+        }
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Duplication job did not complete within 90 seconds. jobId: ${jobId}, last jobState: ${lastJobState}. You can check the status later.`,
+            },
+          ],
+        }
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error duplicating event: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
         }

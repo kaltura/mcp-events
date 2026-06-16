@@ -26,6 +26,7 @@ MCP server for Kaltura's Event Platform API.
   | `list-events` | Retrieve a list of events with filtering and pagination |
   | `update-event` | Modify existing event properties |
   | `delete-event` | Remove an event and its associated resources |
+  | `duplicate-event` | Create a copy of an existing event with all its configurations |
   | `create-event-session` | Add a new session to an existing event |
   | `list-event-sessions` | Get all sessions for a specific event |
   | `invite-event-user` | Invite a user to an event with specified roles |

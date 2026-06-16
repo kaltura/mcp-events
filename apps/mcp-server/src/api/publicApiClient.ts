@@ -16,6 +16,8 @@ export class PublicApiClient {
       list: 'events/list',
       update: 'events/update',
       delete: 'events/delete',
+      duplicate: 'events/duplicate',
+      duplicateStatus: 'events/duplicateStatus',
     },
     session: {
       create: 'sessions/create',
@@ -146,6 +148,44 @@ export class PublicApiClient {
     }
 
     return await response.text()
+  }
+
+  async duplicateEvent(
+    ks: string,
+    params: {
+      sourceEventId: number
+      event: { name: string; timezone: string; description?: string; startDate?: string; endDate?: string }
+      duplicateUsers?: { roles: string[]; skipEmail: boolean }
+    },
+  ): Promise<{ jobId: string; status: string }> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.duplicate}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'duplicateEvent')
+    }
+
+    return (await response.json()) as { jobId: string; status: string }
+  }
+
+  async getDuplicateStatus(
+    ks: string,
+    jobId: string,
+  ): Promise<{ jobId: string; jobState: string; eventId?: number; status: string }> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.event.duplicateStatus}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify({ jobId }),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'getDuplicateStatus')
+    }
+
+    return (await response.json()) as { jobId: string; jobState: string; eventId?: number; status: string }
   }
 
   /**

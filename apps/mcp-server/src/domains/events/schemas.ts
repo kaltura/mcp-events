@@ -88,6 +88,36 @@ export const ListEventDto = z.object({
   orderBy: EventOrderBy.optional(),
 })
 
+export const DuplicateEventDto = z.object({
+  sourceEventId: z.number().describe('Source Event ID to duplicate from. Example: 98765'),
+  name: z.string().describe("Name for the new (duplicated) event. Example: 'Virtual Townhall 2025 Copy'"),
+  timezone: z
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    .enum(SupportedTimeZones)
+    .describe("Timezone for the new event. Example: 'America/New_York'"),
+  description: z.string().optional().describe('Description for the new event.'),
+  startDate: z
+    .string()
+    .datetime()
+    .optional()
+    .describe("New event start date (ISO 8601). Example: '2025-05-01T14:00:00Z'"),
+  endDate: z
+    .string()
+    .datetime()
+    .optional()
+    .describe("New event end date (ISO 8601). Example: '2025-05-01T16:00:00Z'"),
+  duplicateUsers: z
+    .object({
+      roles: z
+        .array(z.enum(['Speaker', 'Moderator', 'EventTeam']))
+        .describe("User roles to copy to the new event. Example: ['Speaker', 'Moderator']"),
+      skipEmail: z.boolean().describe('Skip sending invitation emails to the duplicated users.'),
+    })
+    .optional()
+    .describe('Optionally copy event users of the specified roles to the new event.'),
+})
+
 export const UpdateEventDto = z.object({
   id: z.number().describe('Event ID. Example: 98765'),
   name: z.string().optional().describe("Event name. Example: 'Updated Virtual Town hall'"),
