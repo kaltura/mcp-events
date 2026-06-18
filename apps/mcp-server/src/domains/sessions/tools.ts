@@ -14,7 +14,7 @@ export function registerSessionTools(server: McpServer, ks: string, publicApiCli
     {
       title: 'Create an Event Session',
       description:
-        'Creates a new session for a specific event with provided configuration including name, description, start/end dates, and visibility settings',
+        'Creates a new session for a specific event. Required fields: name, description, startDate, and endDate (all ISO 8601). Optional: type, tags, visibility, and other settings.',
       inputSchema: CreateSessionDto,
       annotations: {
         destructiveHint: false,

@@ -44,17 +44,15 @@ export const CreateSessionDto = z.object({
       .describe(
         "Session type. Allowed values: 'MeetingEntry' (Interactive Room — participants join with camera/mic), 'LiveWebcast' (one-way broadcast to large audience), 'SimuLive' (pre-recorded video broadcast as live), 'LiveKME' (DIY live webcast via Kaltura MediaEngine), 'VirtualLearningRoom' (educational session), 'Invalid' (placeholder, do not use).",
       ),
-    description: z.string().optional().describe("Session Description. Example: 'Session 1 description'"),
+    description: z.string().describe("Session Description. Example: 'Session 1 description'"),
     startDate: z
       .string()
       .datetime()
-      .describe("Session Start Date (ISO 8601). Example: '2025-05-01T14:00:00Z'")
-      .optional(),
+      .describe("Session Start Date (ISO 8601). Example: '2025-05-01T14:00:00Z'"),
     endDate: z
       .string()
       .datetime()
-      .describe("Session End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'")
-      .optional(),
+      .describe("Session End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'"),
     tags: z.array(z.string()).describe('Session tags. Example: ["tag1", "tag2"]').optional(),
     visibility: z
       .nativeEnum(SessionVisibility)
