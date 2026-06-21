@@ -1,0 +1,5 @@
+FROM node:22-alpine
+RUN npm install -g @anthropic-ai/claude-code --quiet
+COPY setup-claude.sh /setup-claude.sh
+RUN chmod +x /setup-claude.sh
+CMD ["/setup-claude.sh"]
