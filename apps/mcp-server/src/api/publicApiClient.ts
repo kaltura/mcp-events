@@ -21,6 +21,7 @@ export class PublicApiClient {
     },
     session: {
       create: 'sessions/create',
+      update: 'sessions/update',
       list: 'sessions/list',
       speakerList: 'sessions/speakerList',
     },
@@ -239,6 +240,36 @@ export class PublicApiClient {
 
     if (!response.ok) {
       await this.handleResponseError(response, 'createSession')
+    }
+
+    return await response.text()
+  }
+
+  /**
+   * Update an existing session
+   * @param ks Kaltura Session for this request
+   */
+  async updateSession(
+    ks: string,
+    params: {
+      eventId: number
+      sessionId: string
+      name?: string
+      description?: string
+      startDate?: string
+      endDate?: string
+      tags?: string[]
+      visibility?: SessionVisibility
+    },
+  ): Promise<string> {
+    const response = await fetch(`${this.baseUrl}/${this.paths.session.update}`, {
+      method: 'POST',
+      headers: this.getHeaders(ks),
+      body: JSON.stringify(params),
+    })
+
+    if (!response.ok) {
+      await this.handleResponseError(response, 'updateSession')
     }
 
     return await response.text()
