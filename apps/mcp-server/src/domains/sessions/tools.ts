@@ -1,5 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
-import { ListSessionDto, CreateSessionDto } from './schemas'
+import { ListSessionDto, CreateSessionDto, UpdateSessionDto } from './schemas'
 import { PublicApiClient } from '../../api/publicApiClient'
 
 /**
@@ -33,6 +33,37 @@ export function registerSessionTools(server: McpServer, ks: string, publicApiCli
             {
               type: 'text',
               text: `Error creating event session: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+        }
+      }
+    },
+  )
+
+  server.registerTool(
+    'update-event-session',
+    {
+      title: 'Update an Event Session',
+      description:
+        'Updates properties of an existing session such as name, description, dates, tags, and visibility. Only fields provided will be updated.',
+      inputSchema: UpdateSessionDto,
+      annotations: {
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+        readOnlyHint: false,
+      },
+    },
+    async ({ eventId, sessionId, ...rest }) => {
+      try {
+        const result = await publicApiClient.updateSession(ks, { eventId, sessionId, ...rest })
+        return { content: [{ type: 'text', text: result }] }
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error updating event session: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
         }
