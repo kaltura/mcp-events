@@ -1,0 +1,51 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, tests]
+  pull_request:
+    branches: [main]
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare ~/.claude directory for claude-setup volume mount
+        run: mkdir -p ~/.claude
+
+      - name: Create tests/.env
+        run: |
+          cat > tests/.env <<'EOF'
+          KALTURA_KS=${{ secrets.KALTURA_KS }}
+          ANTHROPIC_AUTH_TOKEN=${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          ANTHROPIC_BASE_URL=https://api.anthropic.com
+          ANTHROPIC_MODEL=claude-sonnet-4-6
+          MCP_SERVER_URL=http://localhost:3000/mcp
+          EXECUTE_TOOLS=0
+          EOF
+
+      - name: Override ANTHROPIC_BASE_URL for CI (no local LiteLLM proxy)
+        run: |
+          cat > tests/docker-compose.override.yml <<'EOF'
+          services:
+            test-runner:
+              environment:
+                ANTHROPIC_BASE_URL: https://api.anthropic.com
+          EOF
+
+      - name: Run tests
+        working-directory: tests
+        env:
+          KALTURA_KS: ${{ secrets.KALTURA_KS }}
+        run: |
+          docker compose up --build --exit-code-from test-runner --abort-on-container-exit
+
+      - name: Collect logs on failure
+        if: failure()
+        working-directory: tests
+        env:
+          KALTURA_KS: ${{ secrets.KALTURA_KS }}
+        run: docker compose logs

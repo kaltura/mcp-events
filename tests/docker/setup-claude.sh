@@ -14,6 +14,25 @@ claude mcp add \
   --header "Authorization: ks $KALTURA_KS"
 
 echo ""
+echo "==> Waiting for 'kaltura-events' to appear in Claude's MCP list..."
+max_attempts=30
+attempt=1
+while [ "$attempt" -le "$max_attempts" ]; do
+  if claude mcp list 2>/dev/null | grep -q "kaltura-events"; then
+    echo "  Found 'kaltura-events' after $attempt attempt(s)."
+    break
+  fi
+  if [ "$attempt" -eq "$max_attempts" ]; then
+    echo "  ERROR: 'kaltura-events' did not appear in the MCP list after $max_attempts attempts." >&2
+    claude mcp list || true
+    exit 1
+  fi
+  echo "  Not present yet (attempt $attempt/$max_attempts); retrying in 2s..."
+  attempt=$((attempt + 1))
+  sleep 2
+done
+
+echo ""
 echo "==> Registered MCP servers:"
 claude mcp list
 

@@ -21,7 +21,6 @@ services:
       - "3000:3000"
     environment:
       KALTURA_KS: ${KALTURA_KS}
-      KALTURA_ENV: ${KALTURA_ENV:-NVP}
       KALTURA_SERVER_PORT: 3000
     healthcheck:
       test: ["CMD-SHELL", "wget -qO /dev/null http://localhost:3000/health"]
