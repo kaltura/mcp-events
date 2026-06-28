@@ -1,6 +1,4 @@
 import { type RequestHandler } from 'express'
-// @ts-expect-error TS1479: mcp-auth ships as ESM but Node 22 supports require(esm).
-// The package exports a `require` entry pointing to the same ESM file, which Node 22 loads fine.
 import { MCPAuth, createVerifyJwt } from 'mcp-auth'
 import { config } from '../config/config'
 import { SCOPES } from './scopes'

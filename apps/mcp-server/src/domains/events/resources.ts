@@ -18,7 +18,7 @@ export function registerEventResources(
   publicApiClient: PublicApiClient,
   scopes: string[],
 ): void {
-  if (!hasScopes(scopes, ['events:read'])) {
+  if (!hasScopes(scopes, ['mcp:events:read'])) {
     return
   }
 

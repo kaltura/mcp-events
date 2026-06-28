@@ -14,7 +14,7 @@ export function registerEventUserTools(
   publicApiClient: PublicApiClient,
   scopes: string[],
 ): void {
-  if (hasScopes(scopes, ['event-users:write'])) {
+  if (hasScopes(scopes, ['mcp:events:write'])) {
     server.registerTool(
       'invite-event-user',
       {
@@ -139,7 +139,7 @@ export function registerEventUserTools(
     )
   }
 
-  if (hasScopes(scopes, ['event-users:read'])) {
+  if (hasScopes(scopes, ['mcp:events:read'])) {
     server.registerTool(
       'list-event-users',
       {

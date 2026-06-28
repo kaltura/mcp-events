@@ -89,7 +89,9 @@ The JWT must include:
 - `ks`: Kaltura Session (custom claim — passed to the Kaltura API)
 - `scope`: space-separated granted scopes (e.g. `events:read events:write`)
 
-**Scopes and tool visibility:** Tools are conditionally registered based on the JWT's `scope` claim. A token without `events:write` simply won't see write tools in `tools/list`. Scopes follow the pattern `<domain>:read` / `<domain>:write` for domains: `events`, `sessions`, `team-members`, `event-users`, `session-participants`.
+**Scopes and tool visibility:** Tools are conditionally registered based on the JWT's `scope` claim. A token without `mcp:events:write` simply won't see write tools in `tools/list`. Two scopes are supported:
+- `mcp:events:read` — enables all read/list tools across all domains
+- `mcp:events:write` — enables all create/update/delete tools across all domains
 
 ## Agent Integration
 

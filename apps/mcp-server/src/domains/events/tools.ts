@@ -17,7 +17,7 @@ export function registerEventTools(
   publicApiClient: PublicApiClient,
   scopes: string[],
 ): void {
-  if (hasScopes(scopes, ['events:write'])) {
+  if (hasScopes(scopes, ['mcp:events:write'])) {
     server.registerTool(
       'create-event',
       {
@@ -219,7 +219,7 @@ export function registerEventTools(
     )
   }
 
-  if (hasScopes(scopes, ['events:read'])) {
+  if (hasScopes(scopes, ['mcp:events:read'])) {
     server.registerTool(
       'list-events',
       {

@@ -14,7 +14,7 @@ export function registerTeamMemberTools(
   publicApiClient: PublicApiClient,
   scopes: string[],
 ): void {
-  if (hasScopes(scopes, ['team-members:write'])) {
+  if (hasScopes(scopes, ['mcp:events:write'])) {
     server.registerTool(
       'create-team-member',
       {
@@ -113,7 +113,7 @@ export function registerTeamMemberTools(
     )
   }
 
-  if (hasScopes(scopes, ['team-members:read'])) {
+  if (hasScopes(scopes, ['mcp:events:read'])) {
     server.registerTool(
       'list-team-members',
       {

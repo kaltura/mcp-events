@@ -17,7 +17,7 @@ export function registerSessionTools(
   publicApiClient: PublicApiClient,
   scopes: string[],
 ): void {
-  if (hasScopes(scopes, ['sessions:write'])) {
+  if (hasScopes(scopes, ['mcp:events:write'])) {
     server.registerTool(
       'create-event-session',
       {
@@ -50,7 +50,7 @@ export function registerSessionTools(
     )
   }
 
-  if (hasScopes(scopes, ['sessions:read'])) {
+  if (hasScopes(scopes, ['mcp:events:read'])) {
     server.registerTool(
       'list-event-sessions',
       {

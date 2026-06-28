@@ -19,7 +19,7 @@ export function registerSessionParticipantTools(
   publicApiClient: PublicApiClient,
   scopes: string[],
 ): void {
-  if (hasScopes(scopes, ['session-participants:write'])) {
+  if (hasScopes(scopes, ['mcp:events:write'])) {
     server.registerTool(
       'add-session-participants',
       {
@@ -123,7 +123,7 @@ export function registerSessionParticipantTools(
     )
   }
 
-  if (hasScopes(scopes, ['session-participants:read'])) {
+  if (hasScopes(scopes, ['mcp:events:read'])) {
     server.registerTool(
       'list-session-participants',
       {
