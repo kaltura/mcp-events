@@ -37,8 +37,7 @@ export function getRequiredKs(request: Request): string {
 
   if (!ks) {
     throw new Error(
-      'Kaltura Session (KS) is required. ' +
-        'Provide via Authorization header: "Authorization: ks <KS>" or "Authorization: bearer <KS>"',
+      'Kaltura Session (KS) is required. Provide via Authorization header: "Authorization: bearer <KS>"',
     )
   }
 

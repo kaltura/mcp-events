@@ -2,18 +2,26 @@ import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mc
 import { PublicApiClient } from '../../api/publicApiClient'
 import assert from 'node:assert'
 import { PresetTemplates } from '../../resources/presetTemplates'
+import { hasScopes } from '../../auth/scope-check'
 
 /**
- * Register event-related resources with the MCP server
+ * Register event-related resources with the MCP server.
+ * Only resources covered by the granted scopes are registered.
  * @param server MCP Server instance
  * @param ks Kaltura Session for this connection (captured in closure)
  * @param publicApiClient Public API client instance
+ * @param scopes Granted OAuth scopes for this request
  */
 export function registerEventResources(
   server: McpServer,
   ks: string,
   publicApiClient: PublicApiClient,
+  scopes: string[],
 ): void {
+  if (!hasScopes(scopes, ['mcp:events:read'])) {
+    return
+  }
+
   server.registerResource(
     'events',
     new ResourceTemplate('events://{eventId}/info', { list: undefined }),

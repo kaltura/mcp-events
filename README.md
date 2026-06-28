@@ -113,7 +113,7 @@ Add to `claude_desktop_config.json` and restart:
       "type": "http",
       "url": "http://localhost:3000/mcp",
       "headers": {
-        "Authorization": "KS ${KALTURA_KS}"
+        "Authorization": "${KALTURA_KS}"
       }
     }
   }

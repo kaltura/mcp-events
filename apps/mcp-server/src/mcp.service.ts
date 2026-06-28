@@ -20,14 +20,14 @@ export class McpService {
     this.logger.log('MCP Service initialized (stateless mode)')
   }
 
-  async handleRequest(ks: string, request: Request, response: Response): Promise<void> {
+  async handleRequest(ks: string, request: Request, response: Response, scopes: string[]): Promise<void> {
     const mcpServer = new McpServer({
       name: config.server.name,
       version: config.server.version,
     })
 
-    registerAllDomainTools(mcpServer, ks, this.publicApiClient)
-    registerAllDomainResources(mcpServer, ks, this.publicApiClient)
+    registerAllDomainTools(mcpServer, ks, this.publicApiClient, scopes)
+    registerAllDomainResources(mcpServer, ks, this.publicApiClient, scopes)
 
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined, // stateless — no session tracking
