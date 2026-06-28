@@ -11,18 +11,20 @@ export function registerAllDomainTools(
   server: McpServer,
   ks: string,
   publicApiClient: PublicApiClient,
+  scopes: string[],
 ): void {
-  registerEventTools(server, ks, publicApiClient)
-  registerSessionTools(server, ks, publicApiClient)
-  registerTeamMemberTools(server, ks, publicApiClient)
-  registerEventUserTools(server, ks, publicApiClient)
-  registerSessionParticipantTools(server, ks, publicApiClient)
+  registerEventTools(server, ks, publicApiClient, scopes)
+  registerSessionTools(server, ks, publicApiClient, scopes)
+  registerTeamMemberTools(server, ks, publicApiClient, scopes)
+  registerEventUserTools(server, ks, publicApiClient, scopes)
+  registerSessionParticipantTools(server, ks, publicApiClient, scopes)
 }
 
 export function registerAllDomainResources(
   server: McpServer,
   ks: string,
   publicApiClient: PublicApiClient,
+  scopes: string[],
 ): void {
-  registerEventResources(server, ks, publicApiClient)
+  registerEventResources(server, ks, publicApiClient, scopes)
 }

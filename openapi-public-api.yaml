@@ -771,7 +771,7 @@ components:
   securitySchemes:
     ks:
       scheme: bearer
-      bearerFormat: KS
+      bearerFormat: Bearer
       type: http
   schemas:
     CreateEventRequestDto:

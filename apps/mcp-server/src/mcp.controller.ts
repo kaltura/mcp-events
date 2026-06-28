@@ -1,7 +1,6 @@
 import { Controller, All, Res, Req, UnauthorizedException, ConsoleLogger } from '@nestjs/common'
-import { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 import { McpService } from './mcp.service'
-import { getKsFromRequest } from './utils/ks-helper'
 
 @Controller('mcp')
 export class McpController {
@@ -11,23 +10,28 @@ export class McpController {
 
   /**
    * Stateless MCP endpoint — every request is independent.
-   * KS must be provided via Authorization header on each request:
-   * - "Authorization: ks <KS_VALUE>" (recommended)
-   * - "Authorization: bearer <KS_VALUE>" (for Swagger UI compatibility)
+   *
+   * Authentication is handled by BearerAuthMiddleware (mcp-auth) which verifies
+   * the JWT and populates req.auth before this handler runs.
+   *
+   * The JWT must contain:
+   *   - ks:    Kaltura Session (custom claim)
+   *   - aud:   audience matching the protected resource identifier
+   *   - scope: space-separated list of granted scopes
    */
   @All()
   async handleRequest(@Req() request: Request, @Res() response: Response): Promise<void> {
-    const ks = getKsFromRequest(request)
+    const ks = request.auth?.claims?.['ks']
 
-    if (!ks) {
-      this.logger.error('MCP request rejected: No KS in Authorization header')
-      throw new UnauthorizedException(
-        'Kaltura Session (KS) required. Provide via Authorization header: "Authorization: ks <KS>" or "Authorization: bearer <KS>"',
-      )
+    if (typeof ks !== 'string' || !ks) {
+      this.logger.error('MCP request rejected: JWT is missing the "ks" claim')
+      throw new UnauthorizedException('JWT must contain a "ks" claim with a valid Kaltura Session')
     }
 
+    const scopes = request.auth?.scopes ?? []
+
     try {
-      await this.mcpService.handleRequest(ks, request, response)
+      await this.mcpService.handleRequest(ks, request, response, scopes)
     } catch (error) {
       this.logger.error('Failed to handle MCP request:', error)
       throw error
