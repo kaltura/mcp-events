@@ -59,4 +59,4 @@ services:
       ANTHROPIC_BASE_URL: http://host.docker.internal:10006
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    command: sh -c "pip install -r requirements.freezed -q && pytest -v"
+    command: sh -c "pip install -r requirements.freezed -q && pytest -v -n auto"
