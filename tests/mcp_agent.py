@@ -15,8 +15,7 @@ from dataclasses import dataclass, field
 from datetime import date
 
 import httpx
-import pytest
-from anthropic import Anthropic, APIConnectionError
+from anthropic import Anthropic
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 

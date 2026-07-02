@@ -7,181 +7,134 @@ Run a live MCP server first (`npm run start:http`), set the env vars in
     pytest evals/test_tool_selection.py -v
 """
 
-import asyncio
 import random
-import warnings
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone, timedelta
 
-import httpx
-import pytest
-
-import config
-from mcp_agent import run_agent, _mcp_session
+from events_helper import get_nearest_free_slot, create_nearest_event_by_api
+from mcp_agent import run_agent
+from fixtures import nearest_temp_event_id
 
 
-@pytest.fixture(autouse=True)
-def check_mcp_server_connection():
-    async def _ping():
-        async with _mcp_session() as session:
-            await session.list_tools()
-
-    try:
-        asyncio.run(_ping())
-    except Exception as exc:
-        pytest.fail(f"MCP server unreachable: {exc}")
-
-    anthropic_url = config.ANTHROPIC_BASE_URL or "https://api.anthropic.com"
-    try:
-        httpx.get(anthropic_url, timeout=15)
-    except httpx.ConnectError as exc:
-        pytest.fail(f"Anthropic API unreachable at {anthropic_url}: {exc}")
+_timezone = "Etc/UTC"
+_event_templates = [
+    {"name": "Blank template", "id": "tm0000"},
+    {"name": "Interactive session", "id": "tm1000"},
+    {"name": "Live webcast", "id": "tm2000"},
+    {"name": "Pre-recorded live", "id": "tm3000"},
+    {"name": "DIY live broadcast", "id": "tm4000"},
+]
 
 
-def _get_nearest_free_slot(
-    event_duration: timedelta = timedelta(minutes=15),
-    look_ahead_days: int = 400,
-) -> tuple[datetime, datetime]:
-    ks = config.KALTURA_KS
-    base_url = config.KALTURA_PUBLIC_API
+def _get_str_of_nearest_date_for_event(date_from: datetime, date_to: datetime) -> str:
+    return f"{date_from.day} of {date_from.strftime('%B')} from {date_from.strftime('%H:%M')} to {date_to.strftime('%H:%M')} of {_timezone}"
 
-    now = datetime.now(tz=timezone.utc)
-    window_end = now + timedelta(days=look_ahead_days)
+def _random_event_template() -> dict[str, str]:
+    ind = random.randint(0, len(_event_templates) - 1)
+    return _event_templates[ind]
 
-    response = httpx.post(
-        f"{base_url}/events/list",
-        headers={"Authorization": f"ks {ks}"},
-        json={
-            "filter": {
-                "startDateGreaterThanOrEqual": now.isoformat(),
-                "endDateLessOrEqualThan": window_end.isoformat(),
-            },
-            "pager": {"limit": 15, "offset": 0},
-            "orderBy": "+startDate",
-        },
-        timeout=10,
-    )
-    response.raise_for_status()
-    events = response.json().get("events", [])
-
-    booked: list[tuple[datetime, datetime]] = []
-    for ev in events:
-        start_raw = ev.get("startDate")
-        end_raw = ev.get("endDate")
-        if start_raw and end_raw:
-            booked.append((
-                datetime.fromisoformat(start_raw.replace("Z", "+00:00")),
-                datetime.fromisoformat(end_raw.replace("Z", "+00:00")),
-            ))
-
-    candidate = now.replace(second=0, microsecond=0) + timedelta(minutes=1)
-    while candidate < window_end:
-        slot_end = candidate + event_duration
-        if not any(s < slot_end and candidate < e for s, e in booked):
-            return candidate, slot_end
-        candidate += timedelta(minutes=1)
-
-    raise RuntimeError(f"No free slot found in the next {look_ahead_days} days")
+def _create_event_prompt(event_template: str, name: str, date_from: datetime, date_to: datetime) -> str:
+    return f"create the event '{name}' of '{event_template}' at the next date: {_get_str_of_nearest_date_for_event(date_from, date_to)}"
 
 
-def _get_str_of_nearest_date_for_event(event_duration=timedelta(minutes=15), look_ahead_days=400) -> str:
-    """Return the nearest free slot as e.g. '20 of May from 15:07 to 15:22 of UTC'."""
-    candidate, slot_end = _get_nearest_free_slot(event_duration, look_ahead_days)
-    return f"{candidate.day} of {candidate.strftime('%B')} from {candidate.strftime('%H:%M')} to {slot_end.strftime('%H:%M')} of UTC"
+def _parse_iso_to_utc(dt: str) -> datetime:
+    """Parse ISO datetime that may end with Z and normalize to UTC-aware datetime."""
+    parsed = datetime.fromisoformat(dt.replace("Z", "+00:00"))
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
 
 
-def _create_event_prompt() -> str:
-    templates = [
-        "Blank template",
-        "Interactive session",
-        "Live webcast",
-        "Pre-recorded live",
-        "DIY live broadcast"
-    ]
-    ind = random.randint(0, len(templates) - 1)
-    return f"create the event 'Bla' of '{templates[ind]}' at the next date: {_get_str_of_nearest_date_for_event()}"
 
-
-def _create_nearest_event_by_api(event_duration=timedelta(minutes=15), look_ahead_days=400) -> str:
-    """Create a Kaltura event at the nearest available slot and return its ID."""
-    ks = config.KALTURA_KS
-    base_url = config.KALTURA_PUBLIC_API
-
-    candidate, slot_end = _get_nearest_free_slot(event_duration, look_ahead_days)
-
-    response = httpx.post(
-        f"{base_url}/events/create",
-        headers={"Authorization": f"ks {ks}"},
-        json={
-            "name": "Test Event",
-            "description": "Test description",
-            "templateId": "tm1000",
-            "startDate": candidate.isoformat(),
-            "endDate": slot_end.isoformat(),
-            "timezone": "Etc/GMT-0",
-    },
-        timeout=60,
-    )
-    assert response.status_code == 200, f"Invalid response on creating event: {response.text}"
-    json = response.json()
-    assert "event" in json and "id" in json["event"], f"Invalid response: {json}"
-    return str(response.json()["event"]["id"])
-
-
-def _delete_event_by_api(event_id: str) -> None:
-    httpx.post(
-        f"{config.KALTURA_PUBLIC_API}/events/delete",
-        headers={"Authorization": f"ks {config.KALTURA_KS}"},
-        json={"id": int(event_id)},
-        timeout=60,
-    ).raise_for_status()
-
-
-@pytest.fixture
-def nearest_temp_event_id():
-    event_id = _create_nearest_event_by_api()
-    yield event_id
-    try:
-        _delete_event_by_api(event_id)
-    except httpx.HTTPError:
-        warnings.warn(f"Event {event_id} was not deleted")
-
-
-@pytest.mark.parametrize(
-    "prompt, expected_tools",
-    [
-        ("show me all the Kaltura events of today", ["list-events"]),
-    ]
-)
-def test_tool_call(prompt, expected_tools):
+def test_tool_call_list_events():
+    prompt = "show me all the Kaltura events of today"
+    expected_tools = ["list-events"]
     result = run_agent(prompt)
     called = [t["name"] for t in result.tools_called]
     assert called == expected_tools, f"Invalid tools call: expected {expected_tools}, got {called}"
+    called_tools_args = result.tools_called[-1]["input"]
+    _filter = called_tools_args["filter"]
+    today_date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    assert _filter["startDateGreaterThanOrEqual"] == f"{today_date_str}T00:00:00Z", f"Invalid start date of the called tool '{expected_tools[0]}'"
+    assert _filter["startDateLessOrEqualThan"] == f"{today_date_str}T23:59:59Z", f"Invalid end date of the called tool '{expected_tools[0]}'"
 
 def test_tool_call_event_creation():
-    prompt = _create_event_prompt()
+    event_name = "Bla"
+    event_template = _random_event_template()
+    event_date_from, event_date_to = get_nearest_free_slot()
+    prompt = _create_event_prompt(event_template["name"], event_name, event_date_from, event_date_to)
     expected_tools = ["create-event"]
+
     result = run_agent(prompt)
-    called = [t["name"] for t in result.tools_called]
-    assert called == expected_tools, f"Invalid tools call: expected {expected_tools}, got {called}"
+    called_tools = [t["name"] for t in result.tools_called]
+    assert called_tools == expected_tools, f"Invalid tools call: expected {expected_tools}, got {called_tools}"
+
+    called_tools_args = result.tools_called[-1]["input"]
+
+    assert called_tools_args["name"] == event_name, f"Invalid event name in the called tool '{expected_tools[0]}'"
+    assert called_tools_args["timezone"] == _timezone, f"Invalid event timezone in the called tool '{expected_tools[0]}'"
+
+    actual_start = _parse_iso_to_utc(called_tools_args["startDate"])
+    actual_end = _parse_iso_to_utc(called_tools_args["endDate"])
+    expected_start = event_date_from.astimezone(timezone.utc)
+    expected_end = event_date_to.astimezone(timezone.utc)
+
+    tolerance = timedelta(minutes=1)
+    assert abs(actual_start - expected_start) <= tolerance, (
+        f"Invalid event startDate in the called tool '{expected_tools[0]}': "
+        f"expected {expected_start.isoformat()}, got {actual_start.isoformat()}"
+    )
+    assert abs(actual_end - expected_end) <= tolerance, (
+        f"Invalid event endDate in the called tool '{expected_tools[0]}': "
+        f"expected ~{expected_end.isoformat()}, got {actual_end.isoformat()}"
+    )
+    assert called_tools_args["templateId"] == event_template["id"], f"Invalid event templateId in the called tool '{expected_tools[0]}'"
 
 
 def test_tool_call_when_delete_event():
     expected_tools = ["delete-event"]
-    result = run_agent(f"delete the Kaltura event with the ID {_create_nearest_event_by_api()}")
+    event_id = create_nearest_event_by_api()
+    expected_tools_args = {"id": event_id}
+    result = run_agent(f"delete the Kaltura event with the ID {event_id}")
     called = [t["name"] for t in result.tools_called]
     assert called == expected_tools, f"Invalid tools call: expected {expected_tools}, got {called}"
+    called_tools_args = result.tools_called[-1]["input"]
+    assert called_tools_args == expected_tools_args, f"Invalid event id in the called tool '{expected_tools[0]}'"
 
 def test_tool_call_when_update_event(nearest_temp_event_id):
     expected_tools = ["update-event"]
     result = run_agent(f"rename the Kaltura event with the ID {nearest_temp_event_id} to 'Updated event'")
     called = [t["name"] for t in result.tools_called]
     assert called == expected_tools, f"Invalid tools call: expected {expected_tools}, got {called}"
+    called_tools_args = result.tools_called[-1]["input"]
+    assert called_tools_args['id'] == nearest_temp_event_id, f"Invalid event id in the called tool '{expected_tools[0]}'"
 
 def test_tool_call_when_duplicate_event(nearest_temp_event_id):
-    expected_tools = ["duplicate-event", ]
-    result = run_agent(f"duplicate the Kaltura event with the ID {nearest_temp_event_id} to the date '{_get_str_of_nearest_date_for_event()}' and name the duplicated event 'Duplicated event'")
+    expected_tools = ["duplicate-event"]
+    event_date_from, event_date_to = get_nearest_free_slot()
+    date_str = _get_str_of_nearest_date_for_event(event_date_from, event_date_to)
+    name = "Duplicated event"
+    prompt = f"duplicate the Kaltura event with the ID {nearest_temp_event_id} to the date '{date_str}' and name the duplicated event '{name}'"
+    result = run_agent(prompt)
     called = [t["name"] for t in result.tools_called]
     assert called == expected_tools, f"Invalid tools call: expected {expected_tools}, got {called}"
+    called_tools_args = result.tools_called[-1]["input"]
+    assert called_tools_args['sourceEventId'] == nearest_temp_event_id, f"Invalid the source event id in the called tool '{expected_tools[0]}'"
+    assert called_tools_args['name'] == name, f"Invalid the name of the duplicated event in the called tool '{expected_tools[0]}'"
+    assert called_tools_args['timezone'] == _timezone, f"Invalid the timezone of the duplicated event in the called tool '{expected_tools[0]}'"
+    actual_start = _parse_iso_to_utc(called_tools_args["startDate"])
+    actual_end = _parse_iso_to_utc(called_tools_args["endDate"])
+    expected_start = event_date_from.astimezone(timezone.utc)
+    expected_end = event_date_to.astimezone(timezone.utc)
+
+    tolerance = timedelta(minutes=1)
+    assert abs(actual_start - expected_start) <= tolerance, (
+        f"Invalid event startDate in the called tool '{expected_tools[0]}': "
+        f"expected {expected_start.isoformat()}, got {actual_start.isoformat()}"
+    )
+    assert abs(actual_end - expected_end) <= tolerance, (
+        f"Invalid event endDate in the called tool '{expected_tools[0]}': "
+        f"expected ~{expected_end.isoformat()}, got {actual_end.isoformat()}"
+    )
 
 def test_all_tools_called(nearest_temp_event_id):
     expected_tools = ['create-event', 'update-event', 'duplicate-event', 'delete-event', 'delete-event']
