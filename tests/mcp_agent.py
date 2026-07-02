@@ -65,11 +65,12 @@ async def anthropic_create_message(session: ClientSession, messages: list[dict])
     tools = (await session.list_tools()).tools
     anthropic_tools = _anthropic_tools(tools)
     return _build_anthropic_client().messages.create(
-                model=config.ANTHROPIC_MODEL,
-                max_tokens=1024,
-                system=system,
-                tools=anthropic_tools,
-                messages=messages,
+        model=config.ANTHROPIC_MODEL,
+        max_tokens=1024,
+        system=system,
+        tools=anthropic_tools,
+        messages=messages,
+        temperature=0.0
     )
 
 
