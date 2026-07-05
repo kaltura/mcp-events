@@ -16,6 +16,7 @@ from datetime import date
 
 import httpx
 from anthropic import Anthropic
+from anthropic.types import TextBlock
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
@@ -73,6 +74,24 @@ async def anthropic_create_message(session: ClientSession, messages: list[dict])
         temperature=0.0
     )
 
+def anthropic_judge_response(input_context: str, evaluated_output: str, examples: list[str]) -> TextBlock:
+    system = (
+        "You are an assistant for the Kaltura Events platform. "
+        f"Today's date is {date.today().isoformat()}. "
+        "Use the available tools to fulfil the user's request."
+    )
+    prompt = f"On the given prompt '{input_context}' has been received the next output '{evaluated_output}'. Analyze the the output and answer if the output is correct or not. Your analyze should be only syntactical and logical without any technical proves or details. Start your answer with the word CORRECT or INCORRECT. If the output is not correct, explain why and provide a correct output."
+    if examples:
+        prompt += f" Here are some examples of correct outputs: {examples}"
+    response = _build_anthropic_client().messages.create(
+        model=config.ANTHROPIC_MODEL,
+        max_tokens=1024,
+        system=system,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.0
+    )
+    return response.content[0]
+
 
 async def _run_agent_async(prompt: str) -> AgentResult:
     ks = config.KALTURA_KS
@@ -82,56 +101,57 @@ async def _run_agent_async(prompt: str) -> AgentResult:
     headers = {"Authorization": f"ks {ks}"}
     result = AgentResult(final_text="")
 
-    async with streamable_http_client(url, http_client=httpx.AsyncClient(headers=headers)) as (read, write, _):
-        async with ClientSession(read, write) as session:
-            await session.initialize()
-            messages: list[dict] = [{"role": "user", "content": prompt}]
-
-            for _step in range(MAX_AGENT_STEPS):
-                response = await anthropic_create_message(session, messages)
-
-                tool_uses = [b for b in response.content if b.type == "tool_use"]
-                result.final_text = "\n".join(b.text for b in response.content if b.type == "text") or result.final_text
-
-                if response.stop_reason != "tool_use" or not tool_uses:
-                    break
-
-                messages.append({"role": "assistant", "content": response.content})
-
-                result.tools_called.extend({"name": tu.name, "input": tu.input} for tu in tool_uses)
-                tool_results = [
-                    {"type": "tool_result", "tool_use_id": tu.id, "content": await _resolve_tool(session, tu, execute_tools)}
-                    for tu in tool_uses
-                ]
-                messages.append({"role": "user", "content": tool_results})
+    try:
+        async with streamable_http_client(url, http_client=httpx.AsyncClient(headers=headers)) as (read, write, _):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                await _run_agent_loop(session, prompt, result, execute_tools)
+    except* (httpx.ConnectError, httpx.ConnectTimeout):
+        raise ConnectionError(f"MCP server not reachable at {url}") from None
 
     return result
 
 
+async def _run_agent_loop(session: ClientSession, prompt: str, result: AgentResult, execute_tools: bool) -> None:
+    messages: list[dict] = [{"role": "user", "content": prompt}]
+
+    for _step in range(MAX_AGENT_STEPS):
+        response = await anthropic_create_message(session, messages)
+
+        tool_uses = [b for b in response.content if b.type == "tool_use"]
+        result.final_text = "\n".join(b.text for b in response.content if b.type == "text") or result.final_text
+
+        if response.stop_reason != "tool_use" or not tool_uses:
+            break
+
+        messages.append({"role": "assistant", "content": response.content})
+
+        result.tools_called.extend({"name": tu.name, "input": tu.input} for tu in tool_uses)
+        tool_results = [
+            {"type": "tool_result", "tool_use_id": tu.id, "content": await _resolve_tool(session, tu, execute_tools)}
+            for tu in tool_uses
+        ]
+        messages.append({"role": "user", "content": tool_results})
+
+
 def _stub_response(tool_name: str, tool_input: dict) -> dict:
     """Return a minimal but realistic stub so the LLM can chain multi-turn operations."""
+    def _event_stub(event_id: int, default_name: str) -> dict:
+        return {"event": {
+            "id": event_id,
+            "name": tool_input.get("name", default_name),
+            "startDate": tool_input.get("startDate"),
+            "endDate": tool_input.get("endDate"),
+        }}
+
     if tool_name == "list-events":
         return {"events": [], "totalCount": 0}
     if tool_name == "create-event":
-        return {
-            "event": {
-                "id": 10001,
-                "name": tool_input.get("name", "Event"),
-                "startDate": tool_input.get("startDate"),
-                "endDate": tool_input.get("endDate"),
-            }
-        }
+        return _event_stub(10001, "Event")
     if tool_name == "update-event":
         return {"event": {"id": tool_input.get("id"), "name": tool_input.get("name")}}
     if tool_name == "duplicate-event":
-        return {
-            "event": {
-                "id": 10002,
-                "name": tool_input.get("name", "Duplicated Event"),
-                "startDate": tool_input.get("startDate"),
-                "endDate": tool_input.get("endDate"),
-            }
-        }
+        return _event_stub(10002, "Duplicated Event")
     if tool_name == "delete-event":
         return {"success": True}
     return {"status": "ok"}
@@ -146,7 +166,11 @@ async def _resolve_tool(session: ClientSession, tool_use, execute: bool) -> str:
 
 def run_agent(prompt: str) -> AgentResult:
     """Synchronous entry point for pytest."""
-    return asyncio.run(_run_agent_async(prompt))
+    try:
+        return asyncio.run(_run_agent_async(prompt))
+    except ConnectionError as e:
+        import pytest
+        pytest.skip(str(e))
 
 @asynccontextmanager
 async def _mcp_session():
