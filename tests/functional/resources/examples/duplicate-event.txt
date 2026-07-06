@@ -1,0 +1,1 @@
+Perfect! I have successfully duplicated the event. The new event (ID 10002) named "Duplicated event" has been created with all the configurations from the original event.

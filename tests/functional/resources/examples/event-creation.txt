@@ -1,0 +1,1 @@
+Perfect! I've successfully created the event **'Bla'** with the following details:\n\n- **Event ID**: 10001\n- **Type**: Live Webcast (tm2000 template)\n- **Timezone**: Etc/UTC\n\nThe event is now ready to use!

@@ -1,0 +1,1 @@
+Perfect! I've successfully renamed the Kaltura event with ID (some integer) to 'Updated event'. The event name has been updated.

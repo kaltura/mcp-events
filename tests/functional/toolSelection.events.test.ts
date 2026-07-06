@@ -6,7 +6,10 @@
 // Port of the Python `test_tool_selection.py`.
 
 import assert from 'node:assert/strict'
+import { readFileSync, statSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { before, describe, test } from 'node:test'
+import { fileURLToPath } from 'node:url'
 
 import { createNearestEventByApi, getNearestFreeSlot } from './eventsHelper'
 import { checkConnections, withTempEvent } from './fixtures'
@@ -23,6 +26,22 @@ const EVENT_TEMPLATES = [
 ]
 
 const MONTH_FMT = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' })
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
+function getExamplesArr(filename: string): string[] {
+  const filepath = join(__dirname, 'resources', 'examples', filename)
+  let stat: ReturnType<typeof statSync>
+  try {
+    stat = statSync(filepath)
+  } catch {
+    assert.fail(`Examples file not found or not readable: ${filepath}`)
+  }
+  assert.ok(stat.isFile(), `Examples path is not a file: ${filepath}`)
+  return readFileSync(filepath, 'utf-8')
+    .split('\n')
+    .filter((line) => line.trim().length > 0)
+}
 
 function pad2(n: number): string {
   return String(n).padStart(2, '0')
@@ -91,9 +110,7 @@ describe('tool selection for events operations', { concurrency: true }, () => {
   })
 
   test('list events', async () => {
-    const examples = [
-      'There are no Kaltura events scheduled for today. Would you like me to show events from a different date range, list upcoming events, or create a new one?',
-    ]
+    const examples = getExamplesArr('list-events.txt')
     const prompt = 'show me all the Kaltura events of today'
     const expectedTools = ['list-events']
     const result = await runAgent(prompt)
@@ -116,9 +133,7 @@ describe('tool selection for events operations', { concurrency: true }, () => {
   })
 
   test('event creation', async () => {
-    const examples = [
-      "Perfect! I've successfully created the event **'Bla'** with the following details:\n\n- **Event ID**: 10001\n- **Type**: Live Webcast (tm2000 template)\n- **Timezone**: Etc/UTC\n\nThe event is now ready to use!",
-    ]
+    const examples = getExamplesArr('event-creation.txt')
     const eventName = 'Bla'
     const eventTemplate = randomEventTemplate()
     const { start, end } = await getNearestFreeSlot()
@@ -145,9 +160,7 @@ describe('tool selection for events operations', { concurrency: true }, () => {
   })
 
   test('delete event', async () => {
-    const examples = [
-      'The Kaltura event with ID (some integer) has been successfully deleted. All associated resources and configurations have been permanently removed.',
-    ]
+    const examples = getExamplesArr('delete-event.txt')
     const expectedTools = ['delete-event']
     const eventId = await createNearestEventByApi()
     const prompt = `delete the Kaltura event with the ID ${eventId}`
@@ -165,9 +178,7 @@ describe('tool selection for events operations', { concurrency: true }, () => {
 
   test('update event', async () => {
     await withTempEvent(async (eventId) => {
-      const examples = [
-        "Perfect! I've successfully renamed the Kaltura event with ID (some integer) to 'Updated event'. The event name has been updated.",
-      ]
+      const examples = getExamplesArr('update-event.txt')
       const expectedTools = [TOOL_UPDATE_EVENT]
       const prompt = `rename the Kaltura event with the ID ${eventId} to 'Updated event'`
 
@@ -185,9 +196,7 @@ describe('tool selection for events operations', { concurrency: true }, () => {
 
   test('duplicate event', async () => {
     await withTempEvent(async (eventId) => {
-      const examples = [
-        'Perfect! I have successfully duplicated the event. The new event (ID 10002) named "Duplicated event" has been created with all the configurations from the original event.',
-      ]
+      const examples = getExamplesArr('duplicate-event.txt')
       const expectedTools = ['duplicate-event']
       const { start, end } = await getNearestFreeSlot()
       const dateStr = getStrOfNearestDateForEvent(start, end)
@@ -223,9 +232,7 @@ describe('tool selection for events operations', { concurrency: true }, () => {
 
   test('all tools called', async () => {
     await withTempEvent(async () => {
-      const examples = [
-        'Perfect! I have completed all the tasks: created event "Bla", renamed it to "Renamed event", duplicated it to the next available date, and deleted both events. Both events have been successfully removed from the system.',
-      ]
+      const examplesArr = getExamplesArr('all-tools-called.txt')
       const expectedTools = [
         'create-event',
         'update-event',
@@ -238,7 +245,7 @@ describe('tool selection for events operations', { concurrency: true }, () => {
 
       const result = await runAgent(prompt)
       assertCalledTools(result, expectedTools, true)
-      await assertJudgmentCorrect(prompt, result.finalText, examples)
+      await assertJudgmentCorrect(prompt, result.finalText, examplesArr)
     })
   })
 })
