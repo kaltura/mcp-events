@@ -2,6 +2,9 @@
   "name": "mcp-events",
   "version": "1.0.0",
   "main": "stdio.js",
+  "workspaces": [
+    "tests"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
@@ -19,7 +22,6 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@anthropic-ai/sdk": "^0.110.0",
     "@modelcontextprotocol/inspector": "^0.22.0",
     "@nestjs/cli": "^11.0.14",
     "@types/express": "^5.0.6",
@@ -32,10 +34,8 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-unused-imports": "^4.3.0",
     "prettier": "^3.7.4",
-    "tsx": "^4.23.0",
     "typescript": "5.7.2",
-    "typescript-eslint": "^8.53.0",
-    "@faker-js/faker": "^10.5.0"
+    "typescript-eslint": "^8.53.0"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
