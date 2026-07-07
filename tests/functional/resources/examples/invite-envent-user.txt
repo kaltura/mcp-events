@@ -1,0 +1,11 @@
+Perfect! I've successfully invited Marshall Casper to the event (ID: 2715392) with the following details:
+
+- **Name:** Marshall Casper
+- **Email:** Santino_Funk@yahoo.com
+- **Title:** Principal Division Assistant
+- **Company:** Wilderman, Kautzer and Krajcik
+- **Bio:** engineer
+- **Role:** Speaker
+- **Email Invitation:** Skipped (not sent)
+
+Marshall Casper is now registered as a Speaker for the event and can be added to specific sessions as needed.

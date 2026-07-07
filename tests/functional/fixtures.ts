@@ -1,7 +1,7 @@
 // Shared setup/teardown helpers, ported from the Python `fixtures.py`.
 
 import { config } from './config'
-import { createNearestEventByApi, deleteEventByApi } from './eventsHelper'
+import { createNearestEventByApi, deleteEventByApi } from './helpers/eventsHelper'
 import { mcpSession } from './mcpAgent'
 
 /**

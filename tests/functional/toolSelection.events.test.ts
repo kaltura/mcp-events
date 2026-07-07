@@ -6,14 +6,17 @@
 // Port of the Python `test_tool_selection.py`.
 
 import assert from 'node:assert/strict'
-import { readFileSync, statSync } from 'node:fs'
-import { dirname, join } from 'node:path'
 import { before, describe, test } from 'node:test'
-import { fileURLToPath } from 'node:url'
 
-import { createNearestEventByApi, getNearestFreeSlot } from './eventsHelper'
+import { createNearestEventByApi, getNearestFreeSlot } from './helpers/eventsHelper'
 import { checkConnections, withTempEvent } from './fixtures'
-import { anthropicJudgeResponse, runAgent, type AgentResult } from './mcpAgent'
+import { runAgent } from './mcpAgent'
+import {
+  assertCalledTools,
+  assertJudgmentCorrect,
+  getExamplesArr,
+  lastToolInput,
+} from './helpers/generalHelpers'
 
 const TIMEZONE = 'Etc/UTC'
 const TOOL_UPDATE_EVENT = 'update-event'
@@ -26,22 +29,6 @@ const EVENT_TEMPLATES = [
 ]
 
 const MONTH_FMT = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' })
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-
-function getExamplesArr(filename: string): string[] {
-  const filepath = join(__dirname, 'resources', 'examples', filename)
-  let stat: ReturnType<typeof statSync>
-  try {
-    stat = statSync(filepath)
-  } catch {
-    assert.fail(`Examples file not found or not readable: ${filepath}`)
-  }
-  assert.ok(stat.isFile(), `Examples path is not a file: ${filepath}`)
-  return readFileSync(filepath, 'utf-8')
-    .split('\n')
-    .filter((line) => line.trim().length > 0)
-}
 
 function pad2(n: number): string {
   return String(n).padStart(2, '0')
@@ -63,24 +50,6 @@ function createEventPrompt(eventTemplate: string, name: string, dateFrom: Date, 
   return `create the event '${name}' of the template '${eventTemplate}' at the next date: ${getStrOfNearestDateForEvent(dateFrom, dateTo)}`
 }
 
-function calledToolNames(result: AgentResult): string[] {
-  return result.toolsCalled.map((t) => t.name)
-}
-
-function lastToolInput(result: AgentResult): Record<string, unknown> {
-  return result.toolsCalled[result.toolsCalled.length - 1].input
-}
-
-function assertCalledTools(result: AgentResult, expected: string[], includeResponseText = false): void {
-  const called = calledToolNames(result)
-  const suffix = includeResponseText ? `\n\nThe response text is:\n\t${result.finalText}` : ''
-  assert.deepEqual(
-    called,
-    expected,
-    `Invalid tools call: expected ${JSON.stringify(expected)}, got ${JSON.stringify(called)}${suffix}`,
-  )
-}
-
 function assertDatetimeClose(
   actualIso: unknown,
   expected: Date,
@@ -93,14 +62,6 @@ function assertDatetimeClose(
   assert.ok(
     diff <= toleranceMs,
     `Invalid event ${fieldName} in the called tool '${toolName}': expected ~${expected.toISOString()}, got ${actual.toISOString()}`,
-  )
-}
-
-async function assertJudgmentCorrect(prompt: string, finalText: string, examples: string[]): Promise<void> {
-  const verdict = await anthropicJudgeResponse(prompt, finalText, examples)
-  assert.ok(
-    verdict.startsWith('CORRECT'),
-    `Incorrect answer:\n\tPrompt: ${prompt}\n\tAnswer: ${finalText}\n\tExplanation: ${verdict}`,
   )
 }
 

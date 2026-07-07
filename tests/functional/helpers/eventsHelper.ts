@@ -2,7 +2,7 @@
 // fixtures. These bypass the MCP server and talk to the Events API directly,
 // mirroring the Python `events_helper.py`.
 
-import { config } from './config'
+import { config } from '../config'
 
 const MINUTE_MS = 60_000
 const DEFAULT_DURATION_MS = 15 * MINUTE_MS
