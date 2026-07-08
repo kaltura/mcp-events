@@ -32,6 +32,7 @@ jobs:
             | grep -oP '(?<=<result>)[^<]+')
           echo "::add-mask::$KALTURA_KS"
           echo "KALTURA_KS=$KALTURA_KS" >> "$GITHUB_ENV"
+          echo "KALTURA_PUBLIC_API=https://events-api.nvq2.ovp.kaltura.com/api/v1" >> "$GITHUB_ENV"
 
       - name: Install dependencies and build MCP server
         run: npm ci && npm run build
@@ -56,9 +57,10 @@ jobs:
         run: |
           cat > tests/.env <<EOF
           KALTURA_KS=$KALTURA_KS
+          KALTURA_PUBLIC_API=$KALTURA_PUBLIC_API
           ANTHROPIC_AUTH_TOKEN=${{ secrets.ANTHROPIC_AUTH_TOKEN }}
           ANTHROPIC_BASE_URL=https://api.anthropic.com
-          ANTHROPIC_MODEL=claude-sonnet-4-6
+          ANTHROPIC_MODEL=claude-4-5-haiku
           MCP_SERVER_URL=http://localhost:3000/mcp
           EXECUTE_TOOLS=1
           EOF
