@@ -1,7 +1,11 @@
 import { after, before, describe, test } from 'node:test'
 import { checkConnections } from './fixtures'
 import { AgentResult, runAgent } from './mcpAgent'
-import { createNearestEventByApi, deleteEventByApi } from './helpers/eventsHelper'
+import {
+  createNearestEventByApi,
+  deleteEventByApi,
+  EventUserInfo,
+} from './helpers/eventsHelper'
 import {
   assertCalledTools,
   assertJudgmentCorrect,
@@ -10,17 +14,6 @@ import {
 } from './helpers/generalHelpers'
 import { faker } from '@faker-js/faker'
 import assert from 'node:assert/strict'
-
-type EventUserInfo = {
-  firstName: string
-  lastName: string
-  email: string
-  title: string
-  company: string
-  bio: string
-  roles: string[]
-  skipEmail: boolean
-}
 
 function createEventUserInvitingPrompt(eventId: number, userInfo: EventUserInfo): string {
   return `For the Kaltura event with the ID ${eventId} invite '${userInfo.firstName} ${userInfo.lastName}' with the email '${userInfo.email}' working as '${userInfo.title}' in the company '${userInfo.company}' with bio '${userInfo.bio}'. He/she will be a ${userInfo.roles} in the event. Don't send invitation to the user's email`
@@ -39,7 +32,7 @@ function generateUserInfo(): EventUserInfo {
   }
 }
 
-function checkUserInfo(result: AgentResult, eventId: number, userInfo: EventUserInfo) {
+function checkUserInfo(result: AgentResult, eventId: number, userInfo: EventUserInfo): void {
   const args = lastToolInput(result)
   assert.equal(args.eventId, eventId, 'Invalid eventId')
   assert.equal(args.firstName, userInfo.firstName, 'Invalid firstName')
@@ -63,7 +56,7 @@ describe('tool selection for event users operations', { concurrency: true }, () 
   after(async () => await deleteEventByApi(eventId))
 
   test('invite an event user', async () => {
-    const examples = getExamplesArr('invite-envent-user.txt')
+    const examples = getExamplesArr('invite-event-user.txt')
     const expectedTools = ['invite-event-user']
     const userInfo = generateUserInfo()
     const prompt = createEventUserInvitingPrompt(eventId, userInfo)
@@ -71,6 +64,17 @@ describe('tool selection for event users operations', { concurrency: true }, () 
 
     assertCalledTools(result, expectedTools)
     checkUserInfo(result, eventId, userInfo)
+    await assertJudgmentCorrect(prompt, result.finalText, examples)
+  })
+
+  test.only('empty list of event users', async () => {
+    const examples = getExamplesArr('list-event-users.txt')
+    const expectedTools = ['list-event-users']
+    const prompt = `list all the users of the Kaltura event with the ID ${eventId}`
+    const result = await runAgent(prompt)
+
+    assertCalledTools(result, expectedTools)
+    assert.deepEqual(lastToolInput(result), { eventId }, 'Invalid eventId in the called tool')
     await assertJudgmentCorrect(prompt, result.finalText, examples)
   })
 })

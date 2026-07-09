@@ -111,9 +111,40 @@ export async function createNearestEventByApi(
   return json.event.id
 }
 
+export async function listUsersOfEvent(eventId: number): Promise<EventUserInfo[]> {
+  const response = await postJson('/event-users/list', { eventId }, 30_000)
+  if (!response.ok) {
+    throw new Error(`Failed to list users of event ${eventId}: ${response.status} ${await response.text()}`)
+  }
+  const json = (await response.json()) as { eventUsers?: EventUserInfo[] }
+  return json.eventUsers ?? []
+}
+
+export async function addUserToEvent(eventId: number, userInfo: EventUserInfo): Promise<void> {
+  const response = await postJson('/event-users/invite', { eventId, ...userInfo }, 30_000)
+  if (!response.ok) {
+    throw new Error(`Failed to add user to event ${eventId}: ${response.status} ${await response.text()}`)
+  }
+  const users = await listUsersOfEvent(eventId)
+  const added = users.some((u) => u.email === userInfo.email)
+  if (!added) {
+    throw new Error(`User ${userInfo.email} was not found in event ${eventId} after invite`)
+  }
+}
+
 export async function deleteEventByApi(eventId: number): Promise<void> {
   const response = await postJson('/events/delete', { id: eventId }, 60_000)
   if (!response.ok) {
     throw new Error(`Failed to delete event ${eventId}: ${response.status} ${await response.text()}`)
   }
+}
+export type EventUserInfo = {
+  firstName: string
+  lastName: string
+  email: string
+  title: string
+  company: string
+  bio: string
+  roles: string[]
+  skipEmail: boolean
 }
