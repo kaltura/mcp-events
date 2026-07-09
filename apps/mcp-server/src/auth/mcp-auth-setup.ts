@@ -1,5 +1,6 @@
 import { type RequestHandler } from 'express'
-import { MCPAuth, createVerifyJwt } from 'mcp-auth'
+// @ts-expect-error TS1479 — mcp-auth is ESM-only; Node 22 require(esm) handles it at runtime
+import { MCPAuth } from 'mcp-auth'
 import { config } from '../config/config'
 import { SCOPES } from './scopes'
 
@@ -26,6 +27,7 @@ export const mcpAuth = new MCPAuth({
               issuer: config.auth.gatewayUrl!,
               authorizationEndpoint: `${config.auth.gatewayUrl}/authorize`,
               tokenEndpoint: `${config.auth.gatewayUrl}/token`,
+              jwksUri: `${config.auth.gatewayUrl}/.well-known/jwks.json`,
               responseTypesSupported: ['code'],
               codeChallengeMethodsSupported: ['S256'],
             },
@@ -39,8 +41,9 @@ export const mcpAuth = new MCPAuth({
 })
 
 /**
- * Returns an Express middleware that verifies JWT bearer tokens using a symmetric
- * secret (HMAC). Audience is validated against the resource identifier.
+ * Returns an Express middleware that verifies JWT bearer tokens using asymmetric
+ * keys fetched from the auth gateway's JWKS endpoint. Audience is validated against
+ * the resource identifier.
  *
  * Scope enforcement is intentionally left to individual tool registrations — the
  * middleware only checks that the token is structurally valid and correctly signed.
@@ -49,13 +52,8 @@ export const mcpAuth = new MCPAuth({
  * The Kaltura Session is available at req.auth.claims.ks.
  */
 export function createBearerAuthMiddleware(): RequestHandler {
-  const secret = new TextEncoder().encode(config.auth.jwtSecret!)
-
-  // createVerifyJwt handles JWT → AuthInfo mapping (iss, client_id, sub, scope → scopes[]).
-  // The custom `ks` claim is surfaced in req.auth.claims.ks after verification.
-  const verifyJwt = createVerifyJwt(() => Promise.resolve(secret))
-
-  return mcpAuth.bearerAuth(verifyJwt, {
+  // mcp-auth's built-in 'jwt' mode fetches and caches keys from jwksUri automatically.
+  return mcpAuth.bearerAuth('jwt', {
     resource: resourceIdentifier,
     audience: resourceIdentifier,
     requiredScopes: [], // per-tool scope enforcement; middleware only validates JWT structure

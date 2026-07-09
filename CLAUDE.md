@@ -71,7 +71,6 @@ Additional env vars: `KALTURA_KS` (required for stdio), `KALTURA_SERVER_PORT` (d
 
 HTTP-mode-only env vars (all required):
 - `MCP_SERVER_URL` — public URL of this MCP server; used as the OAuth protected resource identifier and the JWT `aud` claim value
-- `AUTH_GATEWAY_JWT_SECRET` — symmetric HMAC secret for JWT verification
 - `KALTURA_AUTH_GATEWAY_URL` — URL of the Kaltura Auth Gateway (default: `https://auth-gateway.kaltura.com/mcp-events`)
 
 ## Auth (HTTP mode)
@@ -82,6 +81,8 @@ The server implements [OAuth 2.0 Protected Resource Metadata (RFC 9728)](https:/
 Returns the resource identifier (`MCP_SERVER_URL`), supported scopes, and the auth gateway URL.
 
 **Bearer auth:** Every `POST /mcp` request must carry `Authorization: Bearer <jwt>`.  
+The JWT is verified asymmetrically using the auth gateway's JWKS endpoint (`KALTURA_AUTH_GATEWAY_URL/.well-known/jwks.json`). No shared secret is required.
+
 The JWT must include:
 - `iss`: `KALTURA_AUTH_GATEWAY_URL`
 - `aud`: `MCP_SERVER_URL`

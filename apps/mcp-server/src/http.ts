@@ -37,9 +37,6 @@ async function bootstrap(): Promise<import('@nestjs/common').INestApplication<un
     if (!config.auth.gatewayUrl) {
       throw new Error('KALTURA_AUTH_GATEWAY_URL environment variable is required for HTTP mode')
     }
-    if (!config.auth.jwtSecret) {
-      throw new Error('AUTH_GATEWAY_JWT_SECRET environment variable is required for HTTP mode')
-    }
     if (!config.auth.serverUrl) {
       throw new Error('MCP_SERVER_URL environment variable is required for HTTP mode')
     }

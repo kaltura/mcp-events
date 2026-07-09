@@ -32,7 +32,6 @@ export const config = {
   },
   auth: {
     gatewayUrl: process.env.KALTURA_AUTH_GATEWAY_URL,
-    jwtSecret: process.env.AUTH_GATEWAY_JWT_SECRET,
     serverUrl: process.env.MCP_SERVER_URL,
   },
 }
