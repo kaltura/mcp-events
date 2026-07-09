@@ -14,7 +14,7 @@ import { Request, Response } from 'express'
  */
 @Injectable()
 export class McpService {
-  private readonly logger = new ConsoleLogger(McpService.name, { timestamp: true })
+  private readonly logger = new ConsoleLogger(McpService.name, { timestamp: true, json: true })
 
   constructor(private readonly publicApiClient: PublicApiClient) {
     this.logger.log('MCP Service initialized (stateless mode)')

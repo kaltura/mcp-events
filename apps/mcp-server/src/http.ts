@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { config } from './config/config'
-import { mcpAuth } from './auth/mcp-auth-setup'
+import { authLogger, mcpAuth } from './auth/mcp-auth-setup'
 import { ConsoleLogger } from '@nestjs/common'
+import { type NextFunction, type Request, type Response } from 'express'
 
 const c = {
   reset: '\x1b[0m',
@@ -43,7 +44,7 @@ async function bootstrap(): Promise<import('@nestjs/common').INestApplication<un
   }
 
   const app = await NestFactory.create(AppModule, {
-    logger: new ConsoleLogger('MCP Server', { timestamp: true }),
+    logger: new ConsoleLogger('MCP Server', { timestamp: true, json: true }),
   })
 
   // Enable CORS for remote SSE connections
@@ -53,7 +54,14 @@ async function bootstrap(): Promise<import('@nestjs/common').INestApplication<un
   })
 
   // Mount RFC 9728 Protected Resource Metadata endpoint as a global middleware
-  // so it runs before NestJS controller routing (which would 404 on .well-known paths)
+  // so it runs before NestJS controller routing (which would 404 on .well-known paths).
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.path.startsWith('/.well-known/oauth-protected-resource')) {
+      authLogger.log(`Resource metadata: ${req.method} ${req.path} from ${req.ip ?? 'unknown'}`)
+      res.on('finish', () => authLogger.log(`Resource metadata: ${res.statusCode}`))
+    }
+    next()
+  })
   app.use(mcpAuth.protectedResourceMetadataRouter())
 
   const serverPort = config.server.port

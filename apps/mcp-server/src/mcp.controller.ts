@@ -4,7 +4,7 @@ import { McpService } from './mcp.service'
 
 @Controller('mcp')
 export class McpController {
-  private readonly logger = new ConsoleLogger(McpController.name, { timestamp: true })
+  private readonly logger = new ConsoleLogger(McpController.name, { timestamp: true, json: true })
 
   constructor(private readonly mcpService: McpService) {}
 

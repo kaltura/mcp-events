@@ -2,6 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common'
 import { type NextFunction, type Request, type Response } from 'express'
 import { config } from '../config/config'
 import { SCOPES } from './scopes'
+import { authLogger } from './mcp-auth-setup'
 
 /**
  * Local development bypass: if KALTURA_KS is set in the environment, injects a
@@ -19,6 +20,7 @@ export class DevKsMiddleware implements NestMiddleware {
       scopes: [...SCOPES],
       claims: { ks: config.kaltura.ks },
     }
+    authLogger.log(`${req.method} ${req.path} | Dev bypass active (KALTURA_KS) scopes=[${SCOPES.join(', ')}]`)
     next()
   }
 }

@@ -1,12 +1,16 @@
 import { type RequestHandler } from 'express'
 // @ts-expect-error TS1479 — mcp-auth is ESM-only; Node 22 require(esm) handles it at runtime
 import { MCPAuth } from 'mcp-auth'
+import { ConsoleLogger } from '@nestjs/common'
 import { config } from '../config/config'
 import { SCOPES } from './scopes'
 
 // The MCP server itself is the protected resource — it owns the .well-known endpoint
 // and is what clients authenticate against.
 const resourceIdentifier = config.auth.serverUrl!
+
+/** Shared logger for the auth subsystem. */
+export const authLogger = new ConsoleLogger('Auth', { timestamp: true, json: true })
 
 /**
  * MCPAuth instance configured for Kaltura Events MCP server.
@@ -59,3 +63,7 @@ export function createBearerAuthMiddleware(): RequestHandler {
     requiredScopes: [], // per-tool scope enforcement; middleware only validates JWT structure
   })
 }
+
+authLogger.log(
+  `Auth config: resource=${resourceIdentifier} issuer=${config.auth.gatewayUrl} scopes=[${SCOPES.join(', ')}]`,
+)
