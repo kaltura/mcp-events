@@ -36,10 +36,10 @@ ${c.dim}  ───────────────────────�
 async function bootstrap(): Promise<import('@nestjs/common').INestApplication<unknown>> {
   if (!config.kaltura.ks) {
     if (!config.auth.gatewayUrl) {
-      throw new Error('KALTURA_AUTH_GATEWAY_URL environment variable is required for HTTP mode')
+      throw new Error('_AUTH_GATEWAY_URL environment variable is required for HTTP mode')
     }
     if (!config.auth.serverUrl) {
-      throw new Error('MCP_SERVER_URL environment variable is required for HTTP mode')
+      throw new Error('_MCP_SERVER_URL environment variable is required for HTTP mode')
     }
   }
 
@@ -85,7 +85,13 @@ bootstrap()
     }
     console.log(`\n${c.dim}  ────────────────────────────────────────────────────────${c.reset}\n`)
 
-    const shutdown = () => app.close().then(() => process.exit(0))
+    const shutdown = () => {
+      // Give in-flight requests 5 s to finish, then force-exit.
+      // Without the timeout, keep-alive connections or stalled MCP streams
+      // can prevent app.close() from resolving and Ctrl-C appears to hang.
+      setTimeout(() => process.exit(0), 5000).unref()
+      app.close().then(() => process.exit(0))
+    }
     process.on('SIGINT', shutdown)
     process.on('SIGTERM', shutdown)
   })

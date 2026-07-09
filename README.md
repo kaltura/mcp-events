@@ -129,7 +129,7 @@ Add to `claude_desktop_config.json` and restart:
 |----------|-------------|---------|
 | `KALTURA_KS` | Kaltura Session token — passed at startup (stdio or HTTP) or per-request via `Authorization` header (HTTP only) | — |
 | `KALTURA_ENV` | API environment: `NVP`, `EU`, `DE` | `NVP` |
-| `KALTURA_SERVER_PORT` | Port the HTTP server listens on | `3000` |
+| `KALTURA_MCP_SERVER_PORT` | Port the HTTP server listens on | `3000` |
 | `KALTURA_PUBLIC_API` | Custom API base URL (overrides `KALTURA_ENV`) | — |
 
 | `KALTURA_ENV` value | Region |

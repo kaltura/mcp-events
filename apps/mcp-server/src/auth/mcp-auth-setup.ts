@@ -18,7 +18,7 @@ export const authLogger = new ConsoleLogger('Auth', { timestamp: true, json: tru
  * Authorization server metadata is provided manually because the Kaltura Auth Gateway
  * does not yet expose a standard OIDC / OAuth discovery endpoint.
  *
- * Protected resource: this MCP server (identified by MCP_SERVER_URL).
+ * Protected resource: this MCP server (identified by _MCP_SERVER_URL).
  */
 export const mcpAuth = new MCPAuth({
   protectedResources: [
