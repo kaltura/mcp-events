@@ -70,7 +70,7 @@ jobs:
         run: |
             echo "ANTHROPIC_AUTH_TOKEN is set: ${{ secrets.ANTHROPIC_AUTH_TOKEN != '' }}"                                                                                                                 
             echo "ANTHROPIC_AUTH_TOKEN length: ${#SECRET}"                                                                                                                                            
-          env:
+        env:
             SECRET: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
 
       - name: Run functional tests
