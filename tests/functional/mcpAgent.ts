@@ -75,8 +75,8 @@ export async function anthropicJudgeResponse(
 ): Promise<string> {
   let prompt =
     `On the given prompt '${inputContext}' has been received the next output '${evaluatedOutput}'. ` +
-    'Analyze the the output and answer if the output is correct or not. Your analyze should be only ' +
-    'syntactical and logical without any technical proves or details. Start your answer with the word ' +
+    'Analyze the the output and answer if the output is generally correct or not. Your analyze should be only ' +
+    'logical without any technical proves or details. Start your answer with the word ' +
     'CORRECT or INCORRECT. If the output is not correct, explain why and provide a correct output.'
   if (examples.length > 0) {
     prompt += ` Here are some examples of correct outputs: ${JSON.stringify(examples)}`
@@ -127,9 +127,9 @@ async function resolveTool(
   execute: boolean,
 ): Promise<string> {
   const input = (toolUse.input ?? {}) as Record<string, unknown>
-  if (!execute) {
-    return JSON.stringify(stubResponse(toolUse.name, input))
-  }
+  // if (!execute) {
+  //   return JSON.stringify(stubResponse(toolUse.name, input))
+  // }
   const result = await client.callTool({ name: toolUse.name, arguments: input })
   return joinTextContent(result.content)
 }

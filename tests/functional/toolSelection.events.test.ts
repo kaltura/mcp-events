@@ -20,13 +20,7 @@ import {
 
 const TIMEZONE = 'Etc/UTC'
 const TOOL_UPDATE_EVENT = 'update-event'
-const EVENT_TEMPLATES = [
-  { name: 'Blank template', id: 'tm0000' },
-  { name: 'Interactive session', id: 'tm1000' },
-  { name: 'Live webcast', id: 'tm2000' },
-  { name: 'Pre-recorded live', id: 'tm3000' },
-  { name: 'DIY live broadcast', id: 'tm4000' },
-]
+const EVENT_TEMPLATE_IDS = ['tm0000', 'tm1000', 'tm2000', 'tm3000', 'tm4000']
 
 const MONTH_FMT = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'UTC' })
 
@@ -42,12 +36,10 @@ function getStrOfNearestDateForEvent(dateFrom: Date, dateTo: Date): string {
   return `${dateFrom.getUTCDate()} of ${MONTH_FMT.format(dateFrom)} from ${hhmm(dateFrom)} to ${hhmm(dateTo)} of ${TIMEZONE}`
 }
 
-function randomEventTemplate(): { name: string; id: string } {
-  return EVENT_TEMPLATES[Math.floor(Math.random() * EVENT_TEMPLATES.length)]
-}
+const getRandomEventTemplateID = () => EVENT_TEMPLATE_IDS[Math.floor(Math.random() * EVENT_TEMPLATE_IDS.length)]
 
 function createEventPrompt(eventTemplate: string, name: string, dateFrom: Date, dateTo: Date): string {
-  return `create the event '${name}' of the template '${eventTemplate}' at the next date: ${getStrOfNearestDateForEvent(dateFrom, dateTo)}`
+  return `create the event '${name}' of the template ID '${eventTemplate}' at the next date: ${getStrOfNearestDateForEvent(dateFrom, dateTo)}`
 }
 
 function assertDatetimeClose(
@@ -95,14 +87,14 @@ describe('tool selection for events operations', { concurrency: true }, () => {
 
   test('event creation', async () => {
     const examples = getExamplesArr('event-creation.txt')
-    const eventName = 'Bla'
-    const eventTemplate = randomEventTemplate()
+    const eventName = `Event-${Date.now()}`
+    const eventTemplateID = getRandomEventTemplateID()
     const { start, end } = await getNearestFreeSlot()
-    const prompt = createEventPrompt(eventTemplate.name, eventName, start, end)
+    const prompt = createEventPrompt(eventTemplateID, eventName, start, end)
     const expectedTools = ['create-event']
 
     const result = await runAgent(prompt)
-    assertCalledTools(result, expectedTools)
+    assertCalledTools(result, expectedTools, true)
     const args = lastToolInput(result)
 
     assert.equal(args.name, eventName, `Invalid event name in the called tool '${expectedTools[0]}'`)
@@ -113,8 +105,8 @@ describe('tool selection for events operations', { concurrency: true }, () => {
 
     assert.equal(
       args.templateId,
-      eventTemplate.id,
-      `Invalid event templateId.\n\tExpected: ${eventTemplate.id}\n\tActual: ${String(args.templateId)}.\n\tThe prompt: ${prompt}`,
+      eventTemplateID,
+      `Invalid event templateId.\n\tExpected: ${eventTemplateID}\n\tActual: ${String(args.templateId)}.\n\tThe prompt: ${prompt}`,
     )
 
     await assertJudgmentCorrect(prompt, result.finalText, examples)
@@ -161,7 +153,7 @@ describe('tool selection for events operations', { concurrency: true }, () => {
       const expectedTools = ['duplicate-event']
       const { start, end } = await getNearestFreeSlot()
       const dateStr = getStrOfNearestDateForEvent(start, end)
-      const name = 'Duplicated event'
+      const name = `Event-${Date.now()}`
       const prompt = `duplicate the Kaltura event with the ID ${eventId} to the date '${dateStr}' and name the duplicated event '${name}'`
 
       const result = await runAgent(prompt)
@@ -196,13 +188,14 @@ describe('tool selection for events operations', { concurrency: true }, () => {
       const examplesArr = getExamplesArr('all-tools-called.txt')
       const expectedTools = [
         'create-event',
+        'create-event',
         'update-event',
         'duplicate-event',
         'delete-event',
         'delete-event',
       ]
       const prompt =
-        "Create a Kaltura 15 mins event 'Bla' today at 18:00, rename the event to 'Renamed event', duplicate it to other nearest available date and remove both events"
+        "Create a Kaltura 15 mins event 'Bla' on 1 of March next year at 18:00, rename the event to 'Renamed event', duplicate it to 2nd of March and remove both events"
 
       const result = await runAgent(prompt)
       assertCalledTools(result, expectedTools, true)

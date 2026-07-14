@@ -1,6 +1,1 @@
 The event with ID 2716942 has no users currently registered. The event exists, but there are no attendees, speakers, or moderators assigned to it yet.
-
-Would you like to:
-- Invite users to this event?
-- View other details about the event?
-- Perform any other actions?

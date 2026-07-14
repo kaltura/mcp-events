@@ -1,1 +1,2 @@
 Perfect! I've successfully renamed the Kaltura event with ID (some integer) to 'Updated event'. The event name has been updated.
+Perfect! I've successfully renamed the Kaltura event with ID 2719422 to "Updated event". The event details have been updated and the change is now live. The event is scheduled for July 13, 2026, from 12:12 PM to 12:27 PM (GMT).

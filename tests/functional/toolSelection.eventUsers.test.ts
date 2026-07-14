@@ -67,7 +67,7 @@ describe('tool selection for event users operations', { concurrency: true }, () 
     await assertJudgmentCorrect(prompt, result.finalText, examples)
   })
 
-  test.only('empty list of event users', async () => {
+  test('empty list of event users', async () => {
     const examples = getExamplesArr('list-event-users.txt')
     const expectedTools = ['list-event-users']
     const prompt = `list all the users of the Kaltura event with the ID ${eventId}`
