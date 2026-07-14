@@ -1,22 +1,29 @@
 name: Tests
 
 on:
-  push:
-    branches: [main, tests]
-  pull_request:
-    branches: [main]
+#  push:
+#    branches: [main, tests]
+#  pull_request:
+#    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_functional_tests:
+        description: "Run functional tests"
+        required: true
+        default: "true"
 
 jobs:
   integration-tests:
     runs-on: codebuild-ovp-frontend-runner-${{ github.run_id }}-${{ github.run_attempt }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version-file: '.nvmrc'
+          cache: 'npm'
 
       - name: Generate KALTURA_KS
         run: |
