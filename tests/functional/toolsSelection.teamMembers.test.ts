@@ -141,7 +141,7 @@ describe('Tools Selection for team members operations', { concurrency: true }, (
   })
 
   test('update a team member', async () => {
-    // const examples = getExamplesArr('update-team-members.txt')
+    const examples = getExamplesArr('update-team-members.txt')
     const expectedTools = ['list-team-members', 'update-team-member']
     const teamMemberInfo = generateTeamMemberInfo()
     await createTeamMember(teamMemberInfo)
@@ -150,6 +150,7 @@ describe('Tools Selection for team members operations', { concurrency: true }, (
     const prompt = createTeamMemberUpdatePrompt(teamMemberInfo)
     const result = await runAgent(prompt)
     assertCalledTools(result, expectedTools, true)
+    await assertJudgmentCorrect(prompt, result.finalText, examples)
   })
 
   test('delete a team member', async () => {

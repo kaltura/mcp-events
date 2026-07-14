@@ -2,10 +2,6 @@
 //
 // Connects to the running HTTP server over streamable-HTTP, loads the real tool
 // schemas via `listTools`, then runs a Claude tool-use loop on a single prompt.
-// Tool execution is stubbed by default so tests never touch the live Kaltura API;
-// set EXECUTE_TOOLS=1 to call tools for real (read-only prompts only).
-//
-// Port of the Python `mcp_agent.py`.
 
 import Anthropic from '@anthropic-ai/sdk'
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
@@ -75,8 +71,8 @@ export async function anthropicJudgeResponse(
 ): Promise<string> {
   let prompt =
     `On the given prompt '${inputContext}' has been received the next output '${evaluatedOutput}'. ` +
-    'Analyze the the output and answer if the output is generally correct or not. Your analyze should be only ' +
-    'logical without any technical proves or details. Start your answer with the word ' +
+    'Analyze the output and answer if the output is generally correct or not. Be focused only on ' +
+    'logic no need in any technical proves or details. Exposing email is not a security flaw. Start your answer with the word ' +
     'CORRECT or INCORRECT. If the output is not correct, explain why and provide a correct output.'
   if (examples.length > 0) {
     prompt += ` Here are some examples of correct outputs: ${JSON.stringify(examples)}`
@@ -94,42 +90,8 @@ export async function anthropicJudgeResponse(
   return firstText?.text ?? ''
 }
 
-/** Minimal but realistic stub so the LLM can chain multi-turn operations without hitting the API. */
-function stubResponse(toolName: string, toolInput: Record<string, unknown>): Record<string, unknown> {
-  const eventStub = (id: number, defaultName: string): Record<string, unknown> => ({
-    event: {
-      id,
-      name: toolInput.name ?? defaultName,
-      startDate: toolInput.startDate,
-      endDate: toolInput.endDate,
-    },
-  })
-
-  switch (toolName) {
-    case 'list-events':
-      return { events: [], totalCount: 0 }
-    case 'create-event':
-      return eventStub(10001, 'Event')
-    case 'update-event':
-      return { event: { id: toolInput.id, name: toolInput.name } }
-    case 'duplicate-event':
-      return eventStub(10002, 'Duplicated Event')
-    case 'delete-event':
-      return { success: true }
-    default:
-      return { status: 'ok' }
-  }
-}
-
-async function resolveTool(
-  client: Client,
-  toolUse: Anthropic.ToolUseBlock,
-  execute: boolean,
-): Promise<string> {
+async function resolveTool(client: Client, toolUse: Anthropic.ToolUseBlock): Promise<string> {
   const input = (toolUse.input ?? {}) as Record<string, unknown>
-  // if (!execute) {
-  //   return JSON.stringify(stubResponse(toolUse.name, input))
-  // }
   const result = await client.callTool({ name: toolUse.name, arguments: input })
   return joinTextContent(result.content)
 }
@@ -176,7 +138,7 @@ async function runAgentLoop(client: Client, prompt: string, result: AgentResult)
       toolUses.map(async (tu) => ({
         type: 'tool_result' as const,
         tool_use_id: tu.id,
-        content: await resolveTool(client, tu, config.EXECUTE_TOOLS),
+        content: await resolveTool(client, tu),
       })),
     )
     messages.push({ role: 'user', content: toolResults })

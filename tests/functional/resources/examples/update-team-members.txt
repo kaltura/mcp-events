@@ -1,0 +1,3 @@
+Done! I've successfully renamed the team member from 'Hillard Boyer' to 'Bla Bla'. The update has been applied to their profile in the Kaltura Events platform.
+Done! I've successfully renamed the team member from "Mateo Nienow-Wunsch" to "Bla Bla". The team member's email remains mateo.nienow-wunsch@gmail.com, and their role as ContentManager is unchanged.
+

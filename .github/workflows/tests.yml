@@ -66,13 +66,6 @@ jobs:
           EXECUTE_TOOLS=1
           EOF
 
-      - name: Debug secrets
-        run: |
-            echo "ANTHROPIC_AUTH_TOKEN is set: ${{ secrets.ANTHROPIC_AUTH_TOKEN != '' }}"                                                                                                                 
-            echo "ANTHROPIC_AUTH_TOKEN length: ${#SECRET}"                                                                                                                                            
-        env:
-            SECRET: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
-
       - name: Run functional tests
         run: npm run test:functional
 
