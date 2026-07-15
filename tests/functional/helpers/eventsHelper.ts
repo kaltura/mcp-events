@@ -116,20 +116,32 @@ export async function listUsersOfEvent(eventId: number): Promise<EventUserInfo[]
   if (!response.ok) {
     throw new Error(`Failed to list users of event ${eventId}: ${response.status} ${await response.text()}`)
   }
-  const json = (await response.json()) as { eventUsers?: EventUserInfo[] }
-  return json.eventUsers ?? []
+  const json = (await response.json()) as { users?: EventUserInfo[] }
+  return json.users ?? []
 }
 
-export async function addUserToEvent(eventId: number, userInfo: EventUserInfo): Promise<void> {
+export async function inviteUserToEvent(userInfo: EventUserInfo, eventId: number): Promise<string> {
   const response = await postJson('/event-users/invite', { eventId, ...userInfo }, 30_000)
   if (!response.ok) {
-    throw new Error(`Failed to add user to event ${eventId}: ${response.status} ${await response.text()}`)
+    throw new Error(`Failed to invite user to event ${eventId}: ${response.status} ${await response.text()}`)
   }
+  const json = (await response.json()) as { user?: { id?: string } }
+  if (!json.user) {
+    throw Error(`No user found for event ${eventId}: ${await response.text()}`)
+  }
+  if (!json.user.id) {
+    throw Error(`No user id found for event ${eventId}: ${eventId}`)
+  }
+  const userId = json.user.id
+  if (!userId) {
+    throw new Error(`No userId in invite response for event ${eventId}: ${response.text()}`)
+  }
+  return userId
+}
+
+export async function getUsersIdsOfEvent(eventId: number): Promise<string[]> {
   const users = await listUsersOfEvent(eventId)
-  const added = users.some((u) => u.email === userInfo.email)
-  if (!added) {
-    throw new Error(`User ${userInfo.email} was not found in event ${eventId} after invite`)
-  }
+  return users.map((u: EventUserInfo) => u.id).filter((id): id is string => !!id)
 }
 
 export async function deleteEventByApi(eventId: number): Promise<void> {
@@ -147,4 +159,5 @@ export type EventUserInfo = {
   bio: string
   roles: string[]
   skipEmail: boolean
+  id?: string
 }

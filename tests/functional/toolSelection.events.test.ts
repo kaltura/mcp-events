@@ -185,7 +185,7 @@ describe('tool selection for events operations', { concurrency: true }, () => {
 
   test('all tools called', async () => {
     await withTempEvent(async () => {
-      const examplesArr = getExamplesArr('all-tools-called.txt')
+      const examplesArr = getExamplesArr('all-event-tools-called.txt')
       const expectedTools = [
         'create-event',
         'create-event',
