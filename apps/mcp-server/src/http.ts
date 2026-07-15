@@ -26,6 +26,20 @@ ${c.magenta}${c.bold}             MCP  EVENTS  SERVER${c.reset}
 ${c.dim}  ────────────────────────────────────────────────────────${c.reset}
 `
 
+const resourceIdentifier = config.auth.serverUrl
+if (!resourceIdentifier) {
+  throw new Error(
+    'MCP_SERVER_URL environment variable is required to configure OAuth protected resource metadata',
+  )
+}
+
+const gatewayUrl = config.auth.gatewayUrl
+if (!gatewayUrl) {
+  throw new Error(
+    'KALTURA_AUTH_GATEWAY_URL environment variable is required to configure OAuth protected resource metadata',
+  )
+}
+
 /**
  * Bootstrap MCP Server with plain NestJS
  *
@@ -34,15 +48,6 @@ ${c.dim}  ───────────────────────�
  * - MCP handles KS extraction manually per connection
  */
 async function bootstrap(): Promise<import('@nestjs/common').INestApplication<unknown>> {
-  if (!config.kaltura.ks) {
-    if (!config.auth.gatewayUrl) {
-      throw new Error('_AUTH_GATEWAY_URL environment variable is required for HTTP mode')
-    }
-    if (!config.auth.serverUrl) {
-      throw new Error('_MCP_SERVER_URL environment variable is required for HTTP mode')
-    }
-  }
-
   const app = await NestFactory.create(AppModule, {
     logger: new ConsoleLogger('MCP Server', { timestamp: true, json: true }),
   })

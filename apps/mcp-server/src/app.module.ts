@@ -5,8 +5,6 @@ import { McpService } from './mcp.service'
 import { McpController } from './mcp.controller'
 import { PublicApiClient } from './api/publicApiClient'
 import { BearerAuthMiddleware } from './auth/bearer-auth.middleware'
-import { DevKsMiddleware } from './auth/dev-ks.middleware'
-import { config } from './config/config'
 
 /**
  * Main application module
@@ -23,8 +21,7 @@ import { config } from './config/config'
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    // Dev mode: KALTURA_KS in env bypasses JWT verification entirely
-    const authMiddleware = config.kaltura.ks ? DevKsMiddleware : BearerAuthMiddleware
+    const authMiddleware = BearerAuthMiddleware
     consumer.apply(authMiddleware).forRoutes(McpController)
   }
 }

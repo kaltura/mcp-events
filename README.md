@@ -7,8 +7,8 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
   - [Tools](#tools)
   - [Resources](#resources)
 - [Installation](#%EF%B8%8F-installation)
-  - [STDIO Mode](#stdio-mode-recommended)
-  - [HTTP Mode](#http-mode)
+  - [Stdio Mode](#stdio-mode-recommended)
+  <!-- - [HTTP Mode](#http-mode) # uncomment once auth-gateway is deployed..-->
 - [Environment Variables](#%EF%B8%8F-environment-variables)
 
 ---
@@ -55,7 +55,7 @@ MCP server for Kaltura's Event Platform API.
 
 ## 🗄️ Installation
 
-### STDIO Mode (Recommended)
+### Stdio Mode
 
 #### Claude Code CLI:
 
@@ -88,6 +88,8 @@ Add to `claude_desktop_config.json` and restart:
 
 ---
 
+<!-- Uncomment once auth-gateway is deployed..
+
 ### HTTP Mode
 
 _Before adding the MCP, manually start the server:_
@@ -98,8 +100,7 @@ _Before adding the MCP, manually start the server:_
 #### Claude Code CLI:
 
 ```bash
-claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
-  --header "Authorization: KS ${KALTURA_KS}"
+claude mcp add --transport http events https://auth-gateway.kaltura.com
 ```
 _Next time you open Claude make sure `KALTURA_KS` env var is set, and that's it!_
 
@@ -110,15 +111,14 @@ Add to `claude_desktop_config.json` and restart:
 {
   "mcpServers": {
     "kaltura-events": {
-      "type": "http",
-      "url": "http://localhost:3000/mcp",
-      "headers": {
-        "Authorization": "${KALTURA_KS}"
-      }
+      "type": "https",
+      "url": "https://auth-gateway.kaltura.com"
     }
   }
 }
-```
+``` 
+
+-->
 
 
 ---

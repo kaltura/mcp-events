@@ -31,7 +31,7 @@ export const config = {
     version: '1.0.0',
   },
   auth: {
-    gatewayUrl: process.env._AUTH_GATEWAY_URL,
-    serverUrl: process.env._MCP_SERVER_URL + '/mcp',
+    gatewayUrl: process.env._AUTH_GATEWAY_URL ?? 'https://auth-gateway.kaltura.com',
+    serverUrl: process.env._MCP_SERVER_URL ? process.env._MCP_SERVER_URL + '/mcp' : undefined,
   },
 }
