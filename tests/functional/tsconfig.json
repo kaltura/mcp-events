@@ -5,7 +5,8 @@
     "moduleResolution": "bundler",
     "rootDir": ".",
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node"],
+    "strict": true
   },
   "include": ["**/*.ts"]
 }

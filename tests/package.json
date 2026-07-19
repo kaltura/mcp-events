@@ -1,10 +1,22 @@
 {
   "name": "mcp-events-tests",
   "version": "1.0.0",
-  "devDependencies": {
+  "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",
     "@faker-js/faker": "^10.5.0",
     "@modelcontextprotocol/sdk": "^1.25.2",
     "tsx": "^4.23.0"
+  },
+  "devDependencies": {
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "@typescript-eslint/eslint-plugin": "^8.26.0",
+    "@typescript-eslint/parser": "^8.26.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.7.4"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .ts"
   }
 }

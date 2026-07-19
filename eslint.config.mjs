@@ -25,9 +25,13 @@ export default [
       '@typescript-eslint/explicit-function-return-type': 'warn',
       'no-extra-semi': 'off',
       // 'no-console': 'warn',
-      '@typescript-eslint/no-unused-vars': 'off',
-      '@typescript-eslint/no-extra-semi': 'off',
-      'no-unused-vars': 'off',
+      'max-len': [
+        'warn',
+        {
+          code: 150,
+          ignoreComments: true,
+        },
+      ],
     },
   },
 ]
