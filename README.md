@@ -99,9 +99,9 @@ _Before adding the MCP, manually start the server:_
 
 ```bash
 claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
-  --header "Authorization: KS ${KALTURA_KS}"
+  --header "Authorization: KS \${KALTURA_KS}"
 ```
-_Next time you open Claude make sure `KALTURA_KS` env var is set, and that's it!_
+_Next time you open Claude make sure `KALTURA_KS` env var is EXPORTED, and that's it!_
 
 #### Claude Desktop 
 Add to `claude_desktop_config.json` and restart:
