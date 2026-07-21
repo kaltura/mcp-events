@@ -36,7 +36,8 @@ function getStrOfNearestDateForEvent(dateFrom: Date, dateTo: Date): string {
   return `${dateFrom.getUTCDate()} of ${MONTH_FMT.format(dateFrom)} from ${hhmm(dateFrom)} to ${hhmm(dateTo)} of ${TIMEZONE}`
 }
 
-const getRandomEventTemplateID = () => EVENT_TEMPLATE_IDS[Math.floor(Math.random() * EVENT_TEMPLATE_IDS.length)]
+const getRandomEventTemplateID = (): string =>
+  EVENT_TEMPLATE_IDS[Math.floor(Math.random() * EVENT_TEMPLATE_IDS.length)]
 
 function createEventPrompt(eventTemplate: string, name: string, dateFrom: Date, dateTo: Date): string {
   return `create the event '${name}' of the template ID '${eventTemplate}' at the next date: ${getStrOfNearestDateForEvent(dateFrom, dateTo)}`
@@ -57,7 +58,7 @@ function assertDatetimeClose(
   )
 }
 
-describe('tool selection for events operations', { concurrency: true }, () => {
+describe('tool selection for events operations', () => {
   before(async () => {
     await checkConnections()
   })
