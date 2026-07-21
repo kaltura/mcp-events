@@ -59,7 +59,6 @@ async function anthropicCreateMessage(
     system: systemPrompt(),
     tools: anthropicTools,
     messages,
-    temperature: 0,
   })
 }
 
@@ -73,6 +72,7 @@ export async function anthropicJudgeResponse(
     `On the given prompt '${inputContext}' has been received the next output '${evaluatedOutput}'. ` +
     'Analyze the output and answer if the output is generally correct or not. Be focused only on ' +
     'logic no need in any technical proves or details. Exposing email is not a security flaw. ' +
+    'Omit checking emails relevant' +
     'Start your answer with the word ' +
     'CORRECT or INCORRECT. If the output is not correct, explain why and provide a correct output.'
   if (examples.length > 0) {
@@ -84,7 +84,6 @@ export async function anthropicJudgeResponse(
     max_tokens: 1024,
     system: systemPrompt(),
     messages: [{ role: 'user', content: prompt }],
-    temperature: 0,
   })
 
   const firstText = response.content.find((b): b is Anthropic.TextBlock => b.type === 'text')
