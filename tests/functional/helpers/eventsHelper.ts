@@ -4,14 +4,16 @@
 
 import { config } from '../config'
 
-const MINUTE_MS = 60_000
-const DEFAULT_DURATION_MS = 15 * MINUTE_MS
+export const MINUTE_MS = 60_000
+export const DEFAULT_DURATION_MS = 15 * MINUTE_MS
 const DEFAULT_LOOK_AHEAD_DAYS = 400
 
 export interface FreeSlot {
   start: Date
   end: Date
 }
+
+export type EventDates = { start: Date; end: Date }
 
 function authHeaders(): Record<string, string> {
   return {
@@ -21,7 +23,7 @@ function authHeaders(): Record<string, string> {
 }
 
 /** Format a Date as `YYYY-MM-DDTHH:MM:SSZ` (no milliseconds), matching the Python isoformat. */
-function toKalturaIso(date: Date): string {
+export function toKalturaIso(date: Date): string {
   return date.toISOString().replace(/\.\d{3}Z$/, 'Z')
 }
 
@@ -150,6 +152,27 @@ export async function deleteEventByApi(eventId: number): Promise<void> {
     throw new Error(`Failed to delete event ${eventId}: ${response.status} ${await response.text()}`)
   }
 }
+
+export async function getDatesOfEvent(eventId: number): Promise<EventDates> {
+  const response = await postJson(
+    '/events/list',
+    { filter: { idIn: [eventId] }, pager: { limit: 1, offset: 0 } },
+    30_000,
+  )
+  if (!response.ok) {
+    throw new Error(`Failed to get event ${eventId}: ${response.status} ${await response.text()}`)
+  }
+  const json = (await response.json()) as { events?: Array<{ startDate?: string; endDate?: string }> }
+  const event = json.events?.[0]
+  if (!event) {
+    throw new Error(`Event ${eventId} not found`)
+  }
+  if (!event.startDate || !event.endDate) {
+    throw new Error(`Event ${eventId} is missing startDate or endDate`)
+  }
+  return { start: new Date(event.startDate), end: new Date(event.endDate) }
+}
+
 export type EventUserInfo = {
   firstName: string
   lastName: string
