@@ -37,7 +37,8 @@ function createTeamMemberAddPrompt(teamMemberInfo: TeamMemberInfo): string {
     'Add a team member with the following information: ' +
     `email: ${teamMemberInfo.email}, first name: ${teamMemberInfo.firstName}, last name: ${teamMemberInfo.lastName}, role: ${teamMemberInfo.role}. ` +
     `That means: ${teamMemberInfo.firstName} ${teamMemberInfo.lastName} will have platform-wide access to manage event content across all events in my account, ` +
-    `this is not limited to a single event, ${teamMemberInfo.role} role allows managing event content but cannot create events or manage the team.`
+    `this is not limited to a single event, ${teamMemberInfo.role} role allows managing event content but cannot create events or manage the team, ` +
+    "this is a permanent account role (not a temporary event invitation). Don't ask any additional info."
   )
 }
 
@@ -111,6 +112,14 @@ function createTeamMemberUpdatePrompt(teamMemberInfo: TeamMemberInfo): string {
   return `Rename the team member '${teamMemberInfo.firstName} ${teamMemberInfo.lastName}' to 'Bla Bla' in the Kaltura Events platform`
 }
 
+function createPromptForAllToolsCall(teamMemberInfo: TeamMemberInfo): string {
+  return (
+    createTeamMemberAddPrompt(teamMemberInfo) +
+    ` Change the first name of the team member to ${faker.person.firstName()}.` +
+    `Check there is the team member with the email ${teamMemberInfo.email} and delete the team member`
+  )
+}
+
 describe('Tools Selection for team members operations', { concurrency: true }, () => {
   before(async () => {
     await checkConnections()
@@ -162,6 +171,22 @@ describe('Tools Selection for team members operations', { concurrency: true }, (
     assert.ok(isTeamMemberCreated, 'Team member was not created successfully')
     const prompt = `Delete the team member '${teamMemberInfo.firstName} ${teamMemberInfo.lastName}' with the email ${teamMemberInfo.email} in the Kaltura Events platform`
     const result = await runAgent(prompt)
+    assertCalledTools(result, expectedTools, true)
+    await assertJudgmentCorrect(prompt, result.finalText, examples)
+  })
+
+  test('all tools called', async () => {
+    const examples = getExamplesArr('all-team-members-tools-called.txt')
+    const expectedTools = [
+      'create-team-member',
+      'update-team-member',
+      'list-team-members',
+      'delete-team-member',
+    ]
+    const teamMemberInfo = generateTeamMemberInfo()
+    const prompt = createPromptForAllToolsCall(teamMemberInfo)
+    const result = await runAgent(prompt)
+
     assertCalledTools(result, expectedTools, true)
     await assertJudgmentCorrect(prompt, result.finalText, examples)
   })
