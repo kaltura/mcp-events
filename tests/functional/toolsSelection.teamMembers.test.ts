@@ -122,7 +122,7 @@ function createPromptForAllToolsCall(teamMemberInfo: TeamMemberInfo): string {
 
 describe('Tools Selection for team members operations', { concurrency: true }, () => {
   before(async () => {
-    await checkConnections()
+    await checkConnections() // TODO Delete used Team Members
   })
 
   test('create a team member', async () => {

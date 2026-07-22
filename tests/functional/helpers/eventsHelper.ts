@@ -27,7 +27,8 @@ export function toKalturaIso(date: Date): string {
   return date.toISOString().replace(/\.\d{3}Z$/, 'Z')
 }
 
-async function postJson(path: string, body: unknown, timeoutMs: number): Promise<Response> {
+/** POST a JSON body to a Kaltura Events public API path, authenticated with the configured KS. */
+export async function postJson(path: string, body: unknown, timeoutMs: number): Promise<Response> {
   return fetch(`${config.KALTURA_PUBLIC_API}${path}`, {
     method: 'POST',
     headers: authHeaders(),
@@ -144,6 +145,16 @@ export async function inviteUserToEvent(userInfo: EventUserInfo, eventId: number
 export async function getUsersIdsOfEvent(eventId: number): Promise<string[]> {
   const users = await listUsersOfEvent(eventId)
   return users.map((u: EventUserInfo) => u.id).filter((id): id is string => !!id)
+}
+
+/** Remove a user from an event, including their session roles and groups. */
+export async function deleteEventUserByApi(eventId: number, userId: string): Promise<void> {
+  const response = await postJson('/event-users/delete', { eventId, userId }, 30_000)
+  if (!response.ok) {
+    throw new Error(
+      `Failed to delete event user ${userId} from event ${eventId}: ${response.status} ${await response.text()}`,
+    )
+  }
 }
 
 export async function deleteEventByApi(eventId: number): Promise<void> {

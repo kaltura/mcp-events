@@ -1,13 +1,6 @@
 import { after, before, describe, test } from 'node:test'
 import { checkConnections } from './fixtures'
-import {
-  createNearestEventByApi,
-  deleteEventByApi,
-  EventDates,
-  getDatesOfEvent,
-  MINUTE_MS,
-  toKalturaIso,
-} from './helpers/eventsHelper'
+import { createNearestEventByApi, deleteEventByApi } from './helpers/eventsHelper'
 import { runAgent } from './mcpAgent'
 import {
   assertCalledTools,
@@ -17,45 +10,7 @@ import {
 } from './helpers/generalHelpers'
 import { fail } from 'node:assert'
 import assert from 'node:assert/strict'
-
-type SessionVisibility = 'published' | 'unlisted' | 'private'
-const sessionPossibleVals = ['published', 'unlisted', 'private']
-
-type SessionInfo = {
-  eventId: number
-  session: {
-    name: string
-    type: string
-    description: string
-    visibility: SessionVisibility
-    startDate: string
-    endDate: string
-    tags: [string]
-    isManualLive: boolean
-  }
-}
-
-async function createSessionInfo(eventId: number): Promise<SessionInfo> {
-  const eventDates: EventDates = await getDatesOfEvent(eventId)
-  const deltaMs = 2 * MINUTE_MS
-  const sessionStartDateMs = eventDates.start.getTime() + deltaMs
-  const sessionEndDateMs = eventDates.end.getTime() - deltaMs
-  return {
-    eventId: eventId,
-    session: {
-      name: `Session-${Date.now()}`,
-      description: `Test session ${Date.now()}`,
-      visibility: sessionPossibleVals[
-        Math.floor(Math.random() * sessionPossibleVals.length)
-      ] as SessionVisibility,
-      startDate: toKalturaIso(new Date(sessionStartDateMs)),
-      endDate: toKalturaIso(new Date(sessionEndDateMs)),
-      tags: ['Bla'],
-      isManualLive: false,
-      type: 'MeetingEntry',
-    },
-  }
-}
+import { createSessionInfo, SessionInfo } from './helpers/sessionsHelper'
 
 function createSessionPrompt(sessionInfo: SessionInfo): string {
   return (
@@ -63,14 +18,6 @@ function createSessionPrompt(sessionInfo: SessionInfo): string {
     `described as '${sessionInfo.session.description}' for the event with the ID ${sessionInfo.eventId}. ` +
     `The appointed time of the session: from ${sessionInfo.session.startDate} to ${sessionInfo.session.endDate}. ` +
     `The type of the session is ${sessionInfo.session.type} and tagged as ${sessionInfo.session.tags[0]}.`
-  )
-}
-
-
-function createAllTollsCallPrompt(sessionInfo: SessionInfo): string {
-  return (
-    createSessionPrompt(sessionInfo) +
-    `. Check the created session is in the sessions list of the Kaltura event with the ID ${sessionInfo.eventId}.`
   )
 }
 

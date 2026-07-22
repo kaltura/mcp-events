@@ -14,8 +14,8 @@ import {
   getExamplesArr,
   lastToolInput,
 } from './helpers/generalHelpers'
-import { faker } from '@faker-js/faker'
 import assert from 'node:assert/strict'
+import { generateUserInfo } from './helpers/eventUserHelper'
 
 function createEventUserInvitingPrompt(eventId: number, userInfo: EventUserInfo): string {
   return (
@@ -23,19 +23,6 @@ function createEventUserInvitingPrompt(eventId: number, userInfo: EventUserInfo)
     `with the email '${userInfo.email}' working as '${userInfo.title}' in the company '${userInfo.company}' ` +
     `with bio '${userInfo.bio}'. He/she will be a ${userInfo.roles} in the event. Don't send invitation to the user's email.`
   )
-}
-
-function generateUserInfo(): EventUserInfo {
-  return {
-    firstName: faker.person.firstName(),
-    lastName: faker.person.lastName(),
-    email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName() }),
-    title: faker.person.jobTitle(),
-    company: faker.company.name(),
-    bio: faker.person.bio(),
-    roles: ['Attendees'],
-    skipEmail: true,
-  }
 }
 
 function checkUserInfo(result: AgentResult, eventId: number, userInfo: EventUserInfo): void {
@@ -79,7 +66,7 @@ describe('tool selection for event users operations', { concurrency: true }, () 
     eventId = await createNearestEventByApi()
   })
 
-  after(async (): Promise<void> => await deleteEventByApi(eventId))
+  after(async (): Promise<void> => await deleteEventByApi(eventId)) // TODO: Delete the used Event Users
 
   test('invite an event user', async () => {
     const examples = getExamplesArr('invite-event-user.txt')

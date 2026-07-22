@@ -70,7 +70,7 @@ export async function anthropicJudgeResponse(
 ): Promise<string> {
   let prompt =
     `On the given prompt '${inputContext}' has been received the next output '${evaluatedOutput}'. ` +
-    'Analyze the output and answer if the output is generally correct or not. Be focused only on ' +
+    'Analyze the prompt and the output. Answer if the output is generally correct or not. Be focused only on ' +
     'logic no need in any technical proves or details. Exposing email is not a security flaw. ' +
     'Omit checking emails relevant' +
     'Start your answer with the word ' +
