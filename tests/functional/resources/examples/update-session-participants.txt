@@ -1,0 +1,1 @@
+Perfect! I've successfully updated the session participant. The user with ID `d6d71892f955e2c083ee9d89d9beedbf3ea946db653e575d6ae08e18a38cbcf6` in session `1_c6ymlagm` of event `2730442` now has the **advancedSpeaker** role. This role grants elevated permissions including the ability to manage other speakers and access backstage controls.

@@ -1,0 +1,1 @@
+All done! I've successfully completed all three operations:\n\n1. ✅ Added the user (ID: 9d99c8b0c82047e3c28517cfc9e75c18ef7e820a2d2988eba0ae83c404cc9309) as a simple speaker to the session\n2. ✅ Updated their role to advanced speaker\n3. ✅ Removed the participant from the session\n\nThe user has been removed from the session and no longer has any speaker role in it.
