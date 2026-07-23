@@ -8,15 +8,10 @@
 import assert from 'node:assert/strict'
 import { before, describe, test } from 'node:test'
 
-import { createNearestEventByApi, getNearestFreeSlot } from './helpers/eventsHelper'
-import { checkConnections, withTempEvent } from './fixtures'
-import { runAgent } from './mcpAgent'
-import {
-  assertCalledTools,
-  assertJudgmentCorrect,
-  getExamplesArr,
-  lastToolInput,
-} from './helpers/generalHelpers'
+import { createNearestEventByApi, getNearestFreeSlot } from './helpers'
+import { checkConnections, withTempEvent } from '../../fixtures'
+import { runAgent } from '../../mcpAgent'
+import { assertCalledTools, assertJudgmentCorrect, getExamplesArr, lastToolInput } from '../../generalHelpers'
 
 const TIMEZONE = 'Etc/UTC'
 const TOOL_UPDATE_EVENT = 'update-event'
@@ -64,7 +59,7 @@ describe('tool selection for events operations', () => {
   })
 
   test('list events', async () => {
-    const examples = getExamplesArr('list-events.txt')
+    const examples = getExamplesArr('list-events.txt', import.meta.url)
     const prompt = 'show me all the Kaltura events of today'
     const expectedTools = ['list-events']
     const result = await runAgent(prompt)
@@ -87,7 +82,7 @@ describe('tool selection for events operations', () => {
   })
 
   test('event creation', async () => {
-    const examples = getExamplesArr('event-creation.txt')
+    const examples = getExamplesArr('event-creation.txt', import.meta.url)
     const eventName = `Event-${Date.now()}`
     const eventTemplateID = getRandomEventTemplateID()
     const { start, end } = await getNearestFreeSlot()
@@ -114,7 +109,7 @@ describe('tool selection for events operations', () => {
   })
 
   test('delete event', async () => {
-    const examples = getExamplesArr('delete-event.txt')
+    const examples = getExamplesArr('delete-event.txt', import.meta.url)
     const expectedTools = ['delete-event']
     const eventId = await createNearestEventByApi()
     const prompt = `delete the Kaltura event with the ID ${eventId}`
@@ -132,7 +127,7 @@ describe('tool selection for events operations', () => {
 
   test('update event', async () => {
     await withTempEvent(async (eventId) => {
-      const examples = getExamplesArr('update-event.txt')
+      const examples = getExamplesArr('update-event.txt', import.meta.url)
       const expectedTools = [TOOL_UPDATE_EVENT]
       const prompt = `rename the Kaltura event with the ID ${eventId} to 'Updated event'`
 
@@ -150,7 +145,7 @@ describe('tool selection for events operations', () => {
 
   test('duplicate event', async () => {
     await withTempEvent(async (eventId) => {
-      const examples = getExamplesArr('duplicate-event.txt')
+      const examples = getExamplesArr('duplicate-event.txt', import.meta.url)
       const expectedTools = ['duplicate-event']
       const { start, end } = await getNearestFreeSlot()
       const dateStr = getStrOfNearestDateForEvent(start, end)
@@ -186,17 +181,10 @@ describe('tool selection for events operations', () => {
 
   test('all tools called', async () => {
     await withTempEvent(async () => {
-      const examplesArr = getExamplesArr('all-event-tools-called.txt')
-      const expectedTools = [
-        'create-event',
-        'create-event',
-        'update-event',
-        'duplicate-event',
-        'delete-event',
-        'delete-event',
-      ]
+      const examplesArr = getExamplesArr('all-event-tools-called.txt', import.meta.url)
+      const expectedTools = ['create-event', 'update-event', 'duplicate-event', 'delete-event']
       const prompt =
-        "Create a Kaltura 15 mins event 'Bla' on 1 of March next year at 18:00, rename the event to 'Renamed event', duplicate it to 2nd of March and remove both events"
+        "Create a Kaltura 15 mins event 'Bla' on 1 of March next year at 18:00(UTC). Rename the event to 'Renamed event'. Duplicate it to 2nd of March. Then remove both events"
 
       const result = await runAgent(prompt)
       assertCalledTools(result, expectedTools, true)

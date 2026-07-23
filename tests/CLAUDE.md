@@ -21,3 +21,8 @@ Each test file should be named with the pattern `*.test.ts`
 The structure of a tests should be with the accordance to the AAA principle (Arrange, Act, Assert). Each test should have a clear separation of these three phases.
 Test body should not have any conditions
 
+
+#### Tests organization
+Directories:
+ - tools-calling - for tests related to MCP Server tools calling
+resources.test.ts - for tests related to MCP Server resources

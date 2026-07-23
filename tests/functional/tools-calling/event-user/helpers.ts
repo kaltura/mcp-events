@@ -1,4 +1,4 @@
-import { EventUserInfo } from './eventsHelper'
+import { EventUserInfo } from '../events/helpers'
 import { faker } from '@faker-js/faker'
 
 export function generateUserInfo(roles = ['Attendees']): EventUserInfo {

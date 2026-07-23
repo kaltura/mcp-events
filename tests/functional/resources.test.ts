@@ -48,9 +48,6 @@ describe('resources', { concurrency: true }, () => {
 
   test('reading events://{id}/info with an unknown ID returns an error message, not a crash', async () => {
     const content = await readResource('events://0/info')
-    assert.ok(
-      typeof content === 'string' && content.length > 0,
-      'Expected a non-empty string response for unknown event ID',
-    )
+    assert.ok(content.length > 0, 'Expected a non-empty string response for unknown event ID')
   })
 })

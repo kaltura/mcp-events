@@ -1,4 +1,4 @@
-import { EventDates, getDatesOfEvent, MINUTE_MS, postJson, toKalturaIso } from './eventsHelper'
+import { EventDates, getDatesOfEvent, MINUTE_MS, postJson, toKalturaIso } from '../events/helpers'
 
 type SessionVisibility = 'published' | 'unlisted' | 'private'
 const sessionPossibleVals = ['published', 'unlisted', 'private']

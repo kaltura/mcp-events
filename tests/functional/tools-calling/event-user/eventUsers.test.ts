@@ -1,21 +1,16 @@
 import { after, before, describe, test } from 'node:test'
-import { checkConnections } from './fixtures'
-import { AgentResult, runAgent } from './mcpAgent'
+import { checkConnections } from '../../fixtures'
+import { AgentResult, runAgent } from '../../mcpAgent'
 import {
   createNearestEventByApi,
   deleteEventByApi,
   EventUserInfo,
   getUsersIdsOfEvent,
   inviteUserToEvent,
-} from './helpers/eventsHelper'
-import {
-  assertCalledTools,
-  assertJudgmentCorrect,
-  getExamplesArr,
-  lastToolInput,
-} from './helpers/generalHelpers'
+} from '../events/helpers'
+import { assertCalledTools, assertJudgmentCorrect, getExamplesArr, lastToolInput } from '../../generalHelpers'
 import assert from 'node:assert/strict'
-import { generateUserInfo } from './helpers/eventUserHelper'
+import { generateUserInfo } from './helpers'
 
 function createEventUserInvitingPrompt(eventId: number, userInfo: EventUserInfo): string {
   return (
@@ -69,7 +64,7 @@ describe('tool selection for event users operations', { concurrency: true }, () 
   after(async (): Promise<void> => await deleteEventByApi(eventId)) // TODO: Delete the used Event Users
 
   test('invite an event user', async () => {
-    const examples = getExamplesArr('invite-event-user.txt')
+    const examples = getExamplesArr('invite-event-user.txt', import.meta.url)
     const expectedTools = ['invite-event-user']
     const userInfo = generateUserInfo()
     const prompt = createEventUserInvitingPrompt(eventId, userInfo)
@@ -81,7 +76,7 @@ describe('tool selection for event users operations', { concurrency: true }, () 
   })
 
   test('list of event users', async () => {
-    const examples = getExamplesArr('list-event-users.txt')
+    const examples = getExamplesArr('list-event-users.txt', import.meta.url)
     const expectedTools = ['list-event-users']
     const prompt = `list all the users of the Kaltura event with the ID ${eventId}`
     const result = await runAgent(prompt)
@@ -92,7 +87,7 @@ describe('tool selection for event users operations', { concurrency: true }, () 
   })
 
   test('delete an event user', async () => {
-    const examples = getExamplesArr('delete-event-user.txt')
+    const examples = getExamplesArr('delete-event-user.txt', import.meta.url)
     const expectedTools = ['list-event-users', 'delete-event-user']
     const userInfo = generateUserInfo()
     const userId = await inviteUserToEvent(userInfo, eventId)
@@ -111,7 +106,7 @@ describe('tool selection for event users operations', { concurrency: true }, () 
   })
 
   test('update an event user', async () => {
-    const examples = getExamplesArr('update-event-user.txt')
+    const examples = getExamplesArr('update-event-user.txt', import.meta.url)
     const expectedTools = ['list-event-users', 'update-event-user']
     const userInfo = generateUserInfo()
     const userId = await inviteUserToEvent(userInfo, eventId)
@@ -132,7 +127,7 @@ describe('tool selection for event users operations', { concurrency: true }, () 
   })
 
   test('all tools called', async () => {
-    const examples = getExamplesArr('all-event-users-tools-called.txt')
+    const examples = getExamplesArr('all-event-users-tools-called.txt', import.meta.url)
     const expectedTools = ['invite-event-user', 'update-event-user', 'delete-event-user']
     const prompt = createAllToolsCallPrompt(eventId)
     const result = await runAgent(prompt)
