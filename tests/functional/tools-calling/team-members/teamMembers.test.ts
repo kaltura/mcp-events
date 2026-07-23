@@ -13,11 +13,14 @@ import {
   generateTeamMemberInfo,
   listTeamMembers,
   ROLE_NAME,
-} from './teamMembersHelper'
+} from './helper'
 
 describe('Tools Selection for team members operations', { concurrency: true }, () => {
-  before(async () => {
-    await checkConnections()
+  before(async () => await checkConnections())
+
+  after(async () => {
+    const teamMembers = (await listTeamMembers()).filter((tm) => tm.role === ROLE_NAME)
+    await Promise.all(teamMembers.map((tm) => deleteTeamMember(tm.id)))
   })
 
   test('create a team member', async () => {
@@ -79,10 +82,5 @@ describe('Tools Selection for team members operations', { concurrency: true }, (
 
     assertCalledTools(result, expectedTools, true)
     await assertJudgmentCorrect(prompt, result.finalText, examples)
-  })
-
-  after(async () => {
-    const teamMembers = (await listTeamMembers()).filter((tm) => tm.role === ROLE_NAME)
-    await Promise.all(teamMembers.map((tm) => deleteTeamMember(tm.id)))
   })
 })
