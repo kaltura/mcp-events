@@ -2,9 +2,6 @@
   "name": "mcp-events",
   "version": "1.0.0",
   "main": "stdio.js",
-  "workspaces": [
-    "tests"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
