@@ -55,7 +55,7 @@ MCP server for Kaltura's Event Platform API.
 ```bash
 claude mcp add kaltura-events "docker -- run -i --rm -e KALTURA_KS ghcr.io/kaltura/mcp-events:latest" -s user
 ```
-_Next time you open Claude make sure `KALTURA_KS` env var is <span style="color: orange;">EXPORTed</span>, and that's it!_
+_Next time you open Claude make sure `KALTURA_KS` env var is **EXPORT'ed**, and that's it!_
 
 <br/>
 
@@ -94,7 +94,7 @@ _Before adding the MCP, manually start the server:_
 claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
   --header "Authorization: KS \${KALTURA_KS}"
 ```
-_Next time you open Claude make sure `KALTURA_KS` env var is <span style="color: orange;">EXPORTed</span>, and that's it!_
+_Next time you open Claude make sure `KALTURA_KS` env var is **EXPORT'ed**, and that's it!_
 
 #### Manual / Claude Desktop
 Add to `claude_desktop_config.json` and restart:
