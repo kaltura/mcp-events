@@ -26,8 +26,12 @@ export const config = {
     ks: process.env.KALTURA_KS,
   },
   server: {
-    port: process.env.KALTURA_SERVER_PORT ?? 3000,
+    port: process.env.KALTURA_MCP_SERVER_PORT ?? 3000,
     name: 'Kaltura Events Server',
     version: '1.0.0',
+  },
+  auth: {
+    gatewayUrl: process.env._AUTH_GATEWAY_URL ?? 'https://auth-gateway.kaltura.com',
+    serverUrl: process.env._MCP_SERVER_URL ? process.env._MCP_SERVER_URL + '/mcp' : undefined,
   },
 }

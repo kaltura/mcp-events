@@ -90,7 +90,9 @@ export const ListEventDto = z.object({
 
 export const DuplicateEventDto = z.object({
   sourceEventId: z.number().describe('(Required) Source Event ID to duplicate from. Example: 98765'),
-  name: z.string().describe("(Required) Name for the new (duplicated) event. Example: 'Virtual Townhall 2025 Copy'"),
+  name: z
+    .string()
+    .describe("(Required) Name for the new (duplicated) event. Example: 'Virtual Townhall 2025 Copy'"),
   timezone: z
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

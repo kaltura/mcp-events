@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { HealthChecker } from './health/health-check.provider'
 import { HealthController } from './health/health.controller'
 import { McpService } from './mcp.service'
 import { McpController } from './mcp.controller'
 import { PublicApiClient } from './api/publicApiClient'
+import { BearerAuthMiddleware } from './auth/bearer-auth.middleware'
 
 /**
  * Main application module
@@ -18,4 +19,9 @@ import { PublicApiClient } from './api/publicApiClient'
   providers: [McpService, PublicApiClient, HealthChecker],
   controllers: [McpController, HealthController],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    const authMiddleware = BearerAuthMiddleware
+    consumer.apply(authMiddleware).forRoutes(McpController)
+  }
+}

@@ -7,8 +7,8 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
   - [Tools](#tools)
   - [Resources](#resources)
 - [Installation](#%EF%B8%8F-installation)
-  - [STDIO Mode](#stdio-mode-recommended)
-  - [HTTP Mode](#http-mode)
+  - [Stdio Mode](#stdio-mode-recommended)
+  <!-- - [HTTP Mode](#http-mode) # uncomment once auth-gateway is deployed..-->
 - [Environment Variables](#%EF%B8%8F-environment-variables)
 
 ---
@@ -48,7 +48,7 @@ MCP server for Kaltura's Event Platform API.
 
 ## 🗄️ Installation
 
-### STDIO Mode (Recommended)
+### Stdio Mode
 
 #### Claude Code CLI:
 
@@ -79,6 +79,8 @@ Add to `claude_desktop_config.json` and restart:
 
 ---
 
+<!-- Uncomment once auth-gateway is deployed..
+
 ### HTTP Mode
 
 _Before adding the MCP, manually start the server:_
@@ -101,27 +103,26 @@ Add to `claude_desktop_config.json` and restart:
 {
   "mcpServers": {
     "kaltura-events": {
-      "type": "http",
-      "url": "http://localhost:3000/mcp",
-      "headers": {
-        "Authorization": "KS ${KALTURA_KS}"
-      }
+      "type": "https",
+      "url": "https://auth-gateway.kaltura.com"
     }
   }
 }
-```
+``` 
+
+-->
 
 
 ---
 
 ## ⚙️ Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `KALTURA_KS` | Kaltura Session token — passed at startup (stdio or HTTP) or per-request via `Authorization` header (HTTP only) | — |
-| `KALTURA_ENV` | API environment: `NVP` (North America, default), `EU` (European region, IRP), `DE` (German region, FRP) | `NVP` |
-| `KALTURA_SERVER_PORT` | Port the HTTP server listens on | `3000` |
-| `KALTURA_PUBLIC_API` | Custom API base URL (overrides `KALTURA_ENV`) | — |
+| Variable | Description | Default | Mode | Required |
+|----------|-------------|---------|------|----------|
+| `KALTURA_KS` | Kaltura Session token — passed at startup | — | stdio | yes |
+| `KALTURA_ENV` | API environment: `NVP` (North America, default), `EU` (European region, IRP), `DE` (German region, FRP) | `NVP` | both | no |
+| `KALTURA_PUBLIC_API` | Custom API base URL (overrides `KALTURA_ENV`) | — | both | no |
+| `KALTURA_MCP_SERVER_PORT` | Port the HTTP server listens on | `3000` | http | no |
 
 ---
 
