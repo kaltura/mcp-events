@@ -57,7 +57,6 @@ claude mcp add kaltura-events "docker -- run -i --rm -e KALTURA_KS ghcr.io/kaltu
 ```
 _Next time you open Claude make sure `KALTURA_KS` env var is EXPORTED, and that's it!_
 
-<br/><br/>
 
 #### Manual / Claude Desktop
 Add to `claude_desktop_config.json` and restart:
