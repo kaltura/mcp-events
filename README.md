@@ -7,7 +7,7 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
   - [Tools](#tools)
   - [Resources](#resources)
 - [Installation](#%EF%B8%8F-installation)
-  - [Stdio Mode](#stdio-mode-recommended)
+  - [Stdio Mode](#stdio-mode)
   <!-- - [HTTP Mode](#http-mode) # uncomment once auth-gateway is deployed..-->
 - [Environment Variables](#%EF%B8%8F-environment-variables)
 
