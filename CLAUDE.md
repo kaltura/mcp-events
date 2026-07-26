@@ -2,81 +2,74 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
-
-This is a Model Context Protocol (MCP) server for the Kaltura Events Platform API. It exposes tools and resources that allow AI assistants to create, manage, and interact with Kaltura virtual events.
-
-## Development Commands
+## Commands
 
 ```bash
-npm run build          # Compile TypeScript → dist/
-npm run start:stdio    # Run stdio server (reads .env)
-npm run start:http     # Run HTTP/NestJS server (reads .env)
-npm run inspect:stdio  # MCP Inspector against stdio server
-npm run inspect:http   # MCP Inspector against running HTTP server
-npm run lint           # ESLint
+# Build
+npm run build          # tsc → dist/
+
+# Run (requires dist/ to exist)
+npm run start:stdio    # stdio transport (uses KALTURA_KS from .env)
+npm run start:http     # HTTP transport (requires _MCP_SERVER_URL + _AUTH_GATEWAY_URL)
+
+# Dev/debug
+npm run inspect:stdio  # MCP Inspector UI for stdio mode
+npm run inspect:http   # MCP Inspector UI for HTTP mode (server must be running)
+
+# Lint
+npm run lint           # eslint
+
+# Lint + format check
+npx prettier --check .
 ```
 
-There are no automated tests (`npm test` exits with an error).
+No test suite exists yet (`npm test` exits with an error).
+
+Node version is pinned in `.nvmrc`. Run `nvm use` before installing.
 
 ## Architecture
 
-### Two Transport Modes
+The server has **two runtime modes** sharing the same tool/resource logic:
 
-The server runs in two distinct modes with different entry points:
+- **Stdio** (`stdio.ts` → `server.ts`): single-process, trusted — `KALTURA_KS` is read from env and all scopes are granted. Used for local/Claude Desktop usage.
+- **HTTP** (`http.ts` → NestJS `AppModule`): multi-tenant, OAuth-protected — a fresh `McpServer` is spun up per request (stateless). The `BearerAuthMiddleware` verifies JWT bearer tokens via `mcp-auth`, which fetches JWKS from the auth gateway. The KS is extracted from a custom `ks` claim in the verified JWT, and scopes are extracted from the token's scope claim.
 
-**Stdio mode** (`apps/mcp-server/src/stdio.ts` → `server.ts`):
-- Single `McpServer` instance per process, connected via `StdioServerTransport`
-- `KALTURA_KS` must be set as an environment variable at startup
-- Used for local Claude Desktop / Claude Code integrations
+### Key files
 
-**HTTP mode** (`apps/mcp-server/src/http.ts` → NestJS app):
-- NestJS application with `McpController` at `POST /mcp`
-- A **fresh `McpServer` + `StreamableHTTPServerTransport` is created per request** (stateless)
-- KS is read from the `Authorization` header on each request (`ks <KS>` or `bearer <KS>`)
-- `McpService` owns the per-request server lifecycle
+| File | Role |
+|------|------|
+| `apps/mcp-server/src/server.ts` | Stdio bootstrap — creates `McpServer`, registers tools/resources, connects stdio transport |
+| `apps/mcp-server/src/http.ts` | HTTP bootstrap — NestJS app factory, CORS, RFC 9728 protected resource metadata |
+| `apps/mcp-server/src/mcp.service.ts` | Stateless per-request MCP handler (HTTP mode) |
+| `apps/mcp-server/src/mcp.controller.ts` | NestJS controller at `/mcp` — extracts `ks` and `scopes` from `req.auth` |
+| `apps/mcp-server/src/auth/bearer-auth.middleware.ts` | NestJS middleware wrapping `mcp-auth` JWT verification |
+| `apps/mcp-server/src/auth/mcp-auth-setup.ts` | `MCPAuth` instance + `createBearerAuthMiddleware()` — manually supplies auth server metadata because the Kaltura Auth Gateway has no OIDC discovery endpoint |
+| `apps/mcp-server/src/auth/scopes.ts` | Two scopes: `mcp:events:read` / `mcp:events:write` |
+| `apps/mcp-server/src/domains/index.ts` | Aggregates all domain `registerXxxTools` / `registerXxxResources` calls |
+| `apps/mcp-server/src/api/publicApiClient.ts` | All Kaltura REST API calls; used as a NestJS injectable |
+| `apps/mcp-server/src/config/config.ts` | Env-var config; selects API base URL by `KALTURA_ENV` (`NVP`/`EU`/`DE`) or `KALTURA_PUBLIC_API` |
 
-### Request Flow (HTTP mode)
-```
-HTTP POST /mcp
-  → McpController.handleRequest()
-  → getKsFromRequest() extracts KS from Authorization header
-  → McpService.handleRequest(ks, req, res)
-  → new McpServer() + registerEventTools() + registerEventResources()
-  → StreamableHTTPServerTransport handles the MCP protocol
-```
+### Adding a new domain
 
-### Key Abstractions
+Each domain lives under `apps/mcp-server/src/domains/<name>/` with three files:
+- `schemas.ts` — Zod schemas for tool input DTOs
+- `tools.ts` — `registerXxxTools(server, ks, publicApiClient, scopes)` — gates write tools behind `mcp:events:write` and read tools behind `mcp:events:read` using `hasScopes()`
+- `resources.ts` — `registerXxxResources(...)` if the domain exposes MCP resources
 
-- **`PublicApiClient`** (`api/publicApiClient.ts`): NestJS `@Injectable()` service wrapping the Kaltura Events REST API. All methods accept a `ks` parameter — there is no shared session state. Headers are set per-request: `Authorization: Bearer <ks>`, `X-Kaltura-Client-Tag: mcp-events-pa-client`.
-- **`registerEventTools()`** / **`registerEventResources()`**: Pure functions that attach tools/resources to any `McpServer` instance, capturing `ks` and `publicApiClient` in closures.
-- **`eventSchemas.ts`**: Zod schemas for all tool inputs. `templateIdEnum` is built from `PresetTemplates` at module load time. `SupportedTimeZones` drives the timezone enum.
+Then export the register functions from `domains/index.ts`.
 
-### TypeScript Compilation
-- Source: `apps/` → Output: `dist/` (maps to `dist/mcp-server/src/`)
-- CommonJS modules, ES2020 target, NestJS decorators enabled (`emitDecoratorMetadata`, `experimentalDecorators`)
+### Scope enforcement
 
-### Configuration (`config/config.ts`)
-Env var `KALTURA_PUBLIC_API` overrides everything; otherwise `KALTURA_ENV` selects the region:
-- `NVP` (default): `events-api.nvp1.ovp.kaltura.com`
-- `EU`: `events-api.irp2.ovp.kaltura.com`
-- `DE`: `events-api.frp2.ovp.kaltura.com`
+Tools are registered conditionally at server-init time based on the granted scopes (not enforced per-call). `hasScopes(granted, required)` in `auth/scope-check.ts` handles this. In stdio mode all scopes are granted unconditionally.
 
-Additional env vars: `KALTURA_KS` (required for stdio, per-request for HTTP), `KALTURA_SERVER_PORT` (default `3000`).
+## Environment variables
 
-## Agent Integration
+Copy `.env.template` to `.env`. Required vars depend on mode:
 
-**Stdio (recommended for local use):**
-```json
-{
-  "command": "docker",
-  "args": ["run", "-i", "--rm", "-e", "KALTURA_KS", "ghcr.io/kaltura/mcp-events:latest"],
-  "env": { "KALTURA_KS": "your-kaltura-session" }
-}
-```
-
-**HTTP:**
-```bash
-claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
-  --header "Authorization: KS ${KALTURA_KS}"
-```
+| Var | Required for |
+|-----|-------------|
+| `KALTURA_KS` | Stdio mode (and HTTP dev shortcut) |
+| `_MCP_SERVER_URL` | HTTP mode — becomes the OAuth resource identifier |
+| `_AUTH_GATEWAY_URL` | HTTP mode — JWKS + token endpoint base URL |
+| `KALTURA_ENV` | Both — selects region (`NVP`/`EU`/`DE`); defaults to `NVP` |
+| `KALTURA_PUBLIC_API` | Both — overrides `KALTURA_ENV` with a custom API URL |

@@ -49,10 +49,7 @@ export const CreateSessionDto = z.object({
       .string()
       .datetime()
       .describe("Session Start Date (ISO 8601). Example: '2025-05-01T14:00:00Z'"),
-    endDate: z
-      .string()
-      .datetime()
-      .describe("Session End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'"),
+    endDate: z.string().datetime().describe("Session End Date (ISO 8601). Example: '2025-05-01T16:00:00Z'"),
     tags: z.array(z.string()).describe('Session tags. Example: ["tag1", "tag2"]').optional(),
     visibility: z
       .nativeEnum(SessionVisibility)
