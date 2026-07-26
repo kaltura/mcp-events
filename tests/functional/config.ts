@@ -4,6 +4,8 @@
 // script), so this module only reads `process.env` and applies the same names and
 // defaults as the Python `config.py`.
 
+export type McpTransport = 'http' | 'stdio'
+
 function required(name: string): string {
   const value = process.env[name]
   if (!value) {
@@ -12,9 +14,22 @@ function required(name: string): string {
   return value
 }
 
+/** Resolve which MCP transport the tests should use from `MCP_TRANSPORT`, defaulting to `'stdio'`. */
+function resolveMcpTransport(): McpTransport {
+  const value = process.env.MCP_TRANSPORT
+  if (!value) {
+    return 'stdio'
+  }
+  if (value !== 'http' && value !== 'stdio') {
+    throw new Error(`Invalid MCP_TRANSPORT value: '${value}'. Expected 'http' or 'stdio'.`)
+  }
+  return value
+}
+
 export const config = {
   KALTURA_KS: required('KALTURA_KS'),
   KALTURA_PUBLIC_API: process.env.KALTURA_PUBLIC_API ?? 'https://events-api.nvp1.ovp.kaltura.com/api/v1',
+  MCP_TRANSPORT: resolveMcpTransport(),
   MCP_SERVER_URL: process.env.MCP_SERVER_URL ?? 'http://localhost:3000/mcp',
   ANTHROPIC_BASE_URL: process.env.ANTHROPIC_BASE_URL,
   ANTHROPIC_AUTH_TOKEN: process.env.ANTHROPIC_AUTH_TOKEN,

@@ -1,28 +1,85 @@
 // Drive the MCP server with a Claude agent and capture which tools it selects.
 //
-// Connects to the running HTTP server over streamable-HTTP, loads the real tool
-// schemas via `listTools`, then runs a Claude tool-use loop on a single prompt.
+// Connects to the MCP server over either streamable-HTTP (an already-running server,
+// see `npm run start:http`) or stdio (spawned directly from source via `tsx`), loads
+// the real tool schemas via `listTools`, then runs a Claude tool-use loop on a single
+// prompt. Transport is selected via `MCP_TRANSPORT` (see `config.ts`).
 
 import Anthropic from '@anthropic-ai/sdk'
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
+import { openSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import { config } from './config'
 
 const MAX_AGENT_STEPS = 15
+
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
+const STDIO_SERVER_SCRIPT = join(REPO_ROOT, 'tests/functional/stdio_mcp_events.sh')
+const SERVER_LOG_PATH = join(tmpdir(), `mcp-events-server-${process.pid}.log`)
+
+let serverLogFd: number | undefined
 
 export interface AgentResult {
   finalText: string
   toolsCalled: Array<{ name: string; input: Record<string, unknown> }>
 }
 
-/** Open a streamable-HTTP MCP session and return a connected client. Caller must `close()`. */
-export async function mcpSession(): Promise<Client> {
+/** Build the env for the spawned stdio server process, dropping unset variables. */
+function stdioServerEnv(): Record<string, string> {
+  const env: Record<string, string> = {}
+  for (const [key, value] of Object.entries(process.env)) {
+    if (value !== undefined) {
+      env[key] = value
+    }
+  }
+  return env
+}
+
+/**
+ * Open (once per process) the temp file that captures the spawned server's stderr output,
+ * printing its path to the test output the first time it's opened.
+ */
+function serverLogFileDescriptor(): number {
+  if (serverLogFd === undefined) {
+    serverLogFd = openSync(SERVER_LOG_PATH, 'a')
+    console.log(`MCP server output redirected to: ${SERVER_LOG_PATH}`)
+  }
+  return serverLogFd
+}
+
+/** Connect to the MCP server over stdio by spawning the build-and-run shell script. */
+async function connectStdio(client: Client): Promise<void> {
+  const transport = new StdioClientTransport({
+    command: STDIO_SERVER_SCRIPT,
+    args: [],
+    env: stdioServerEnv(),
+    cwd: '',
+    stderr: serverLogFileDescriptor(),
+  })
+  await client.connect(transport)
+}
+
+/** Connect to an already-running MCP server over streamable-HTTP. */
+async function connectHttp(client: Client): Promise<void> {
   const transport = new StreamableHTTPClientTransport(new URL(config.MCP_SERVER_URL), {
     requestInit: { headers: { Authorization: `ks ${config.KALTURA_KS}` } },
   })
-  const client = new Client({ name: 'functional-tests', version: '1.0.0' })
   await client.connect(transport)
+}
+
+/** Open an MCP session over the configured transport and return a connected client. Caller must `close()`. */
+export async function mcpSession(): Promise<Client> {
+  const client = new Client({ name: 'functional-tests', version: '1.0.0' })
+  if (config.MCP_TRANSPORT === 'stdio') {
+    await connectStdio(client)
+  } else {
+    await connectHttp(client)
+  }
   return client
 }
 
@@ -70,11 +127,9 @@ export async function anthropicJudgeResponse(
 ): Promise<string> {
   let prompt =
     `On the given prompt '${inputContext}' has been received the next output '${evaluatedOutput}'. ` +
-    'Analyze the prompt and the output. Answer if the output is generally correct or not. Be focused only on ' +
-    'logic no need in any technical proves or details. Exposing email is not a security flaw. ' +
-    'Omit checking emails relevant' +
-    'Start your answer with the word ' +
-    'CORRECT or INCORRECT. If the output is not correct, explain why and provide a correct output.'
+    'Analyze the prompt and the output. Answer if the output is generally correct or not starting your answer with the word "CORRECT" or "INCORRECT" in upper case. ' +
+    'Be focused only on logic no need in any technical proves or details. Exposing email is not a security flaw. Omit checking emails relevant. ' +
+    'If the output is not correct, explain why and provide a correct output.'
   if (examples.length > 0) {
     prompt += ` Here are some examples of correct outputs: ${JSON.stringify(examples)}`
   }

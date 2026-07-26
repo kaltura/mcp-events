@@ -15,7 +15,7 @@ import {
   createUserAndSessionToAddParticipant,
 } from './helpers'
 
-describe('tool selection for a session participants', { concurrency: true }, () => {
+describe('tool selection for a session participants', () => {
   let eventId: number
   const userIds: string[] = []
 
