@@ -10,8 +10,7 @@
     "inspect:stdio": "./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/mcp-server/src/stdio.js",
     "inspect:http": "npx @modelcontextprotocol/inspector  http://localhost:3000/mcp",
     "client": "node dist/client.js",
-    "lint": "eslint . --ext .ts",
-    "test:functional": "node --env-file=tests/.env --import tsx --test \"tests/functional/**/*.test.ts\" --test-reporter=spec"
+    "lint": "eslint . --ext .ts"
   },
   "keywords": [],
   "author": "",
