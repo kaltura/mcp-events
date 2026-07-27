@@ -127,7 +127,9 @@ export async function anthropicJudgeResponse(
     messages: [{ role: 'user', content: prompt }],
   })
 
-  const firstText = response.content.find((b): b is Anthropic.TextBlock => b.type === 'text')
+  const firstText = response.content.find(
+    (b: { type: string }): b is Anthropic.TextBlock => b.type === 'text',
+  )
   return firstText?.text ?? ''
 }
 
@@ -158,10 +160,12 @@ async function runAgentLoop(client: Client, prompt: string, result: AgentResult)
   for (let step = 0; step < MAX_AGENT_STEPS; step++) {
     const response = await anthropicCreateMessage(client, messages)
 
-    const toolUses = response.content.filter((b): b is Anthropic.ToolUseBlock => b.type === 'tool_use')
+    const toolUses = response.content.filter(
+      (b: { type: string }): b is Anthropic.ToolUseBlock => b.type === 'tool_use',
+    )
     const text = response.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
+      .filter((b: { type: string }): b is Anthropic.TextBlock => b.type === 'text')
+      .map((b: { text: string }) => b.text)
       .join('\n')
     result.finalText = text || result.finalText
 
@@ -176,7 +180,7 @@ async function runAgentLoop(client: Client, prompt: string, result: AgentResult)
     }
 
     const toolResults: Anthropic.ToolResultBlockParam[] = await Promise.all(
-      toolUses.map(async (tu) => ({
+      toolUses.map(async (tu: { id: string }) => ({
         type: 'tool_result' as const,
         tool_use_id: tu.id,
         content: await resolveTool(client, tu),
