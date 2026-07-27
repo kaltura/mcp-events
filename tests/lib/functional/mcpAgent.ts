@@ -17,7 +17,7 @@ import { config } from './config'
 const MAX_AGENT_STEPS = 15
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
-const STDIO_SERVER_SCRIPT = join(REPO_ROOT, 'tests/functional/stdio_mcp.sh')
+const STDIO_SERVER_SCRIPT = join(REPO_ROOT, 'lib/functional/stdio_mcp.sh')
 const SERVER_LOG_PATH = join(tmpdir(), `mcp-server-${process.pid}.log`)
 
 let serverLogFd: number | undefined
