@@ -4,7 +4,7 @@
 //   - events           (resource template: events://{eventId}/info)
 //   - preset-templates (static resource:   preset-templates://all)
 //
-// Run a live MCP server first (`npm run start:http`), then: npm run test:functional
+// Run: npm run test:functional (spawns the MCP server over stdio).
 //
 // Port of the Python `test_resources.py`.
 

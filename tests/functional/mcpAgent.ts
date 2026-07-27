@@ -1,14 +1,12 @@
 // Drive the MCP server with a Claude agent and capture which tools it selects.
 //
-// Connects to the MCP server over either streamable-HTTP (an already-running server,
-// see `npm run start:http`) or stdio (spawned directly from source via `tsx`), loads
-// the real tool schemas via `listTools`, then runs a Claude tool-use loop on a single
-// prompt. Transport is selected via `MCP_TRANSPORT` (see `config.ts`).
+// Connects to the MCP server over stdio (spawned directly from source via `tsx`),
+// loads the real tool schemas via `listTools`, then runs a Claude tool-use loop on a
+// single prompt.
 
 import Anthropic from '@anthropic-ai/sdk'
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
 import { openSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
@@ -64,22 +62,10 @@ async function connectStdio(client: Client): Promise<void> {
   await client.connect(transport)
 }
 
-/** Connect to an already-running MCP server over streamable-HTTP. */
-async function connectHttp(client: Client): Promise<void> {
-  const transport = new StreamableHTTPClientTransport(new URL(config.MCP_SERVER_URL), {
-    requestInit: { headers: { Authorization: `ks ${config.KALTURA_KS}` } },
-  })
-  await client.connect(transport)
-}
-
-/** Open an MCP session over the configured transport and return a connected client. Caller must `close()`. */
+/** Open an MCP session over stdio and return a connected client. Caller must `close()`. */
 export async function mcpSession(): Promise<Client> {
   const client = new Client({ name: 'functional-tests', version: '1.0.0' })
-  if (config.MCP_TRANSPORT === 'stdio') {
-    await connectStdio(client)
-  } else {
-    await connectHttp(client)
-  }
+  await connectStdio(client)
   return client
 }
 

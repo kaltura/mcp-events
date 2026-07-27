@@ -1,7 +1,6 @@
 // Eval: does Claude pick the right MCP tool for a given prompt?
 //
-// Run a live MCP server first (`npm run start:http`), populate tests/.env, then:
-//   npm run test:functional
+// Populate tests/.env, then: npm run test:functional (spawns the MCP server over stdio).
 //
 // Port of the Python `test_tool_selection.py`.
 
