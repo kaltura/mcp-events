@@ -1,16 +1,28 @@
 import tseslint from 'typescript-eslint'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import unusedImports from 'eslint-plugin-unused-imports'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   {
-    ignores: ['node_modules', 'dist', '.vscode', '**/*.js'],
+    ignores: ['node_modules', 'dist', '.vscode', '**/*.js', '**/*.mjs'],
   },
   eslintPluginPrettierRecommended,
-  { files: ['**/*.ts'] },
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+      },
+    },
+  },
   ...tseslint.configs.recommended,
   {
+    files: ['**/*.ts'],
     plugins: { 'unused-imports': unusedImports },
     rules: {
       'unused-imports/no-unused-imports': 'error',

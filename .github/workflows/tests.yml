@@ -46,7 +46,7 @@ jobs:
 
       - name: Start MCP Events server
         run: |
-          node dist/mcp-server/src/http.js &
+          node dist/apps/mcp-server/src/http.js &
           echo $! > /tmp/mcp-server.pid
           for i in $(seq 1 30); do
             if curl -s http://localhost:3000/health -o /dev/null; then

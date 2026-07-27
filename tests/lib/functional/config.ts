@@ -14,7 +14,6 @@ function required(name: string): string {
 
 export const config = {
   KALTURA_KS: required('KALTURA_KS'),
-  KALTURA_PUBLIC_API: process.env.KALTURA_PUBLIC_API ?? 'https://events-api.nvp1.ovp.kaltura.com/api/v1',
   ANTHROPIC_BASE_URL: process.env.ANTHROPIC_BASE_URL,
   ANTHROPIC_AUTH_TOKEN: process.env.ANTHROPIC_AUTH_TOKEN,
   ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,

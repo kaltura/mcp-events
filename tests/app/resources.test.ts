@@ -11,8 +11,7 @@
 import assert from 'node:assert/strict'
 import { before, describe, test } from 'node:test'
 
-import { checkConnections } from './fixtures'
-import { listResources, readResource, type ResourceListing } from './mcpAgent'
+import { checkConnections, listResources, readResource, type ResourceListing } from '../lib'
 
 describe('resources', { concurrency: true }, () => {
   let resources: ResourceListing

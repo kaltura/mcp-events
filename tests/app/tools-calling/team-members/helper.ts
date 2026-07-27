@@ -1,8 +1,7 @@
-import { faker } from '@faker-js/faker'
-import { config } from '../../config'
-import { AgentResult } from '../../mcpAgent'
-import { lastToolInput } from '../../generalHelpers'
+import { AgentResult, config, lastToolInput } from '../../../lib'
 import assert from 'node:assert/strict'
+import { appConfig } from '../../config'
+import { randomFirstName, randomPerson } from '../helpers/fakeData'
 
 type TeamMemberInfo = {
   email: string
@@ -14,8 +13,7 @@ type TeamMemberInfo = {
 export const ROLE_NAME = 'ContentManager'
 
 export function generateTeamMemberInfo(): TeamMemberInfo {
-  const firstName = faker.person.firstName()
-  const lastName = faker.person.lastName()
+  const { firstName, lastName } = randomPerson()
   return {
     firstName: firstName,
     lastName: lastName,
@@ -28,6 +26,7 @@ export function createTeamMemberAddPrompt(teamMemberInfo: TeamMemberInfo): strin
   return (
     'Add a team member with the following information: ' +
     `email: ${teamMemberInfo.email}, first name: ${teamMemberInfo.firstName}, last name: ${teamMemberInfo.lastName}, role: ${teamMemberInfo.role}. ` +
+    // eslint-disable-next-line max-len
     `That means: ${teamMemberInfo.firstName} ${teamMemberInfo.lastName} will have platform-wide access to manage event content across all events in my account, ` +
     `this is not limited to a single event, ${teamMemberInfo.role} role allows managing event content but cannot create events or manage the team, ` +
     "this is a permanent account role (not a temporary event invitation). Don't ask any additional info."
@@ -35,7 +34,7 @@ export function createTeamMemberAddPrompt(teamMemberInfo: TeamMemberInfo): strin
 }
 
 export async function createTeamMember(teamMemberInfo: TeamMemberInfo): Promise<string> {
-  const response = await fetch(`${config.KALTURA_PUBLIC_API}/team-members/create`, {
+  const response = await fetch(`${appConfig.KALTURA_PUBLIC_API}/team-members/create`, {
     method: 'POST',
     headers: {
       Authorization: `ks ${config.KALTURA_KS}`,
@@ -56,7 +55,7 @@ export async function createTeamMember(teamMemberInfo: TeamMemberInfo): Promise<
 
 export async function deleteTeamMember(id: string | undefined): Promise<void> {
   if (!id) return
-  const response = await fetch(`${config.KALTURA_PUBLIC_API}/team-members/delete`, {
+  const response = await fetch(`${appConfig.KALTURA_PUBLIC_API}/team-members/delete`, {
     method: 'POST',
     headers: {
       Authorization: `ks ${config.KALTURA_KS}`,
@@ -71,7 +70,7 @@ export async function deleteTeamMember(id: string | undefined): Promise<void> {
 }
 
 export async function listTeamMembers(): Promise<TeamMemberInfo[]> {
-  const response = await fetch(`${config.KALTURA_PUBLIC_API}/team-members/list`, {
+  const response = await fetch(`${appConfig.KALTURA_PUBLIC_API}/team-members/list`, {
     method: 'POST',
     headers: {
       Authorization: `ks ${config.KALTURA_KS}`,
@@ -107,7 +106,7 @@ export function createTeamMemberUpdatePrompt(teamMemberInfo: TeamMemberInfo): st
 export function createPromptForAllToolsCall(teamMemberInfo: TeamMemberInfo): string {
   return (
     createTeamMemberAddPrompt(teamMemberInfo) +
-    ` Change the first name of the team member to ${faker.person.firstName()}.` +
+    ` Change the first name of the team member to ${randomFirstName()}.` +
     `Check the first name has been updated. Then delete the team member.`
   )
 }

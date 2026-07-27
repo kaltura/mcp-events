@@ -1,25 +1,7 @@
 // Shared setup/teardown helpers, ported from the Python `fixtures.py`.
 
 import { config } from './config'
-import { createNearestEventByApi, deleteEventByApi } from './tools-calling/events/helpers'
 import { mcpSession } from './mcpAgent'
-
-/**
- * Create a real Kaltura event, run `fn` with its ID, then delete it.
- * Replaces the `nearest_temp_event_id` pytest fixture. A failed delete only warns.
- */
-export async function withTempEvent(fn: (eventId: number) => Promise<void>): Promise<void> {
-  const eventId = await createNearestEventByApi()
-  try {
-    await fn(eventId)
-  } finally {
-    try {
-      await deleteEventByApi(eventId)
-    } catch {
-      console.warn(`Event ${eventId} was not deleted`)
-    }
-  }
-}
 
 /**
  * Verify both the MCP server and the Anthropic endpoint are reachable before running tests.
@@ -43,5 +25,12 @@ export async function checkConnections(): Promise<void> {
     throw new Error(
       `Anthropic API unreachable at ${anthropicUrl}: ${err instanceof Error ? err.message : String(err)}`,
     )
+  }
+}
+
+export function authHeaders(): Record<string, string> {
+  return {
+    Authorization: `ks ${config.KALTURA_KS}`,
+    'Content-Type': 'application/json',
   }
 }

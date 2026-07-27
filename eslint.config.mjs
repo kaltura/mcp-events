@@ -1,13 +1,24 @@
 import tseslint from 'typescript-eslint'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   {
-    ignores: ['node_modules', 'dist', '.vscode', '**/*.js'],
+    ignores: ['node_modules', 'dist', '.vscode', '**/*.js', '**/*.mjs'],
   },
   eslintPluginPrettierRecommended,
-  { files: ['**/*.ts'] },
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+      },
+    },
+  },
   ...tseslint.configs.recommended,
   {
     plugins: {
@@ -30,6 +41,8 @@ export default [
         {
           code: 150,
           ignoreComments: true,
+          ignoreStrings: true,
+          ignoreTemplateLiterals: true,
         },
       ],
     },

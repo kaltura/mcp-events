@@ -2,7 +2,8 @@
 // fixtures. These bypass the MCP server and talk to the Events API directly,
 // mirroring the Python `events_helper.py`.
 
-import { config } from '../../config'
+import { appConfig } from '../../config'
+import { authHeaders } from '../../../lib'
 
 export const MINUTE_MS = 60_000
 export const DEFAULT_DURATION_MS = 15 * MINUTE_MS
@@ -15,21 +16,14 @@ export interface FreeSlot {
 
 export type EventDates = { start: Date; end: Date }
 
-function authHeaders(): Record<string, string> {
-  return {
-    Authorization: `ks ${config.KALTURA_KS}`,
-    'Content-Type': 'application/json',
-  }
-}
-
-/** Format a Date as `YYYY-MM-DDTHH:MM:SSZ` (no milliseconds), matching the Python isoformat. */
+/** Format a Date as `YYYY-MM-DDTHH:MM:SSZ` (no milliseconds), matching the Python iso format. */
 export function toKalturaIso(date: Date): string {
   return date.toISOString().replace(/\.\d{3}Z$/, 'Z')
 }
 
 /** POST a JSON body to a Kaltura Events public API path, authenticated with the configured KS. */
 export async function postJson(path: string, body: unknown, timeoutMs: number): Promise<Response> {
-  return fetch(`${config.KALTURA_PUBLIC_API}${path}`, {
+  return fetch(`${appConfig.KALTURA_PUBLIC_API}${path}`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(body),
@@ -194,4 +188,20 @@ export type EventUserInfo = {
   roles: string[]
   skipEmail: boolean
   id?: string
+}
+
+/**
+ * Create a real Kaltura event, run `fn` with its ID, then delete it.
+ */
+export async function withTempEvent(fn: (eventId: number) => Promise<void>): Promise<void> {
+  const eventId = await createNearestEventByApi()
+  try {
+    await fn(eventId)
+  } finally {
+    try {
+      await deleteEventByApi(eventId)
+    } catch {
+      console.warn(`Event ${eventId} was not deleted`)
+    }
+  }
 }

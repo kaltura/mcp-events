@@ -1,8 +1,13 @@
 import { after, before, describe, test } from 'node:test'
-import { checkConnections } from '../../fixtures'
+import {
+  assertCalledTools,
+  assertJudgmentCorrect,
+  checkConnections,
+  getExamplesArr,
+  lastToolInput,
+  runAgent,
+} from '../../../lib'
 import { createNearestEventByApi, deleteEventByApi } from '../events/helpers'
-import { runAgent } from '../../mcpAgent'
-import { assertCalledTools, assertJudgmentCorrect, getExamplesArr, lastToolInput } from '../../generalHelpers'
 import { fail } from 'node:assert'
 import assert from 'node:assert/strict'
 import { createSessionInfo, SessionInfo } from './helpers'
@@ -31,7 +36,7 @@ describe('tool selection for event sessions operations', () => {
   after(async (): Promise<void> => await deleteEventByApi(eventId))
 
   test('create event session', async () => {
-    const examples = getExamplesArr('create-event-session.txt', import.meta.url)
+    const examples = getExamplesArr('create-event-session.txt', __dirname)
     const expectedTools = ['create-event-session']
     const sessionInfo = await createSessionInfo(eventId)
     const prompt = createSessionPrompt(sessionInfo)
@@ -57,7 +62,7 @@ describe('tool selection for event sessions operations', () => {
   })
 
   test('list event sessions', async () => {
-    const examples = getExamplesArr('list-event-sessions.txt', import.meta.url)
+    const examples = getExamplesArr('list-event-sessions.txt', __dirname)
     const expectedTools = ['list-event-sessions']
     const prompt = 'List event sessions from the Kaltura event with ID ' + eventId
     const result = await runAgent(prompt)

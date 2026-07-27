@@ -1,9 +1,14 @@
 import { after, before, describe, test } from 'node:test'
 import { fail } from 'node:assert'
-import { checkConnections } from '../../fixtures'
+import {
+  assertCalledTools,
+  assertJudgmentCorrect,
+  checkConnections,
+  getExamplesArr,
+  lastToolInput,
+  runAgent,
+} from '../../../lib'
 import { createNearestEventByApi, deleteEventByApi, deleteEventUserByApi } from '../events/helpers'
-import { runAgent } from '../../mcpAgent'
-import { assertCalledTools, assertJudgmentCorrect, getExamplesArr, lastToolInput } from '../../generalHelpers'
 import assert from 'node:assert/strict'
 import {
   addParticipantToSessionByAPI,
@@ -36,7 +41,7 @@ describe('tool selection for a session participants', () => {
   })
 
   test('add a participant to an event session', async () => {
-    const examples = getExamplesArr('add-session-participants.txt', import.meta.url)
+    const examples = getExamplesArr('add-session-participants.txt', __dirname)
     const expectedTools = ['add-session-participants']
     const participantInfo = await createUserAndSessionToAddParticipant(eventId)
     userIds.push(participantInfo.userId)
@@ -56,7 +61,7 @@ describe('tool selection for a session participants', () => {
   })
 
   test('list participants of an event session', async () => {
-    const examples = getExamplesArr('list-session-participants.txt', import.meta.url)
+    const examples = getExamplesArr('list-session-participants.txt', __dirname)
     const expectedTools = ['list-session-participants']
     const participantInfo = await createUserAndSessionToAddParticipant(eventId)
     userIds.push(participantInfo.userId)
@@ -73,7 +78,7 @@ describe('tool selection for a session participants', () => {
   })
 
   test('update a participant of an event session', async () => {
-    const examples = getExamplesArr('update-session-participants.txt', import.meta.url)
+    const examples = getExamplesArr('update-session-participants.txt', __dirname)
     const expectedTools = ['update-session-participants']
     const participantInfo = await createUserAndSessionToAddParticipant(eventId)
     userIds.push(participantInfo.userId)
@@ -95,7 +100,7 @@ describe('tool selection for a session participants', () => {
   })
 
   test('remove a participant of an event session', async () => {
-    const examples = getExamplesArr('remove-session-participants.txt', import.meta.url)
+    const examples = getExamplesArr('remove-session-participants.txt', __dirname)
     const expectedTools = ['remove-session-participants']
     const participantInfo = await createUserAndSessionToAddParticipant(eventId)
     userIds.push(participantInfo.userId)
@@ -116,7 +121,7 @@ describe('tool selection for a session participants', () => {
   })
 
   test('all tools called', async () => {
-    const examples = getExamplesArr('all-session-participants-tools-called.txt', import.meta.url)
+    const examples = getExamplesArr('all-session-participants-tools-called.txt', __dirname)
     const expectedTools = [
       'add-session-participants',
       'update-session-participants',
