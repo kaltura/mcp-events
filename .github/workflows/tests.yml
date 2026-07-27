@@ -61,6 +61,9 @@ jobs:
         working-directory: tests
         run: npm ci
 
+      - name: Tests code analysis
+        run: npm run typecheck:functional && npm run lint
+
       - name: Create tests/.env
         run: |
           cat > tests/.env <<EOF

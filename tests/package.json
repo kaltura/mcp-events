@@ -19,6 +19,7 @@
   },
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "test:functional": "node --env-file=.env --import tsx --test \"functional/**/*.test.ts\" --test-reporter=spec"
+    "test:functional": "node --env-file=.env --import tsx --test \"functional/**/*.test.ts\" --test-reporter=spec",
+    "typecheck:functional": "tsc --noEmit -p functional/tsconfig.json"
   }
 }

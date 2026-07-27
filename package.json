@@ -11,8 +11,7 @@
     "inspect:http": "npx @modelcontextprotocol/inspector  http://localhost:3000/mcp",
     "client": "node dist/client.js",
     "lint": "eslint . --ext .ts",
-    "test:functional": "node --env-file=tests/.env --import tsx --test \"tests/functional/**/*.test.ts\" --test-reporter=spec",
-    "typecheck:functional": "tsc --noEmit -p tests/functional/tsconfig.json"
+    "test:functional": "node --env-file=tests/.env --import tsx --test \"tests/functional/**/*.test.ts\" --test-reporter=spec"
   },
   "keywords": [],
   "author": "",
