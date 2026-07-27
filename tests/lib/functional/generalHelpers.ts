@@ -28,7 +28,7 @@ export function lastToolInput(result: AgentResult): Record<string, unknown> {
 /**
  * Read an examples file from the `resources/examples` directory next to the caller.
  *
- * @param filename - Name of the examples file, e.g. `'list-events.txt'`.
+ * @param filename - Name of the examples file, e.g. `'list.txt'`.
  * @param callerUrl - The caller's `import.meta.url`, used to resolve its own `resources/examples` directory.
  */
 export function getExamplesArr(filename: string, callerUrl: string): string[] {

@@ -17,8 +17,8 @@ import { config } from './config'
 const MAX_AGENT_STEPS = 15
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
-const STDIO_SERVER_SCRIPT = join(REPO_ROOT, 'tests/functional/stdio_mcp_events.sh')
-const SERVER_LOG_PATH = join(tmpdir(), `mcp-events-server-${process.pid}.log`)
+const STDIO_SERVER_SCRIPT = join(REPO_ROOT, 'tests/functional/stdio_mcp.sh')
+const SERVER_LOG_PATH = join(tmpdir(), `mcp-server-${process.pid}.log`)
 
 let serverLogFd: number | undefined
 
@@ -79,7 +79,7 @@ function buildAnthropicClient(): Anthropic {
 function systemPrompt(): string {
   const today = new Date().toISOString().slice(0, 10)
   return (
-    'You are an assistant for the Kaltura Events platform. ' +
+    'You are an assistant for the Kaltura platform. ' +
     `Today's date is ${today}. ` +
     "Use the available tools to fulfil the user's request."
   )

@@ -1,5 +1,5 @@
 #### General description
-Functional tests of the MCP Kaltura Events server  
+Functional tests of the MCP Kaltura  
 
 
 #### Tools and Languages

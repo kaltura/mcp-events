@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build and run the MCP Events server over stdio for functional tests.
+# Build and run the MCP server over stdio for functional tests.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
