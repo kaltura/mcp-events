@@ -183,7 +183,7 @@ async function runAgentLoop(client: Client, prompt: string, result: AgentResult)
       toolUses.map(async (tu: { id: string }) => ({
         type: 'tool_result' as const,
         tool_use_id: tu.id,
-        content: await resolveTool(client, tu),
+        content: await resolveTool(client, tu as Anthropic.ToolUseBlock),
       })),
     )
     messages.push({ role: 'user', content: toolResults })
