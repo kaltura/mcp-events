@@ -4,7 +4,7 @@
   "main": "stdio.js",
   "scripts": {
     "test": "node --env-file=.env --import tsx --test \"tests/app/**/*.test.ts\" --test-reporter=spec",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "start:stdio": "node --env-file=.env dist/apps/mcp-server/src/stdio.js",
     "start:http": "node --env-file=.env dist/apps/mcp-server/src/http.js",
     "inspect:stdio": "./node_modules/@modelcontextprotocol/inspector/cli/build/cli.js node --env-file=.env dist/mcp-server/src/stdio.js",
@@ -30,8 +30,9 @@
     "eslint-plugin-unused-imports": "^4.3.0",
     "prettier": "^3.7.4",
     "typescript": "5.7.2",
-    "typescript-eslint": "^8.53.0"
-  },
+    "typescript-eslint": "^8.53.0",
+    "tsx": "^4.23.1"
+    },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
     "@nestjs/common": "^11.1.19",
