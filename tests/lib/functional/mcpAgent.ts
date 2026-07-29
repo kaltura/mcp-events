@@ -13,11 +13,13 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { config } from './config'
+import assert from 'node:assert/strict'
+import * as fs from 'node:fs'
 
 const MAX_AGENT_STEPS = 15
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
-const STDIO_SERVER_SCRIPT = join(REPO_ROOT, 'lib/functional/stdio_mcp.sh')
+const STDIO_SERVER_SCRIPT_PATH = join(REPO_ROOT, 'lib/functional/stdio_mcp.sh')
 const SERVER_LOG_PATH = join(tmpdir(), `mcp-server-${process.pid}.log`)
 
 let serverLogFd: number | undefined
@@ -52,8 +54,12 @@ function serverLogFileDescriptor(): number {
 
 /** Connect to the MCP server over stdio by spawning the build-and-run shell script. */
 async function connectStdio(client: Client): Promise<void> {
+  assert(
+    fs.existsSync(STDIO_SERVER_SCRIPT_PATH),
+    `MCP stdio server script not found: ${STDIO_SERVER_SCRIPT_PATH}`,
+  )
   const transport = new StdioClientTransport({
-    command: STDIO_SERVER_SCRIPT,
+    command: STDIO_SERVER_SCRIPT_PATH,
     args: [],
     env: stdioServerEnv(),
     cwd: '',
