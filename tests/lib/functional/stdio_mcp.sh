@@ -2,7 +2,7 @@
 # Build and run the MCP server over stdio for functional tests.
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 
 if [ ! -d "$REPO_ROOT" ]; then
   echo "stdio_mcp.sh: repo root directory not found: $REPO_ROOT" >&2
@@ -12,7 +12,7 @@ fi
 cd "$REPO_ROOT"
 
 if ! npm run build; then
-  echo "stdio_mcp.sh: failed to build the MCP server" >&2
+  echo "stdio_mcp.sh: failed to build the MCP server in $REPO_ROOT" >&2
   exit 1
 fi
 
