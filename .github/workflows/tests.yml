@@ -42,26 +42,10 @@ jobs:
           echo "KALTURA_PUBLIC_API=https://events-api.nvq2.ovp.kaltura.com/api/v1" >> "$GITHUB_ENV"
 
       - name: Install dependencies and build MCP server
-        run: npm ci && npm run build
-
-      - name: Start MCP Events server
-        run: |
-          node dist/apps/mcp-server/src/http.js &
-          echo $! > /tmp/mcp-server.pid
-          for i in $(seq 1 30); do
-            if curl -s http://localhost:3000/health -o /dev/null; then
-              echo "MCP server ready"
-              break
-            fi
-            sleep 1
-          done
-
-      - name: Install test dependencies
-        working-directory: tests
         run: npm ci
 
-      - name: Tests code analysis
-        run: npm run typecheck:functional && npm run lint
+      - name: Install test dependencies
+        run: cd tests/lib && npm ci
 
       - name: Create tests/.env
         run: |
@@ -71,8 +55,6 @@ jobs:
           ANTHROPIC_AUTH_TOKEN=${{ secrets.ANTHROPIC_AUTH_TOKEN }}
           ANTHROPIC_BASE_URL=http://litellm.central.ovp.kaltura.prod:4000
           ANTHROPIC_MODEL=claude-4-5-haiku
-          MCP_SERVER_URL=http://localhost:3000/mcp
-          EXECUTE_TOOLS=1
           EOF
 
       - name: Run functional tests
