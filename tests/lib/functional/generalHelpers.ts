@@ -1,8 +1,7 @@
 import { AgentResult, anthropicJudgeResponse } from './mcpAgent'
 import assert from 'node:assert/strict'
-import { dirname, join } from 'node:path'
+import { join } from 'node:path'
 import { readFileSync, statSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
 
 function calledToolNames(result: AgentResult): string[] {
   return result.toolsCalled.map((t) => t.name)
@@ -29,10 +28,10 @@ export function lastToolInput(result: AgentResult): Record<string, unknown> {
  * Read an examples file from the `resources/examples` directory next to the caller.
  *
  * @param filename - Name of the examples file, e.g. `'list.txt'`.
- * @param callerUrl - The caller's `import.meta.url`, used to resolve its own `resources/examples` directory.
+ * @param callerDir - The caller's `__dirname`, used to resolve its own `resources/examples` directory.
  */
-export function getExamplesArr(filename: string, callerUrl: string): string[] {
-  const filepath = join(dirname(fileURLToPath(callerUrl)), 'resources', 'examples', filename)
+export function getExamplesArr(filename: string, callerDir: string): string[] {
+  const filepath = join(callerDir, 'resources', 'examples', filename)
   let stat: ReturnType<typeof statSync>
   try {
     stat = statSync(filepath)
