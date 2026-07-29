@@ -58,7 +58,7 @@ jobs:
           EOF
 
       - name: Run functional tests
-        run: npm run test:functional
+        run: npm run test
 
       - name: Collect logs on failure
         if: failure()
