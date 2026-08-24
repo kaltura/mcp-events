@@ -60,9 +60,7 @@ _Next time you open Claude make sure `KALTURA_KS` env var is **EXPORT'ed**, and 
 <br/>
 
 #### Manual / Claude Desktop
-Add to `claude_desktop_config.json` and restart:
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+Add to clause config file and restart:
 
 ```json
 {
