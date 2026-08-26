@@ -91,8 +91,7 @@ _Before adding the MCP, manually start the server:_
 #### Claude Code CLI:
 
 ```bash
-claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
-  --header "Authorization: KS \${KALTURA_KS}"
+claude mcp add --transport http kaltura-events http://localhost:3000/mcp --header "Authorization: KS \${KALTURA_KS}" 
 ```
 _Next time you open Claude make sure `KALTURA_KS` env var is **EXPORT'ed**, and that's it!_
 
