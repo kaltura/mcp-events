@@ -1,4 +1,4 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { McpServer } from '@modelcontextprotocol/server'
 import { ListSessionDto, CreateSessionDto } from './schemas'
 import { PublicApiClient } from '../../api/publicApiClient'
 import { hasScopes } from '../../auth/scope-check'

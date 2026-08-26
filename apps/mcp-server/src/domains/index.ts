@@ -1,4 +1,4 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { McpServer } from '@modelcontextprotocol/server'
 import { PublicApiClient } from '../api/publicApiClient'
 import { registerEventTools } from './events/tools'
 import { registerEventResources } from './events/resources'

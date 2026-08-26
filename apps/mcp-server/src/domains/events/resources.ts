@@ -1,4 +1,4 @@
-import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { McpServer, ResourceTemplate } from '@modelcontextprotocol/server'
 import { PublicApiClient } from '../../api/publicApiClient'
 import assert from 'node:assert'
 import { PresetTemplates } from '../../resources/presetTemplates'
