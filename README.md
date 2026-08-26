@@ -53,7 +53,7 @@ MCP server for Kaltura's Event Platform API.
 #### Claude Code CLI:
 
 ```bash
-claude mcp add kaltura-events "docker -- run -i --rm -e KALTURA_KS ghcr.io/kaltura/mcp-events:latest" -s user
+claude mcp add kaltura-events -s user -- docker run -i --rm -e KALTURA_KS ghcr.io/kaltura/mcp-events:latest
 ```
 _Next time you open Claude make sure `KALTURA_KS` env var is **EXPORT'ed**, and that's it!_
 
