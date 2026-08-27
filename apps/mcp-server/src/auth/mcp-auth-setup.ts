@@ -32,6 +32,7 @@ export const mcpAuth = new MCPAuth({
               authorizationEndpoint: `${config.auth.gatewayUrl}/authorize`,
               tokenEndpoint: `${config.auth.gatewayUrl}/token`,
               jwksUri: `${config.auth.gatewayUrl}/.well-known/jwks.json`,
+              registrationEndpoint: `${config.auth.gatewayUrl}/register`,
               responseTypesSupported: ['code'],
               codeChallengeMethodsSupported: ['S256'],
             },
@@ -61,6 +62,9 @@ export function createBearerAuthMiddleware(): RequestHandler {
     resource: resourceIdentifier,
     audience: resourceIdentifier,
     requiredScopes: [], // per-tool scope enforcement; middleware only validates JWT structure
+    // Surfaces `cause` (expected-vs-actual issuer/audience, underlying jose error code) in the
+    // rejection response body, which BearerAuthMiddleware logs. See config.auth.debug.
+    showErrorDetails: config.auth.debug,
   })
 }
 
