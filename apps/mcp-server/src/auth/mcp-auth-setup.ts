@@ -62,8 +62,10 @@ export function createBearerAuthMiddleware(): RequestHandler {
     resource: resourceIdentifier,
     audience: resourceIdentifier,
     requiredScopes: [], // per-tool scope enforcement; middleware only validates JWT structure
-    // Surfaces `cause` (expected-vs-actual issuer/audience, underlying jose error code) in the
-    // rejection response body, which BearerAuthMiddleware logs. See config.auth.debug.
+    // Tied to _AUTH_DEBUG. When enabled, `cause` (expected-vs-actual issuer/audience,
+    // underlying jose error code) is included in the rejection response body sent to
+    // the caller, not just server logs — an unauthenticated info-disclosure/token-forging
+    // oracle. Only enable _AUTH_DEBUG for troubleshooting, never left on in production.
     showErrorDetails: config.auth.debug,
   })
 }

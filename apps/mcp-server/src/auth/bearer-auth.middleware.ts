@@ -81,11 +81,23 @@ export class BearerAuthMiddleware implements NestMiddleware {
       if (status === 401 || status === 403) {
         const b = (body as Record<string, unknown>) ?? {}
         const wwwAuth = res.getHeader('WWW-Authenticate') ?? 'n/a'
-        authLogger.warn(
-          `JWT rejected (${ms}ms) status=${status} error=${b.error ?? 'unknown'} ` +
-            `error_description=${b.error_description ?? 'n/a'} missing_scopes=${JSON.stringify(b.missing_scopes) ?? 'n/a'} ` +
-            `cause=${stringifyWithErrors(b.cause)} www-authenticate=${wwwAuth} | ${describePresentedToken(req)}`,
-        )
+
+        // Log a warning for JWT rejections when _AUTH_DEBUG is not enabled
+        if (!config.auth.debug) {
+          authLogger.warn(
+            `JWT rejected (${ms}ms) status=${status} error=${b.error ?? 'unknown'} ` +
+              `error_description=${b.error_description ?? 'n/a'} missing_scopes=${JSON.stringify(b.missing_scopes) ?? 'n/a'} ` +
+              'For more details set _AUTH_DEBUG=1',
+          )
+        }
+        // Full debug logging when _AUTH_DEBUG is enabled
+        if (config.auth.debug) {
+          authLogger.warn(
+            `JWT rejected (${ms}ms) status=${status} error=${b.error ?? 'unknown'} ` +
+              `error_description=${b.error_description ?? 'n/a'} missing_scopes=${JSON.stringify(b.missing_scopes) ?? 'n/a'} ` +
+              `cause=${stringifyWithErrors(b.cause)} www-authenticate=${wwwAuth} | ${describePresentedToken(req)}`,
+          )
+        }
       }
       return origJson(body)
     }

@@ -74,4 +74,5 @@ Copy `.env.template` to `.env`. Required vars depend on mode:
 | `_AUTH_GATEWAY_URL`  | HTTP mode — JWKS + token endpoint base URL                                                                                                                                                         |
 | `KALTURA_ENV`        | Both — selects region (`NVP`/`EU`/`DE`); defaults to `NVP`                                                                                                                                         |
 | `KALTURA_PUBLIC_API` | Both — overrides `KALTURA_ENV` with a custom API URL                                                                                                                                               |
-| `_AUTH_DEBUG`         | HTTP mode — optional. Includes verbose `cause` detail (expected-vs-actual issuer/audience, jose error code) in JWT rejection logs/responses. Defaults to enabled; set to `0` or `false` to disable |
+| `_AUTH_DEBUG`        | HTTP mode — set to `1`/`true` to include verbose JWT rejection cause/detail in logs and the client response, for diagnosing OAuth issues. Defaults to off; never leave enabled in production.     |
+
