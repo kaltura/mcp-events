@@ -10,6 +10,7 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
   - [Stdio Mode](#stdio-mode)
   <!-- - [HTTP Mode](#http-mode) # uncomment once auth-gateway is deployed..-->
 - [Environment Variables](#%EF%B8%8F-environment-variables)
+- [Testing](#testing)
 
 ---
 
@@ -123,5 +124,15 @@ Add to `claude_desktop_config.json` and restart:
 | `KALTURA_MCP_SERVER_PORT` | Port the HTTP server listens on | `3000` | http | no |
 
 ---
+
+## Testing 
+Functional tests of the Kaltura Events MCP Server are available in the `tests` directory.  
+Take a look at [tests/README.md](tests/README.md) for more details.
+Running tests:
+
+```bash
+npm run test
+```
+
 
 Made with ❤️ by Kaltura.
