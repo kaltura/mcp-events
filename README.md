@@ -125,7 +125,7 @@ Add to `claude_desktop_config.json` and restart:
 
 ---
 
-## Testing 
+## Testing 🧪
 Functional tests of the Kaltura Events MCP Server are available in the `tests` directory.  
 Take a look at [tests/README.md](tests/README.md) for more details.
 Running tests:
