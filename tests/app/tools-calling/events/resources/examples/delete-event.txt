@@ -1,0 +1,1 @@
+The Kaltura event with ID (some integer) has been successfully deleted. All associated resources and configurations have been permanently removed.

@@ -1,5 +1,6 @@
 import tseslint from 'typescript-eslint'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import unusedImports from 'eslint-plugin-unused-imports'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -21,30 +22,16 @@ export default [
   },
   ...tseslint.configs.recommended,
   {
-    plugins: {
-      'unused-imports': {
-        rules: {
-          'unused-imports/no-unused-vars': [
-            'warn',
-            { vars: 'all', varsIgnorePattern: '^_', args: 'all', argsIgnorePattern: '^_' },
-          ],
-          'unused-imports/no-unused-imports': 'error',
-        },
-      },
-    },
+    files: ['**/*.ts'],
+    plugins: { 'unused-imports': unusedImports },
     rules: {
-      '@typescript-eslint/explicit-function-return-type': 'warn',
-      'no-extra-semi': 'off',
-      // 'no-console': 'warn',
-      'max-len': [
+      'unused-imports/no-unused-imports': 'error',
+      'unused-imports/no-unused-vars': [
         'warn',
-        {
-          code: 150,
-          ignoreComments: true,
-          ignoreStrings: true,
-          ignoreTemplateLiterals: true,
-        },
+        { vars: 'all', varsIgnorePattern: '^_', args: 'all', argsIgnorePattern: '^_' },
       ],
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      // 'no-console': 'warn',
     },
   },
 ]

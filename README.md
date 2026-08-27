@@ -10,6 +10,7 @@ A production-ready [Model Context Protocol (MCP)](https://modelcontextprotocol.i
   - [Stdio Mode](#stdio-mode)
   <!-- - [HTTP Mode](#http-mode) # uncomment once auth-gateway is deployed..-->
 - [Environment Variables](#%EF%B8%8F-environment-variables)
+- [Testing](#testing)
 
 ---
 
@@ -60,9 +61,7 @@ _Next time you open Claude make sure `KALTURA_KS` env var is **EXPORT'ed**, and 
 <br/>
 
 #### Manual / Claude Desktop
-Add to `claude_desktop_config.json` and restart:
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+Add to clause config file and restart:
 
 ```json
 {
@@ -85,7 +84,7 @@ Add to `claude_desktop_config.json` and restart:
 
 _Before adding the MCP, manually start the server:_
   ```bash
-  docker run -p 3000:3000 ghcr.io/kaltura/mcp-events:latest node dist/mcp-server/src/http.js
+  docker run -p 3000:3000 ghcr.io/kaltura/mcp-events:latest node dist/apps/mcp-server/src/http.js
   ```
 
 #### Claude Code CLI:
@@ -125,5 +124,15 @@ Add to `claude_desktop_config.json` and restart:
 | `KALTURA_MCP_SERVER_PORT` | Port the HTTP server listens on | `3000` | http | no |
 
 ---
+
+## Testing 🧪
+Functional tests of the Kaltura Events MCP Server are available in the `tests` directory.  
+Take a look at [tests/README.md](tests/README.md) for more details.
+Running tests:
+
+```bash
+npm run test
+```
+
 
 Made with ❤️ by Kaltura.

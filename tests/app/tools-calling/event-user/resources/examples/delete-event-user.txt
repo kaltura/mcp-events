@@ -1,0 +1,1 @@
+Done! I've successfully deleted Shanon Jones (curtis_batz39@yahoo.com) from the event with ID 2722842. The user has been removed from the event context, including all their session roles and group assignments.

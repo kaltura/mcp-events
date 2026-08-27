@@ -17,5 +17,5 @@ COPY --from=builder /app/dist ./dist
 USER node
 
 # Default: stdio transport (spawned by MCP client)
-# Override to HTTP: docker run ... node dist/mcp-server/src/http.js
-CMD ["node", "dist/mcp-server/src/stdio.js"]
+# Override to HTTP: docker run ... node dist/apps/mcp-server/src/http.js
+CMD ["node", "dist/apps/mcp-server/src/stdio.js"]
