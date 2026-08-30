@@ -33,5 +33,10 @@ export const config = {
   auth: {
     gatewayUrl: process.env._AUTH_GATEWAY_URL ?? 'https://auth-gateway.kaltura.com',
     serverUrl: process.env._MCP_SERVER_URL ? process.env._MCP_SERVER_URL + '/mcp' : undefined,
+    // Include verbose cause/detail in JWT rejection responses & logs. Defaults to off
+    // (this detail is attacker-influenceable pre-verification and goes to the client
+    // response, not just logs); set _AUTH_DEBUG=1 or =true to enable for diagnosing
+    // OAuth issues.
+    debug: !!['1', 'true'].includes((process.env._AUTH_DEBUG ?? '').toLowerCase()),
   },
 }

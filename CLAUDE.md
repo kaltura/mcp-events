@@ -36,22 +36,23 @@ The server has **two runtime modes** sharing the same tool/resource logic:
 
 ### Key files
 
-| File | Role |
-|------|------|
-| `apps/mcp-server/src/server.ts` | Stdio bootstrap — creates `McpServer`, registers tools/resources, connects stdio transport |
-| `apps/mcp-server/src/http.ts` | HTTP bootstrap — NestJS app factory, CORS, RFC 9728 protected resource metadata |
-| `apps/mcp-server/src/mcp.service.ts` | Stateless per-request MCP handler (HTTP mode) |
-| `apps/mcp-server/src/mcp.controller.ts` | NestJS controller at `/mcp` — extracts `ks` and `scopes` from `req.auth` |
-| `apps/mcp-server/src/auth/bearer-auth.middleware.ts` | NestJS middleware wrapping `mcp-auth` JWT verification |
-| `apps/mcp-server/src/auth/mcp-auth-setup.ts` | `MCPAuth` instance + `createBearerAuthMiddleware()` — manually supplies auth server metadata because the Kaltura Auth Gateway has no OIDC discovery endpoint |
-| `apps/mcp-server/src/auth/scopes.ts` | Two scopes: `mcp:events:read` / `mcp:events:write` |
-| `apps/mcp-server/src/domains/index.ts` | Aggregates all domain `registerXxxTools` / `registerXxxResources` calls |
-| `apps/mcp-server/src/api/publicApiClient.ts` | All Kaltura REST API calls; used as a NestJS injectable |
-| `apps/mcp-server/src/config/config.ts` | Env-var config; selects API base URL by `KALTURA_ENV` (`NVP`/`EU`/`DE`) or `KALTURA_PUBLIC_API` |
+| File                                                 | Role                                                                                                                                                         |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `apps/mcp-server/src/server.ts`                      | Stdio bootstrap — creates `McpServer`, registers tools/resources, connects stdio transport                                                                   |
+| `apps/mcp-server/src/http.ts`                        | HTTP bootstrap — NestJS app factory, CORS, RFC 9728 protected resource metadata                                                                              |
+| `apps/mcp-server/src/mcp.service.ts`                 | Stateless per-request MCP handler (HTTP mode)                                                                                                                |
+| `apps/mcp-server/src/mcp.controller.ts`              | NestJS controller at `/mcp` — extracts `ks` and `scopes` from `req.auth`                                                                                     |
+| `apps/mcp-server/src/auth/bearer-auth.middleware.ts` | NestJS middleware wrapping `mcp-auth` JWT verification                                                                                                       |
+| `apps/mcp-server/src/auth/mcp-auth-setup.ts`         | `MCPAuth` instance + `createBearerAuthMiddleware()` — manually supplies auth server metadata because the Kaltura Auth Gateway has no OIDC discovery endpoint |
+| `apps/mcp-server/src/auth/scopes.ts`                 | Two scopes: `mcp:events:read` / `mcp:events:write`                                                                                                           |
+| `apps/mcp-server/src/domains/index.ts`               | Aggregates all domain `registerXxxTools` / `registerXxxResources` calls                                                                                      |
+| `apps/mcp-server/src/api/publicApiClient.ts`         | All Kaltura REST API calls; used as a NestJS injectable                                                                                                      |
+| `apps/mcp-server/src/config/config.ts`               | Env-var config; selects API base URL by `KALTURA_ENV` (`NVP`/`EU`/`DE`) or `KALTURA_PUBLIC_API`                                                              |
 
 ### Adding a new domain
 
 Each domain lives under `apps/mcp-server/src/domains/<name>/` with three files:
+
 - `schemas.ts` — Zod schemas for tool input DTOs
 - `tools.ts` — `registerXxxTools(server, ks, publicApiClient, scopes)` — gates write tools behind `mcp:events:write` and read tools behind `mcp:events:read` using `hasScopes()`
 - `resources.ts` — `registerXxxResources(...)` if the domain exposes MCP resources
@@ -66,10 +67,12 @@ Tools are registered conditionally at server-init time based on the granted scop
 
 Copy `.env.template` to `.env`. Required vars depend on mode:
 
-| Var | Required for |
-|-----|-------------|
-| `KALTURA_KS` | Stdio mode (and HTTP dev shortcut) |
-| `_MCP_SERVER_URL` | HTTP mode — becomes the OAuth resource identifier |
-| `_AUTH_GATEWAY_URL` | HTTP mode — JWKS + token endpoint base URL |
-| `KALTURA_ENV` | Both — selects region (`NVP`/`EU`/`DE`); defaults to `NVP` |
-| `KALTURA_PUBLIC_API` | Both — overrides `KALTURA_ENV` with a custom API URL |
+| Var                  | Required for                                                                                                                                                                                       |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `KALTURA_KS`         | Stdio mode (and HTTP dev shortcut)                                                                                                                                                                 |
+| `_MCP_SERVER_URL`    | HTTP mode — becomes the OAuth resource identifier                                                                                                                                                  |
+| `_AUTH_GATEWAY_URL`  | HTTP mode — JWKS + token endpoint base URL                                                                                                                                                         |
+| `KALTURA_ENV`        | Both — selects region (`NVP`/`EU`/`DE`); defaults to `NVP`                                                                                                                                         |
+| `KALTURA_PUBLIC_API` | Both — overrides `KALTURA_ENV` with a custom API URL                                                                                                                                               |
+| `_AUTH_DEBUG`        | HTTP mode — set to `1`/`true` to include verbose JWT rejection cause/detail in logs and the client response, for diagnosing OAuth issues. Defaults to off; never leave enabled in production.     |
+

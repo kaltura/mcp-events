@@ -32,6 +32,7 @@ export const mcpAuth = new MCPAuth({
               authorizationEndpoint: `${config.auth.gatewayUrl}/authorize`,
               tokenEndpoint: `${config.auth.gatewayUrl}/token`,
               jwksUri: `${config.auth.gatewayUrl}/.well-known/jwks.json`,
+              registrationEndpoint: `${config.auth.gatewayUrl}/register`,
               responseTypesSupported: ['code'],
               codeChallengeMethodsSupported: ['S256'],
             },
@@ -61,6 +62,11 @@ export function createBearerAuthMiddleware(): RequestHandler {
     resource: resourceIdentifier,
     audience: resourceIdentifier,
     requiredScopes: [], // per-tool scope enforcement; middleware only validates JWT structure
+    // Tied to _AUTH_DEBUG. When enabled, `cause` (expected-vs-actual issuer/audience,
+    // underlying jose error code) is included in the rejection response body sent to
+    // the caller, not just server logs — an unauthenticated info-disclosure/token-forging
+    // oracle. Only enable _AUTH_DEBUG for troubleshooting, never left on in production.
+    showErrorDetails: config.auth.debug,
   })
 }
 

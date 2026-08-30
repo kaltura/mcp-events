@@ -53,7 +53,7 @@ MCP server for Kaltura's Event Platform API.
 #### Claude Code CLI:
 
 ```bash
-claude mcp add kaltura-events "docker -- run -i --rm -e KALTURA_KS ghcr.io/kaltura/mcp-events:latest" -s user
+claude mcp add kaltura-events -s user -- docker run -i --rm -e KALTURA_KS ghcr.io/kaltura/mcp-events:latest
 ```
 _Next time you open Claude make sure `KALTURA_KS` env var is **EXPORT'ed**, and that's it!_
 
@@ -75,42 +75,6 @@ Add to `claude_desktop_config.json` and restart:
   }
 }
 ```
-
-
----
-
-<!-- Uncomment once auth-gateway is deployed..
-
-### HTTP Mode
-
-_Before adding the MCP, manually start the server:_
-  ```bash
-  docker run -p 3000:3000 ghcr.io/kaltura/mcp-events:latest node dist/mcp-server/src/http.js
-  ```
-
-#### Claude Code CLI:
-
-```bash
-claude mcp add --transport http kaltura-events http://localhost:3000/mcp \
-  --header "Authorization: KS \${KALTURA_KS}"
-```
-_Next time you open Claude make sure `KALTURA_KS` env var is **EXPORT'ed**, and that's it!_
-
-#### Manual / Claude Desktop
-Add to `claude_desktop_config.json` and restart:
-
-```json
-{
-  "mcpServers": {
-    "kaltura-events": {
-      "type": "https",
-      "url": "https://auth-gateway.kaltura.com"
-    }
-  }
-}
-``` 
-
--->
 
 
 ---
